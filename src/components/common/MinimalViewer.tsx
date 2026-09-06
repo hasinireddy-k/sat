@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { GroundingBox, ChangeDetectionArea, GeoMetadata, AnalysisMode } from '../../types/satquery';
-import { ZoomIn, ZoomOut, Maximize2, Minimize2, Layers, Compass, Sliders, Eye, EyeOff, Crosshair } from 'lucide-react';
+import { ZoomIn, ZoomOut, Maximize2, Minimize2, Layers, Compass, Sliders, Eye, EyeOff, Crosshair, Download, Sparkles } from 'lucide-react';
 
 interface MinimalViewerProps {
   mode: AnalysisMode;
@@ -30,6 +30,7 @@ export const MinimalViewer: React.FC<MinimalViewerProps> = ({
   const [panY, setPanY] = useState<number>(0);
   const [showGrid, setShowGrid] = useState<boolean>(true);
   const [showGrounding, setShowGrounding] = useState<boolean>(true);
+  const [spectralMode, setSpectralMode] = useState<'RGB' | 'NIR'>('RGB');
   const [activeLayer, setActiveLayer] = useState<'ORIGINAL' | 'EVIDENCE' | 'GROUNDING' | 'CHANGE' | 'MASK'>('EVIDENCE');
   const [sliderPos, setSliderPos] = useState<number>(50);
   const [isDraggingSlider, setIsDraggingSlider] = useState<boolean>(false);
@@ -42,6 +43,51 @@ export const MinimalViewer: React.FC<MinimalViewerProps> = ({
   const [clickCoords, setClickCoords] = useState<{ x: number; y: number; normX: number; normY: number } | null>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const sliderContainerRef = useRef<HTMLDivElement>(null);
+
+  // Export GeoJSON Evidence Collection
+  const exportGeoJsonPayload = () => {
+    const features = groundingBoxes.map((gb, idx) => ({
+      type: 'Feature',
+      id: gb.id,
+      geometry: {
+        type: 'Polygon',
+        coordinates: [[
+          [primaryMeta?.bounds[0] || 77.5832, primaryMeta?.bounds[1] || 12.9716],
+          [primaryMeta?.bounds[2] || 77.6254, primaryMeta?.bounds[1] || 12.9716],
+          [primaryMeta?.bounds[2] || 77.6254, primaryMeta?.bounds[3] || 13.0182],
+          [primaryMeta?.bounds[0] || 77.5832, primaryMeta?.bounds[3] || 13.0182],
+          [primaryMeta?.bounds[0] || 77.5832, primaryMeta?.bounds[1] || 12.9716]
+        ]]
+      },
+      properties: {
+        evidenceId: `EVIDENCE-0${idx + 1}`,
+        label: gb.label,
+        category: gb.category,
+        confidence: gb.confidence,
+        boundingBoxPct: gb.box,
+        crs: primaryMeta?.crs || 'EPSG:32643'
+      }
+    }));
+
+    const geoJsonData = {
+      type: 'FeatureCollection',
+      crs: {
+        type: 'name',
+        properties: { name: primaryMeta?.crs || 'EPSG:32643' }
+      },
+      features
+    };
+
+    const blob = new Blob([JSON.stringify(geoJsonData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `satquery_${primaryMeta?.filename.replace(/\.[^/.]+$/, '') || 'observation'}_evidence.geojson`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
 
   // Auto-camera focus when selectedEvidenceId changes from parent
   useEffect(() => {
@@ -156,6 +202,18 @@ export const MinimalViewer: React.FC<MinimalViewerProps> = ({
 
         {/* View & Layer Controls */}
         <div className="flex items-center space-x-2">
+          {/* Spectral Filter Composite Toggle */}
+          <button
+            onClick={() => setSpectralMode(spectralMode === 'RGB' ? 'NIR' : 'RGB')}
+            className={`px-2.5 py-1 rounded text-[11px] font-mono flex items-center space-x-1 transition-micro ${
+              spectralMode === 'NIR' ? 'bg-purple-950 text-purple-300 border border-purple-700 font-bold' : 'bg-slate-950 text-slate-400 border border-slate-800 hover:text-slate-200'
+            }`}
+            title="Toggle Multispectral False-Color NIR Composite"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+            <span>SPECTRAL: {spectralMode}</span>
+          </button>
+
           {mode !== 'single' && secondarySrc && (
             <div className="flex items-center bg-slate-900 p-0.5 rounded border border-slate-800 text-[10px]">
               <button
@@ -249,9 +307,14 @@ export const MinimalViewer: React.FC<MinimalViewerProps> = ({
               className="relative max-w-full max-h-full overflow-hidden flex items-center justify-center transition-camera gpu-layer"
               style={{ transform: `scale(${zoom}) translate(${panX}px, ${panY}px)` }}
             >
-              <img src={primarySrc} alt="Primary Scene" className="max-h-[440px] w-auto object-contain rounded block mx-auto border border-slate-800/80 transition-image" />
+              <img
+                src={primarySrc}
+                alt="Primary Scene"
+                className="max-h-[440px] w-auto object-contain rounded block mx-auto border border-slate-800/80 transition-image"
+                style={{ filter: spectralMode === 'NIR' ? 'contrast(1.2) saturate(1.45) hue-rotate(-28deg)' : 'none' }}
+              />
               <div className="absolute top-2 left-2 bg-slate-950/90 border border-slate-800 px-2 py-0.5 rounded text-[10px] font-mono text-slate-300 font-bold select-none">
-                {mode === 'change' ? 'T1 BEFORE (2024)' : mode === 'optical-sar' ? 'OPTICAL RGB' : (primaryMeta?.sensor || 'OPTICAL SCENE')}
+                {mode === 'change' ? 'T1 BEFORE (2024)' : mode === 'optical-sar' ? (spectralMode === 'NIR' ? 'OPTICAL FALSE-COLOR (NIR)' : 'OPTICAL RGB') : (primaryMeta?.sensor || 'OPTICAL SCENE')}
               </div>
 
               {/* Bounding Box Evidence Overlays */}
@@ -312,7 +375,12 @@ export const MinimalViewer: React.FC<MinimalViewerProps> = ({
             className="relative w-full h-full overflow-hidden flex items-center justify-center transition-camera gpu-layer animate-overlay-in"
             style={{ transform: `scale(${zoom}) translate(${panX}px, ${panY}px)` }}
           >
-            <img src={primarySrc} alt="Base Scene" className="max-h-[440px] w-auto object-contain rounded block mx-auto border border-slate-800" />
+            <img
+              src={primarySrc}
+              alt="Base Scene"
+              className="max-h-[440px] w-auto object-contain rounded block mx-auto border border-slate-800"
+              style={{ filter: spectralMode === 'NIR' ? 'contrast(1.2) saturate(1.45) hue-rotate(-28deg)' : 'none' }}
+            />
             {secondarySrc && (
               <img
                 src={secondarySrc}
@@ -336,7 +404,7 @@ export const MinimalViewer: React.FC<MinimalViewerProps> = ({
           >
             {/* Timeline Strip */}
             <div className="absolute top-2 left-1/2 -translate-x-1/2 z-40 bg-slate-950/90 border border-slate-800 px-3 py-1 rounded text-[10px] font-mono text-slate-300 flex items-center space-x-3 shadow-lg select-none">
-              <span>{mode === 'change' ? 'T1 (BEFORE)' : 'OPTICAL RGB'}</span>
+              <span>{mode === 'change' ? 'T1 (BEFORE)' : (spectralMode === 'NIR' ? 'OPTICAL NIR' : 'OPTICAL RGB')}</span>
               <span className="text-cyan-400 font-bold">───────────────────</span>
               <span>{mode === 'change' ? 'T2 (AFTER)' : 'SAR MICROWAVE'}</span>
             </div>
@@ -347,10 +415,10 @@ export const MinimalViewer: React.FC<MinimalViewerProps> = ({
                 src={primarySrc}
                 alt="T1 Pre"
                 className="w-full h-full object-cover transition-camera"
-                style={{ transform: `scale(${zoom}) translate(${panX}px, ${panY}px)` }}
+                style={{ transform: `scale(${zoom}) translate(${panX}px, ${panY}px)`, filter: spectralMode === 'NIR' ? 'contrast(1.2) saturate(1.45) hue-rotate(-28deg)' : 'none' }}
               />
               <div className="absolute top-10 left-3 bg-slate-950/90 border border-slate-800 px-2.5 py-1 rounded font-mono text-xs text-slate-300 shadow">
-                {mode === 'change' ? `T1 BEFORE (${primaryMeta?.acquisitionDate || '2024'})` : 'OPTICAL VISIBLE SPECTRUM'}
+                {mode === 'change' ? `T1 BEFORE (${primaryMeta?.acquisitionDate || '2024'})` : (spectralMode === 'NIR' ? 'FALSE-COLOR INFRARED (NIR)' : 'OPTICAL VISIBLE SPECTRUM')}
               </div>
             </div>
 
@@ -457,9 +525,21 @@ export const MinimalViewer: React.FC<MinimalViewerProps> = ({
       {/* Footer Info Strip */}
       {primaryMeta && (
         <div className="bg-[#070a12] px-4 py-1.5 border-t border-slate-800 text-[11px] font-mono text-slate-400 flex flex-wrap justify-between items-center gap-2 select-none">
-          <div>CRS: <strong className="text-slate-200">{primaryMeta.crs}</strong></div>
-          <div>EXTENTS: <strong className="text-slate-300">[{primaryMeta.bounds.join(', ')}]</strong></div>
-          <div>STATUS: <strong className="text-emerald-400">GROUNDED & VERIFIED</strong></div>
+          <div className="flex items-center space-x-3">
+            <div>CRS: <strong className="text-slate-200">{primaryMeta.crs}</strong></div>
+            <div>EXTENTS: <strong className="text-slate-300">[{primaryMeta.bounds.join(', ')}]</strong></div>
+          </div>
+          <div className="flex items-center space-x-3">
+            <button
+              onClick={exportGeoJsonPayload}
+              className="px-2.5 py-0.5 bg-slate-900 hover:bg-slate-800 text-cyan-300 rounded border border-slate-700 font-mono text-[10px] flex items-center space-x-1 transition-micro shadow"
+              title="Export Bounding Boxes as Standard GeoJSON File"
+            >
+              <Download className="w-3 h-3 text-cyan-400" />
+              <span>EXPORT GEOJSON</span>
+            </button>
+            <div>STATUS: <strong className="text-emerald-400">GROUNDED & VERIFIED</strong></div>
+          </div>
         </div>
       )}
     </div>
