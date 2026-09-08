@@ -1,0 +1,25 @@
+{
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.6558,
+      "val_loss": 0.7281
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.5665,
+      "val_loss": 0.7658
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.4876,
+      "val_loss": 0.8024
+    }
+  ],
+  "elapsed_seconds": 2.22,
+  "epochs": 3,
+  "trainable_parameters": 892947,
+  "total_parameters": 3252243,
+  "device": "cpu",
+  "status": "COMPLETED"
+}

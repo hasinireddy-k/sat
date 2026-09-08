@@ -1,6 +1,6 @@
 import React from 'react';
 import { ExecutionResult } from '../../types/satquery';
-import { FileText, Printer, Satellite, CheckCircle2, Compass, Activity } from 'lucide-react';
+import { FileText, Printer, Satellite, CheckCircle2, Compass, Activity, Download, Code, MapPin } from 'lucide-react';
 
 interface ReportGeneratorViewProps {
   result: ExecutionResult | null;
@@ -23,10 +23,79 @@ export const ReportGeneratorView: React.FC<ReportGeneratorViewProps> = ({ result
     window.print();
   };
 
+  const handleExportJson = () => {
+    const blob = new Blob([JSON.stringify(result, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `satquery_mission_${result.id}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleExportGeoJson = () => {
+    const features = (result.groundingBoxes || []).map((gb, idx) => ({
+      type: 'Feature',
+      id: gb.id || `ev-${idx + 1}`,
+      geometry: {
+        type: 'Polygon',
+        coordinates: [[
+          [result.geoMetadata?.bounds?.[0] || 77.5832, result.geoMetadata?.bounds?.[1] || 12.9716],
+          [result.geoMetadata?.bounds?.[2] || 77.6254, result.geoMetadata?.bounds?.[1] || 12.9716],
+          [result.geoMetadata?.bounds?.[2] || 77.6254, result.geoMetadata?.bounds?.[3] || 13.0182],
+          [result.geoMetadata?.bounds?.[0] || 77.5832, result.geoMetadata?.bounds?.[3] || 13.0182],
+          [result.geoMetadata?.bounds?.[0] || 77.5832, result.geoMetadata?.bounds?.[1] || 12.9716]
+        ]]
+      },
+      properties: {
+        evidenceId: `EVIDENCE-${idx + 1}`,
+        label: gb.label,
+        category: gb.category,
+        confidence: gb.confidence,
+        boundingBoxPct: gb.box,
+        crs: result.geoMetadata?.crs || 'EPSG:32643'
+      }
+    }));
+
+    const geoJsonData = {
+      type: 'FeatureCollection',
+      crs: { type: 'name', properties: { name: result.geoMetadata?.crs || 'EPSG:32643' } },
+      features
+    };
+
+    const blob = new Blob([JSON.stringify(geoJsonData, null, 2)], { type: 'application/geo+json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `satquery_${result.id}_grounding.geojson`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleExportTrace = () => {
+    const traceText = `SATQUERY AI — AUDITABLE EXECUTION TRACE
+MISSION: ${result.id}
+DATE: ${result.timestamp}
+QUERY: "${result.query}"
+MODEL: ${result.selectedModel?.name}
+EXECUTION TOTAL: ${result.executionTimeTotalMs}ms
+
+OBSERVABLE TRACE STEPS:
+${result.trace.map(t => `[Step ${t.stepNumber}] ${t.name}: ${t.description} (Status: ${t.status}, Latency: ${t.latencyMs}ms)`).join('\n')}
+`;
+    const blob = new Blob([traceText], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `satquery_${result.id}_trace.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="space-y-6 pb-12 font-sans text-slate-100">
       {/* Top Action Bar */}
-      <div className="flex items-center justify-between border-b border-slate-800 pb-4 print:hidden">
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-4 print:hidden">
         <div>
           <h2 className="text-lg font-bold text-slate-100 flex items-center space-x-2 font-mono uppercase tracking-wider">
             <FileText className="w-5 h-5 text-cyan-400" />
@@ -37,13 +106,44 @@ export const ReportGeneratorView: React.FC<ReportGeneratorViewProps> = ({ result
           </p>
         </div>
 
-        <button
-          onClick={handlePrint}
-          className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-bold text-xs rounded transition flex items-center space-x-2 font-mono shadow"
-        >
-          <Printer className="w-4 h-4" />
-          <span>PRINT REPORT (PDF)</span>
-        </button>
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            onClick={handleExportJson}
+            className="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-cyan-300 text-xs font-mono rounded transition flex items-center space-x-1.5"
+            title="Export raw JSON mission result"
+          >
+            <Code className="w-3.5 h-3.5" />
+            <span>EXPORT JSON</span>
+          </button>
+
+          {(result.groundingBoxes && result.groundingBoxes.length > 0) && (
+            <button
+              onClick={handleExportGeoJson}
+              className="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-purple-300 text-xs font-mono rounded transition flex items-center space-x-1.5"
+              title="Export bounding polygons as GeoJSON"
+            >
+              <MapPin className="w-3.5 h-3.5 text-purple-400" />
+              <span>EXPORT GEOJSON</span>
+            </button>
+          )}
+
+          <button
+            onClick={handleExportTrace}
+            className="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-emerald-300 text-xs font-mono rounded transition flex items-center space-x-1.5"
+            title="Export auditable execution trace"
+          >
+            <Download className="w-3.5 h-3.5 text-emerald-400" />
+            <span>EXPORT TRACE</span>
+          </button>
+
+          <button
+            onClick={handlePrint}
+            className="px-4 py-1.5 bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-bold text-xs rounded transition flex items-center space-x-2 font-mono shadow"
+          >
+            <Printer className="w-4 h-4" />
+            <span>PRINT REPORT (PDF)</span>
+          </button>
+        </div>
       </div>
 
       {/* Printable Report Document Container */}
@@ -67,7 +167,7 @@ export const ReportGeneratorView: React.FC<ReportGeneratorViewProps> = ({ result
           <div className="text-right font-mono text-xs text-slate-400 print:text-slate-700 space-y-0.5">
             <div>MISSION ID: <strong className="text-slate-200 print:text-slate-900">{result.id}</strong></div>
             <div>DATE: {result.timestamp}</div>
-            <div>CONFIDENCE: <strong className="text-emerald-400 print:text-emerald-700">{result.confidenceLevel || 'High'}</strong></div>
+            <div>CONFIDENCE: <strong className={result.confidence !== null && result.confidence !== undefined ? "text-emerald-400 print:text-emerald-700" : "text-slate-400 print:text-slate-600"}>{result.confidence !== null && result.confidence !== undefined ? `${result.confidence}%` : 'Not available'}</strong></div>
           </div>
         </div>
 

@@ -1,0 +1,601 @@
+{
+  "TEST_1": {
+    "file_id": "file_1788871852_00931056",
+    "filename": "sample_cartosat_utm43n.tif",
+    "sha256": "0093105693da62de886da0326d6a3b7be9b04aff5f2430e2edc13b7f240eac1e",
+    "query": "Describe this satellite image and identify the dominant land cover.",
+    "task": "vqa",
+    "model": "RemoteSensingVLMAdapter (BigEarthNet-19 LoRA Checkpoint)",
+    "answer": "The visible land cover in this scene is classified into the following primary Corine Land Cover categories: 1. Land principally occupied by agriculture, with significant areas of natural vegetation (activation score: 0.524), 2. Moors, heathland and sclerophyllous vegetation (score: 0.5234), and 3. Coastal wetlands (score: 0.5147). Spectral vegetative index measures peak NDVI at 0.9043, confirming open transitional vegetation mosaics.",
+    "confidence": null,
+    "metadata": {
+      "filename": "sample_cartosat_utm43n.tif",
+      "fileSize": "2.0 MB",
+      "fileSizeBytes": 2097664,
+      "dimensions": "512 \u00d7 512 px",
+      "width": 512,
+      "height": 512,
+      "bands": [
+        "Band 1 (Blue)",
+        "Band 2 (Green)",
+        "Band 3 (Red)",
+        "Band 4 (NIR)"
+      ],
+      "bandCount": 4,
+      "dtype": "uint16",
+      "crs": "WGS 84 / UTM zone 43N",
+      "transform": [
+        775000.0,
+        0.5,
+        0.0,
+        1435000.0,
+        0.0,
+        -0.5
+      ],
+      "bounds": [
+        775000.0,
+        1434744.0,
+        775256.0,
+        1435000.0
+      ],
+      "resolution": "0.5 m/px",
+      "nodata": "0",
+      "sensor": "Multispectral 4-Band (VNIR)",
+      "format": "GeoTIFF",
+      "acquisitionDate": "Not available",
+      "fileId": "file_1788871852_00931056",
+      "originalFileHash": "sha256-0093105693da62de886da0326d6a3b7be9b04aff5f2430e2edc13b7f240eac1e",
+      "previewHash": "sha256-7c4335714b2a4ddcc8114c44912cf7235abc54d732fe52009e8c2a20e3fc4798"
+    },
+    "trace": [
+      {
+        "stepNumber": 1,
+        "name": "Understanding Query",
+        "status": "success",
+        "description": "Query: \"Describe this satellite image and identify the dominant land cover.\" -> Classified intent: LAND_COVER. Evaluates Corine Land Cover classifications and vegetation/agricultural coverage.",
+        "timestamp": "18:21:03"
+      },
+      {
+        "stepNumber": 2,
+        "name": "Validating Input",
+        "status": "success",
+        "description": "Validated raster: 512 x 512 px, 4 band(s), dtype=uint16, CRS=WGS 84 / UTM zone 43N, GSD=0.5 m/px.",
+        "timestamp": "18:21:03"
+      },
+      {
+        "stepNumber": 3,
+        "name": "Preparing Imagery",
+        "status": "success",
+        "description": "Applied preprocessing: 4-band multispectral (VNIR: R, G, B, NIR) extracted -> 2-98% percentile dynamic range stretch to RGB -> Bilinear resize to 224x224 -> ImageNet normalization [0.485, 0.456, 0.406] / [0.229, 0.224, 0.225] -> PyTorch tensor [1, 3, 224, 224]. Final model input dimensions: [1, 3, 224, 224].",
+        "timestamp": "18:21:03"
+      },
+      {
+        "stepNumber": 4,
+        "name": "Selecting VQA Model",
+        "status": "success",
+        "description": "Loaded RemoteSensingVLMAdapter (BigEarthNet-19 LoRA Checkpoint) on CPU. Ready for deterministic forward pass.",
+        "timestamp": "18:21:03"
+      },
+      {
+        "stepNumber": 5,
+        "name": "Running Inference",
+        "status": "success",
+        "description": "PyTorch forward pass executed in 23.7ms on CPU. Top remote-sensing class: Land principally occupied by agriculture, with significant areas of natural vegetation (sigmoid=0.524).",
+        "timestamp": "18:21:03"
+      },
+      {
+        "stepNumber": 6,
+        "name": "Returning Answer",
+        "status": "success",
+        "description": "Completed answer generation (59 words) grounded in model probabilities and spectral evidence.",
+        "timestamp": "18:21:03"
+      }
+    ]
+  },
+  "TEST_2": {
+    "file_id": "file_1788871852_00931056",
+    "query": "Find buildings and other man-made structures.",
+    "task": "grounding",
+    "model": "SatQuery Remote Sensing Grounding Specialist (Spectral & Structural Morphology Engine)",
+    "detections_count": 6,
+    "detections": [
+      {
+        "id": "det-1",
+        "label": "Northeast Building / Urban Structure #1",
+        "confidence": null,
+        "bbox": {
+          "x_min": 238,
+          "y_min": 0,
+          "x_max": 512,
+          "y_max": 333
+        },
+        "normalized_bbox": {
+          "y_min_pct": 0.0,
+          "x_min_pct": 46.48,
+          "y_max_pct": 65.04,
+          "x_max_pct": 100.0
+        },
+        "pixel_dimensions": {
+          "width_px": 274,
+          "height_px": 333,
+          "area_px": 29964
+        },
+        "geo_coordinates": {
+          "crs": "WGS 84 / UTM zone 43N",
+          "bounds": [
+            775119.0,
+            1434833.5,
+            775256.0,
+            1435000.0
+          ]
+        }
+      },
+      {
+        "id": "det-2",
+        "label": "Northwest Building / Urban Structure #2",
+        "confidence": null,
+        "bbox": {
+          "x_min": 0,
+          "y_min": 0,
+          "x_max": 270,
+          "y_max": 366
+        },
+        "normalized_bbox": {
+          "y_min_pct": 0.0,
+          "x_min_pct": 0.0,
+          "y_max_pct": 71.48,
+          "x_max_pct": 52.73
+        },
+        "pixel_dimensions": {
+          "width_px": 270,
+          "height_px": 366,
+          "area_px": 28167
+        },
+        "geo_coordinates": {
+          "crs": "WGS 84 / UTM zone 43N",
+          "bounds": [
+            775000.0,
+            1434817.0,
+            775135.0,
+            1435000.0
+          ]
+        }
+      },
+      {
+        "id": "det-3",
+        "label": "Southeast Building / Urban Structure #3",
+        "confidence": null,
+        "bbox": {
+          "x_min": 181,
+          "y_min": 235,
+          "x_max": 512,
+          "y_max": 512
+        },
+        "normalized_bbox": {
+          "y_min_pct": 45.9,
+          "x_min_pct": 35.35,
+          "y_max_pct": 100.0,
+          "x_max_pct": 100.0
+        },
+        "pixel_dimensions": {
+          "width_px": 331,
+          "height_px": 277,
+          "area_px": 21664
+        },
+        "geo_coordinates": {
+          "crs": "WGS 84 / UTM zone 43N",
+          "bounds": [
+            775090.5,
+            1434744.0,
+            775256.0,
+            1434882.5
+          ]
+        }
+      },
+      {
+        "id": "det-4",
+        "label": "Southwest Building / Urban Structure #4",
+        "confidence": null,
+        "bbox": {
+          "x_min": 0,
+          "y_min": 344,
+          "x_max": 125,
+          "y_max": 512
+        },
+        "normalized_bbox": {
+          "y_min_pct": 67.19,
+          "x_min_pct": 0.0,
+          "y_max_pct": 100.0,
+          "x_max_pct": 24.41
+        },
+        "pixel_dimensions": {
+          "width_px": 125,
+          "height_px": 168,
+          "area_px": 7535
+        },
+        "geo_coordinates": {
+          "crs": "WGS 84 / UTM zone 43N",
+          "bounds": [
+            775000.0,
+            1434744.0,
+            775062.5,
+            1434828.0
+          ]
+        }
+      },
+      {
+        "id": "det-5",
+        "label": "Southwest Building / Urban Structure #5",
+        "confidence": null,
+        "bbox": {
+          "x_min": 141,
+          "y_min": 373,
+          "x_max": 330,
+          "y_max": 512
+        },
+        "normalized_bbox": {
+          "y_min_pct": 72.85,
+          "x_min_pct": 27.54,
+          "y_max_pct": 100.0,
+          "x_max_pct": 64.45
+        },
+        "pixel_dimensions": {
+          "width_px": 189,
+          "height_px": 139,
+          "area_px": 6446
+        },
+        "geo_coordinates": {
+          "crs": "WGS 84 / UTM zone 43N",
+          "bounds": [
+            775070.5,
+            1434744.0,
+            775165.0,
+            1434813.5
+          ]
+        }
+      },
+      {
+        "id": "det-6",
+        "label": "Northwest Building / Urban Structure #6",
+        "confidence": null,
+        "bbox": {
+          "x_min": 171,
+          "y_min": 30,
+          "x_max": 279,
+          "y_max": 175
+        },
+        "normalized_bbox": {
+          "y_min_pct": 5.86,
+          "x_min_pct": 33.4,
+          "y_max_pct": 34.18,
+          "x_max_pct": 54.49
+        },
+        "pixel_dimensions": {
+          "width_px": 108,
+          "height_px": 145,
+          "area_px": 5819
+        },
+        "geo_coordinates": {
+          "crs": "WGS 84 / UTM zone 43N",
+          "bounds": [
+            775085.5,
+            1434912.5,
+            775139.5,
+            1434985.0
+          ]
+        }
+      }
+    ],
+    "confidence": null,
+    "evaluation_metric": "Not available",
+    "answer": "Spatial Grounding Specialist evaluated query: \"Find buildings and other man-made structures.\". Target Category: 'Building / Urban Structure'. Localized 6 genuine feature region(s) in file_1788871852_00931056.tif. Primary feature (Northeast Building / Urban Structure #1) localized at pixel coordinates [238, 0] to [512, 333] (274 x 333 px)."
+  },
+  "TEST_3": {
+    "t1_file_id": "file_1788871854_5151ba34",
+    "t2_file_id": "file_1788871856_fa270849",
+    "query": "What changed between these two images?",
+    "task": "change",
+    "model": "Bi-Temporal Change Analysis Specialist",
+    "change_areas": [
+      {
+        "id": "chg-1",
+        "label": "Change Region #1 (Added, 3540.2 m^2)",
+        "box": [
+          43.0,
+          39.1,
+          66.4,
+          62.5
+        ],
+        "type": "added",
+        "changeSeverity": "significant",
+        "areaSqMeters": 3540.2,
+        "pixelCount": 14161,
+        "description": "New high-reflectance surface structures / increased albedo in T2."
+      }
+    ],
+    "answer": "Bi-Temporal Change Analysis between baseline 'bitemporal_t1_cartosat.tif' and observation 'bitemporal_t2_cartosat.tif'. Temporal baseline: T1 (2024:01:15 09:30:00) -> T2 (2024:06:20 10:15:00). Matrix differencing across 512 x 512 pixels reveals an actual changed area of 5.49% (14,400 out of 262,144 total pixels exceeding significance threshold tau = 0.18). Localized 1 prominent changed region(s). Primary change locus (ID: chg-1) exhibits 'added' dynamics with significant severity spanning 3,540.2 m^2 in bounds [43.0% N, 39.1% W to 66.4% S, 62.5% E].",
+    "confidence": null,
+    "evaluation_metric": "Not available",
+    "diff_image": "http://localhost:8000/uploads/analysis_1788871867_061a65d8_diff.png"
+  },
+  "TEST_4": {
+    "opt_file_id": "file_1788871859_5bddb9fd",
+    "sar_file_id": "file_1788871861_61674e97",
+    "query": "What complementary information does the SAR image provide compared with the optical image?",
+    "task": "optical-sar",
+    "model": "Optical + SAR Cross-Modal Fusion Specialist",
+    "optical_sar_insight": {
+      "opticalObservations": "Multi-spectral VNIR analysis (4 channels) indicates mean canopy NDVI of 0.356. Vegetated zones demonstrate strong near-infrared plateau reflectance (mean DN: 141.7). Substantial atmospheric attenuation / cloud haze detected affecting 7.48% of the optical aperture.",
+      "sarObservations": "SAR C-Band radar backscatter operates at active microwave frequency (penetrating cloud cover). Dynamic intensity spans [0.2, 645.0] DN (mean: 42.8, sigma: 34.6). Identified 8.42% specular dark returns (quiescent water bodies / smooth flat surfaces) and 2628 discrete high-intensity double-bounce returns corresponding to vertical metallic/masonry facades.",
+      "complementarySynthesis": "SAR microwaves (5.4 GHz) successfully penetrated the 7.48% cloud/haze bank obscuring the optical frame, resolving underlying structural boundaries and ground geometry that were unidentifiable in VNIR. Water bodies delineated by specular radar reflection (8.42%) corroborate low optical NIR absorption zones, eliminating false-positive shadows in optical imagery. Dihedral radar wall-ground corner reflections (2628 spikes) pinpoint built structures regardless of optical shadow or illumination azimuth.",
+      "coRegistrationStatus": "Sub-pixel Co-registered (Identical CRS, Bounds & Grid)",
+      "isCoRegistered": true,
+      "cloudPenetrationDemonstrated": true
+    },
+    "evidence_boxes": [
+      {
+        "id": "ev-01",
+        "label": "Built Infrastructure (Double-Bounce)",
+        "confidence": null,
+        "box": [
+          0.0938,
+          0.0,
+          0.1289,
+          0.0332
+        ],
+        "modality_cross_evidence": "SAR Double-Bounce + Optical Verification",
+        "description": "SAR dihedral corner reflection confirms vertical building walls through optical haze."
+      },
+      {
+        "id": "ev-02",
+        "label": "Built Infrastructure (Double-Bounce)",
+        "confidence": null,
+        "box": [
+          0.5312,
+          0.002,
+          0.5645,
+          0.0371
+        ],
+        "modality_cross_evidence": "SAR Double-Bounce + Optical Verification",
+        "description": "SAR dihedral corner reflection confirms vertical building walls through optical haze."
+      },
+      {
+        "id": "ev-03",
+        "label": "Built Infrastructure (Double-Bounce)",
+        "confidence": null,
+        "box": [
+          0.0,
+          0.0195,
+          0.0273,
+          0.0527
+        ],
+        "modality_cross_evidence": "SAR Double-Bounce + Optical Verification",
+        "description": "SAR dihedral corner reflection confirms vertical building walls through optical haze."
+      },
+      {
+        "id": "ev-04",
+        "label": "Built Infrastructure (Double-Bounce)",
+        "confidence": null,
+        "box": [
+          0.2812,
+          0.0195,
+          0.3164,
+          0.0547
+        ],
+        "modality_cross_evidence": "SAR Double-Bounce + Optical Verification",
+        "description": "SAR dihedral corner reflection confirms vertical building walls through optical haze."
+      },
+      {
+        "id": "ev-05",
+        "label": "Built Infrastructure (Double-Bounce)",
+        "confidence": null,
+        "box": [
+          0.1973,
+          0.0254,
+          0.2305,
+          0.0605
+        ],
+        "modality_cross_evidence": "SAR Double-Bounce + Optical Verification",
+        "description": "SAR dihedral corner reflection confirms vertical building walls through optical haze."
+      },
+      {
+        "id": "ev-06",
+        "label": "Built Infrastructure (Double-Bounce)",
+        "confidence": null,
+        "box": [
+          0.2637,
+          0.0332,
+          0.2988,
+          0.0684
+        ],
+        "modality_cross_evidence": "SAR Double-Bounce + Optical Verification",
+        "description": "SAR dihedral corner reflection confirms vertical building walls through optical haze."
+      },
+      {
+        "id": "ev-07",
+        "label": "Quiescent Water Body",
+        "confidence": null,
+        "box": [
+          0.0957,
+          0.5859,
+          0.3535,
+          0.8809
+        ],
+        "modality_cross_evidence": "Specular Microwave Absence + Low Optical NIR",
+        "description": "Smooth specular water surface reflects microwave radar pulses away from sensor."
+      }
+    ],
+    "answer": "Optical-SAR Cross-Modal Analysis:\n\n1. Optical VNIR Observation: Multi-spectral VNIR analysis (4 channels) indicates mean canopy NDVI of 0.356. Vegetated zones demonstrate strong near-infrared plateau reflectance (mean DN: 141.7). Substantial atmospheric attenuation / cloud haze detected affecting 7.48% of the optical aperture.\n\n2. SAR Microwave Radar Observation: SAR C-Band radar backscatter operates at active microwave frequency (penetrating cloud cover). Dynamic intensity spans [0.2, 645.0] DN (mean: 42.8, sigma: 34.6). Identified 8.42% specular dark returns (quiescent water bodies / smooth flat surfaces) and 2628 discrete high-intensity double-bounce returns corresponding to vertical metallic/masonry facades.\n\n3. Complementary Cross-Modal Synthesis: SAR microwaves (5.4 GHz) successfully penetrated the 7.48% cloud/haze bank obscuring the optical frame, resolving underlying structural boundaries and ground geometry that were unidentifiable in VNIR. Water bodies delineated by specular radar reflection (8.42%) corroborate low optical NIR absorption zones, eliminating false-positive shadows in optical imagery. Dihedral radar wall-ground corner reflections (2628 spikes) pinpoint built structures regardless of optical shadow or illumination azimuth.",
+    "confidence": null
+  },
+  "TEST_5": {
+    "routing_1": {
+      "query": "What is the dominant vegetation cover in this scene?",
+      "input": "Single Image (Optical)",
+      "task": "vqa",
+      "model": "RemoteSensingVLMAdapter (BigEarthNet-19 LoRA Checkpoint)",
+      "result_summary": "The visible land cover in this scene is classified into the following primary Corine Land Cover categories: 1. Moors, he"
+    },
+    "routing_2": {
+      "query": "Find structures in this scene.",
+      "input": "Single Image (Optical)",
+      "task": "grounding",
+      "model": "SatQuery Remote Sensing Grounding Specialist (Spectral & Structural Morphology Engine)",
+      "result_summary": "Spatial Grounding Specialist evaluated query: \"Find structures in this scene.\". Target Category: 'Building / Urban Struc"
+    },
+    "routing_3": {
+      "query": "What changed between these images?",
+      "input": "Dual Image (T1+T2)",
+      "task": "change",
+      "model": "Bi-Temporal Change Analysis Specialist",
+      "result_summary": "Bi-Temporal Change Analysis between baseline 'bitemporal_t1_cartosat.tif' and observation 'bitemporal_t2_cartosat.tif'. "
+    }
+  },
+  "TEST_6": {
+    "user_sha256": "0093105693da62de886da0326d6a3b7be9b04aff5f2430e2edc13b7f240eac1e",
+    "server_sha256": "0093105693da62de886da0326d6a3b7be9b04aff5f2430e2edc13b7f240eac1e",
+    "match": true,
+    "preview_url": "http://localhost:8000/uploads/file_1788871852_00931056_preview.png",
+    "stale_state_prevented": true
+  },
+  "TEST_7": {
+    "forbidden_strings_checked": [
+      "Tech Park",
+      "Commercial Block Alpha",
+      "Commercial Block Beta",
+      "Rooftop Solar Array",
+      "94.2%",
+      "94.8% mAP50",
+      "14.2% scene footprint",
+      "Grounded & Verified"
+    ],
+    "audit_findings": {
+      "test_1": [],
+      "test_2": [],
+      "test_3": [],
+      "test_4": []
+    },
+    "audit_passed": true
+  },
+  "TEST_8": {
+    "base_model": "Qwen/Qwen2-VL-2B-Instruct",
+    "adapter_checkpoint": "C:\\Users\\hasin\\OneDrive\\Desktop\\sat1\\SatQueryAI\\models\\adapters\\bigearthnet_lora\\adapter_model.pt",
+    "adapter_exists": true,
+    "adapter_size_bytes": 1204843,
+    "dataset": "BigEarthNet-19 Multi-Spectral Remote Sensing Benchmark",
+    "adaptation_method": "PEFT LoRA (rank=16, alpha=32, target_modules=q,k,v,o,gate,up,down)",
+    "training_status": "COMPLETED (3 epochs, BCE loss 0.4876, 892K adapter weights)",
+    "inference_status": "ACTIVE (Qwen-VL-2B + BigEarthNet LoRA loaded in memory)"
+  },
+  "TEST_9": {
+    "report_endpoint": "/api/report/analysis_1788871863_9e0a2581",
+    "report_status": "PASS",
+    "report_contents": {
+      "reportId": "REP_analysis_1788871863_9e0a2581",
+      "missionId": "ISRO_SIH_26167_analysis_1788871863_9e0a2581",
+      "timestamp": "2026-09-08 18:21:03",
+      "file_id": "file_1788871852_00931056",
+      "analysis_id": "analysis_1788871863_9e0a2581",
+      "query": "Describe this satellite image and identify the dominant land cover.",
+      "geoMetadata": {
+        "filename": "sample_cartosat_utm43n.tif",
+        "fileSize": "2.0 MB",
+        "fileSizeBytes": 2097664,
+        "dimensions": "512 \u00d7 512 px",
+        "width": 512,
+        "height": 512,
+        "bands": [
+          "Band 1 (Blue)",
+          "Band 2 (Green)",
+          "Band 3 (Red)",
+          "Band 4 (NIR)"
+        ],
+        "bandCount": 4,
+        "dtype": "uint16",
+        "crs": "WGS 84 / UTM zone 43N",
+        "transform": [
+          775000.0,
+          0.5,
+          0.0,
+          1435000.0,
+          0.0,
+          -0.5
+        ],
+        "bounds": [
+          775000.0,
+          1434744.0,
+          775256.0,
+          1435000.0
+        ],
+        "resolution": "0.5 m/px",
+        "nodata": "0",
+        "sensor": "Multispectral 4-Band (VNIR)",
+        "format": "GeoTIFF",
+        "acquisitionDate": "Not available",
+        "fileId": "file_1788871852_00931056",
+        "originalFileHash": "sha256-0093105693da62de886da0326d6a3b7be9b04aff5f2430e2edc13b7f240eac1e",
+        "previewHash": "sha256-7c4335714b2a4ddcc8114c44912cf7235abc54d732fe52009e8c2a20e3fc4798"
+      },
+      "textAnswer": "The visible land cover in this scene is classified into the following primary Corine Land Cover categories: 1. Land principally occupied by agriculture, with significant areas of natural vegetation (activation score: 0.524), 2. Moors, heathland and sclerophyllous vegetation (score: 0.5234), and 3. Coastal wetlands (score: 0.5147). Spectral vegetative index measures peak NDVI at 0.9043, confirming open transitional vegetation mosaics.",
+      "keyFindings": [
+        "VQA Model: RemoteSensingVLMAdapter (BigEarthNet-19 LoRA Checkpoint).",
+        "Primary Land Cover: Land principally occupied by agriculture, with significant areas of natural vegetation (score: 0.524).",
+        "Secondary Land Cover: Moors, heathland and sclerophyllous vegetation (score: 0.5234).",
+        "Spectral Verification: NDVI max = 0.9043, mean = 0.0006."
+      ],
+      "confidence": null,
+      "confidenceLevel": "Calibrated",
+      "trace": [
+        {
+          "stepNumber": 1,
+          "name": "Understanding Query",
+          "status": "success",
+          "description": "Query: \"Describe this satellite image and identify the dominant land cover.\" -> Classified intent: LAND_COVER. Evaluates Corine Land Cover classifications and vegetation/agricultural coverage.",
+          "timestamp": "18:21:03"
+        },
+        {
+          "stepNumber": 2,
+          "name": "Validating Input",
+          "status": "success",
+          "description": "Validated raster: 512 x 512 px, 4 band(s), dtype=uint16, CRS=WGS 84 / UTM zone 43N, GSD=0.5 m/px.",
+          "timestamp": "18:21:03"
+        },
+        {
+          "stepNumber": 3,
+          "name": "Preparing Imagery",
+          "status": "success",
+          "description": "Applied preprocessing: 4-band multispectral (VNIR: R, G, B, NIR) extracted -> 2-98% percentile dynamic range stretch to RGB -> Bilinear resize to 224x224 -> ImageNet normalization [0.485, 0.456, 0.406] / [0.229, 0.224, 0.225] -> PyTorch tensor [1, 3, 224, 224]. Final model input dimensions: [1, 3, 224, 224].",
+          "timestamp": "18:21:03"
+        },
+        {
+          "stepNumber": 4,
+          "name": "Selecting VQA Model",
+          "status": "success",
+          "description": "Loaded RemoteSensingVLMAdapter (BigEarthNet-19 LoRA Checkpoint) on CPU. Ready for deterministic forward pass.",
+          "timestamp": "18:21:03"
+        },
+        {
+          "stepNumber": 5,
+          "name": "Running Inference",
+          "status": "success",
+          "description": "PyTorch forward pass executed in 23.7ms on CPU. Top remote-sensing class: Land principally occupied by agriculture, with significant areas of natural vegetation (sigmoid=0.524).",
+          "timestamp": "18:21:03"
+        },
+        {
+          "stepNumber": 6,
+          "name": "Returning Answer",
+          "status": "success",
+          "description": "Completed answer generation (59 words) grounded in model probabilities and spectral evidence.",
+          "timestamp": "18:21:03"
+        }
+      ]
+    }
+  },
+  "TEST_10": {
+    "input_violation": "Single image submitted for bi-temporal change analysis",
+    "guardian_valid": false,
+    "guardian_status": "BLOCKED",
+    "rejection_message": "BLOCKED: 1 critical incompatibility issue(s) detected: Dimension 1 (Number of Images): Task 'change' requires exactly 2 images. Received 1.",
+    "handled_gracefully": true
+  }
+}

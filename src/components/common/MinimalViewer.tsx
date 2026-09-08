@@ -4,27 +4,30 @@ import { ZoomIn, ZoomOut, Maximize2, Minimize2, Layers, Compass, Sliders, Eye, E
 
 interface MinimalViewerProps {
   mode: AnalysisMode;
-  primarySrc: string;
+  primarySrc?: string;
+  primaryImage?: string;
   secondarySrc?: string;
+  secondaryImage?: string;
   primaryMeta?: GeoMetadata;
   secondaryMeta?: GeoMetadata;
   groundingBoxes?: GroundingBox[];
   changeAreas?: ChangeDetectionArea[];
   selectedEvidenceId?: string | null;
+  onSelectEvidence?: (id: string | null) => void;
   onQueryRegion?: (queryText: string, coords?: [number, number]) => void;
 }
 
-export const MinimalViewer: React.FC<MinimalViewerProps> = ({
-  mode,
-  primarySrc,
-  secondarySrc,
-  primaryMeta,
-  secondaryMeta,
-  groundingBoxes = [],
-  changeAreas = [],
-  selectedEvidenceId = null,
-  onQueryRegion
-}) => {
+export const MinimalViewer: React.FC<MinimalViewerProps> = (props) => {
+  const mode = props.mode;
+  const primarySrc = props.primarySrc || props.primaryImage || '';
+  const secondarySrc = props.secondarySrc || props.secondaryImage;
+  const primaryMeta = props.primaryMeta;
+  const secondaryMeta = props.secondaryMeta;
+  const groundingBoxes = props.groundingBoxes || [];
+  const changeAreas = props.changeAreas || [];
+  const selectedEvidenceId = props.selectedEvidenceId || null;
+  const onSelectEvidence = props.onSelectEvidence;
+  const onQueryRegion = props.onQueryRegion;
   const [zoom, setZoom] = useState<number>(1);
   const [panX, setPanX] = useState<number>(0);
   const [panY, setPanY] = useState<number>(0);
@@ -52,11 +55,11 @@ export const MinimalViewer: React.FC<MinimalViewerProps> = ({
       geometry: {
         type: 'Polygon',
         coordinates: [[
-          [primaryMeta?.bounds[0] || 77.5832, primaryMeta?.bounds[1] || 12.9716],
-          [primaryMeta?.bounds[2] || 77.6254, primaryMeta?.bounds[1] || 12.9716],
-          [primaryMeta?.bounds[2] || 77.6254, primaryMeta?.bounds[3] || 13.0182],
-          [primaryMeta?.bounds[0] || 77.5832, primaryMeta?.bounds[3] || 13.0182],
-          [primaryMeta?.bounds[0] || 77.5832, primaryMeta?.bounds[1] || 12.9716]
+          [primaryMeta?.bounds?.[0] || 77.5832, primaryMeta?.bounds?.[1] || 12.9716],
+          [primaryMeta?.bounds?.[2] || 77.6254, primaryMeta?.bounds?.[1] || 12.9716],
+          [primaryMeta?.bounds?.[2] || 77.6254, primaryMeta?.bounds?.[3] || 13.0182],
+          [primaryMeta?.bounds?.[0] || 77.5832, primaryMeta?.bounds?.[3] || 13.0182],
+          [primaryMeta?.bounds?.[0] || 77.5832, primaryMeta?.bounds?.[1] || 12.9716]
         ]]
       },
       properties: {

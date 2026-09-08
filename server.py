@@ -447,6 +447,27 @@ a { color: #0084ff; text-decoration: underline; font-weight: bold; }
                 'device': 'PyTorch CPU/GPU',
                 'version': '2.6.0'
             })
+        elif parsed.path == '/api/models':
+            self._send_json({
+                'status': 'ok',
+                'models': [
+                    {'id': 'geovlm-v2', 'name': 'GeoVLM PyTorch Engine', 'task': 'VQA & Captioning', 'version': '2.6.0'},
+                    {'id': 'rs-grounding-dino', 'name': 'RS-Grounding PyTorch Model', 'task': 'Text-Guided Grounding', 'version': '2.1.0'},
+                    {'id': 'siam-changeformer-v2', 'name': 'Siam-ChangeFormer PyTorch', 'task': 'Temporal Change Analysis', 'version': '2.0.8'},
+                    {'id': 'sar-opt-fusionnet', 'name': 'SAR-Opt-FusionNet', 'task': 'Optical-SAR Fusion', 'version': '1.9.4'}
+                ]
+            })
+        elif parsed.path == '/openapi.json':
+            self._send_json({
+                'openapi': '3.0.0',
+                'info': {'title': 'SatQuery Remote Sensing AI API', 'version': '2.6.0'},
+                'paths': {
+                    '/api/health': {'get': {'summary': 'Health check'}},
+                    '/api/upload': {'post': {'summary': 'Upload GeoTIFF / raster file'}},
+                    '/api/validate': {'post': {'summary': 'Validate geospatial headers'}},
+                    '/api/analyze': {'post': {'summary': 'Execute PyTorch specialist inference'}}
+                }
+            })
         elif parsed.path.startswith('/api/files/'):
             file_id = parsed.path.replace('/api/files/', '')
             rec = FILE_METADATA_STORE.get(file_id)

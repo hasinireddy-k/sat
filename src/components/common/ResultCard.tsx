@@ -27,9 +27,16 @@ export const ResultCard: React.FC<ResultCardProps> = ({ result, onGenerateReport
             <Sparkles className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-slate-100 uppercase tracking-wide">
-              Agentic Analysis Findings
-            </h3>
+            <div className="flex items-center space-x-2">
+              <h3 className="text-sm font-bold text-slate-100 uppercase tracking-wide">
+                Agentic Analysis Findings
+              </h3>
+              {(result as any).isDemoAnalysis && (
+                <span className="px-2 py-0.5 text-[10px] font-mono font-bold bg-amber-500/20 text-amber-400 border border-amber-500/40 rounded">
+                  DEMO ANALYSIS
+                </span>
+              )}
+            </div>
             <p className="text-xs text-slate-400 font-mono">
               Query: "{result.query}"
             </p>
@@ -39,7 +46,9 @@ export const ResultCard: React.FC<ResultCardProps> = ({ result, onGenerateReport
         <div className="flex items-center space-x-2">
           <div className="bg-slate-950 px-3 py-1 rounded-lg border border-slate-800 text-xs font-mono">
             <span className="text-slate-400">Confidence: </span>
-            <strong className="text-emerald-400">{result.confidence}%</strong>
+            <strong className={result.confidence !== null && result.confidence !== undefined ? "text-emerald-400" : "text-slate-400"}>
+              {result.confidence !== null && result.confidence !== undefined ? `${result.confidence}%` : 'Not available'}
+            </strong>
           </div>
 
           {onGenerateReport && (

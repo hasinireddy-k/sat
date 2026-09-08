@@ -1,14 +1,31 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { SPECIALIST_MODELS } from '../../services/specialistRegistry';
 import { Cpu, Layers, ArrowRight, ShieldCheck, Activity, Database, CheckCircle2, Sparkles } from 'lucide-react';
+import { satqueryApi } from '../../services/satqueryApi';
 
 export const ArchitectureView: React.FC = () => {
+  const [liveModels, setLiveModels] = useState<any[]>([]);
+
+  useEffect(() => {
+    let mounted = true;
+    satqueryApi.getModels()
+      .then((data) => {
+        if (mounted && data && data.length > 0) {
+          setLiveModels(data);
+        }
+      })
+      .catch((e) => console.warn('Live models fetch error', e));
+    return () => { mounted = false; };
+  }, []);
+
+  const displayModels = liveModels.length > 0 ? liveModels : SPECIALIST_MODELS;
+
   const rsDatasets = [
-    { name: 'BigEarthNet', desc: 'Multi-spectral Sentinel-2 & Sentinel-1 land cover dataset.', status: 'READY', color: 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10' },
-    { name: 'VRSBench', desc: 'Remote sensing vision-language reasoning & VQA benchmark.', status: 'READY', color: 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10' },
-    { name: 'RSVQA', desc: 'Visual question answering dataset for high-resolution aerial imagery.', status: 'CONNECTED', color: 'text-cyan-400 border-cyan-500/30 bg-cyan-500/10' },
-    { name: 'CDVQA', desc: 'Bitemporal change detection visual question answering dataset.', status: 'CONNECTED', color: 'text-cyan-400 border-cyan-500/30 bg-cyan-500/10' },
-    { name: 'ISRO / SAC Benchmark Set', desc: 'Proprietary ISRO mission evaluation suite for Cartosat & RISAT imagery.', status: 'NOT CONFIGURED (PLANNED)', color: 'text-amber-400 border-amber-500/30 bg-amber-500/10' },
+    { name: 'BigEarthNet-19', desc: 'Domain-adapted Sentinel-2 multi-spectral dataset (PEFT LoRA).', status: 'EVALUATED (33.3%)', color: 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10' },
+    { name: 'VRSBench', desc: 'Remote sensing vision-language reasoning & VQA benchmark.', status: 'READY', color: 'text-cyan-400 border-cyan-500/30 bg-cyan-500/10' },
+    { name: 'RSVQA', desc: 'Visual question answering dataset for high-resolution aerial imagery.', status: 'READY', color: 'text-cyan-400 border-cyan-500/30 bg-cyan-500/10' },
+    { name: 'CDVQA', desc: 'Bitemporal change detection visual question answering dataset.', status: 'READY', color: 'text-cyan-400 border-cyan-500/30 bg-cyan-500/10' },
+    { name: 'ISRO / SAC Benchmark Set', desc: 'ISRO mission test cases (RISAT-1/2B, Cartosat-3).', status: 'NOT EVALUATED', color: 'text-amber-400 border-amber-500/30 bg-amber-500/10' },
   ];
 
   return (
@@ -113,11 +130,11 @@ export const ArchitectureView: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800">
-                {SPECIALIST_MODELS.map((model) => (
+                {displayModels.map((model: any) => (
                   <tr key={model.id} className="hover:bg-slate-800/40 transition">
                     <td className="px-4 py-3 font-bold text-cyan-300">{model.name}</td>
                     <td className="px-4 py-3 font-sans text-slate-300">{model.provider}</td>
-                    <td className="px-4 py-3 text-slate-400">{model.taskSuitability.join(', ')}</td>
+                    <td className="px-4 py-3 text-slate-400">{Array.isArray(model.taskSuitability) ? model.taskSuitability.join(', ') : model.taskSuitability}</td>
                     <td className="px-4 py-3 text-center text-emerald-400 font-bold">{model.status.toUpperCase()}</td>
                   </tr>
                 ))}

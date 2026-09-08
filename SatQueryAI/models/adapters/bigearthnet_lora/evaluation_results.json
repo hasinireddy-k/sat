@@ -1,0 +1,29 @@
+{
+  "benchmark": "BigEarthNet-19 Remote Sensing Benchmark",
+  "validation_samples_count": 3,
+  "metrics": {
+    "base_model": {
+      "name": "Qwen/Qwen2-VL-2B-Instruct",
+      "type": "BASE MODEL",
+      "val_bce_loss": 0.6934,
+      "top3_accuracy_pct": 0.0
+    },
+    "domain_adapted_model": {
+      "name": "Qwen/Qwen2-VL-2B-Instruct + BigEarthNet LoRA",
+      "type": "DOMAIN-ADAPTED MODEL",
+      "adapter_checkpoint": "c:\\Users\\hasin\\OneDrive\\Desktop\\sat1\\SatQueryAI\\models/adapters/bigearthnet_lora\\adapter_model.pt",
+      "val_bce_loss": 0.6913,
+      "top3_accuracy_pct": 33.3
+    },
+    "specialist_model": {
+      "name": "SatQuery Specialist (Spectral Index & High-Resolution Grounding)",
+      "type": "SPECIALIST MODEL",
+      "capabilities": [
+        "Deterministic NDVI/NDWI/NDBI",
+        "SAR Speckle Calibration",
+        "Sub-pixel Grounding"
+      ]
+    }
+  },
+  "evaluation_timestamp": 1788866762.9293633
+}

@@ -33,8 +33,13 @@ export interface GeoMetadata {
   sensor: string;
   acquisitionDate: string;
   bands: string[];
-  bounds: [number, number, number, number];
+  bounds?: [number, number, number, number];
   format: 'GeoTIFF' | 'TIFF' | 'PNG' | 'JPEG';
+  fileId?: string;
+  file_id?: string;
+  secondary_file_id?: string;
+  secondaryFileId?: string;
+  bandCount?: number;
 }
 
 export interface GroundingBox {

@@ -1,26 +1,41 @@
 import React, { useState } from 'react';
 import { ExecutionResult } from '../../types/satquery';
-import { History, Search } from 'lucide-react';
+import { History, Search, FileSliders } from 'lucide-react';
+import { MissionDetailFactorsView } from './MissionDetailFactorsView';
 
 interface AnalysisHistoryViewProps {
-  historyLogs: ExecutionResult[];
-  onSelectResult: (res: ExecutionResult) => void;
-  onGenerateReport: (res: ExecutionResult) => void;
+  historyLogs?: ExecutionResult[];
+  logs?: ExecutionResult[];
+  onSelectResult?: (res: ExecutionResult) => void;
+  onSelectLog?: (res: ExecutionResult) => void;
+  onGenerateReport?: (res: ExecutionResult) => void;
 }
 
-export const AnalysisHistoryView: React.FC<AnalysisHistoryViewProps> = ({
-  historyLogs,
-  onSelectResult,
-  onGenerateReport
-}) => {
+export const AnalysisHistoryView: React.FC<AnalysisHistoryViewProps> = (props) => {
+  const historyLogs = props.historyLogs || props.logs || [];
+  const onSelectResult = props.onSelectResult || props.onSelectLog || (() => {});
+  const onGenerateReport = props.onGenerateReport || (() => {});
+
+  const [selectedDetail, setSelectedDetail] = useState<ExecutionResult | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>('');
 
   const filteredLogs = historyLogs.filter(
     (log) =>
-      log.query.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      log.detectedTask.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      log.selectedModel.name.toLowerCase().includes(searchTerm.toLowerCase())
+      log.query?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      log.detectedTask?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      log.selectedModel?.name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // If a mission is selected, display the exact Hercules Input/Output Factors View
+  if (selectedDetail) {
+    return (
+      <MissionDetailFactorsView
+        result={selectedDetail}
+        onBack={() => setSelectedDetail(null)}
+        onOpenWorkspace={() => onSelectResult(selectedDetail)}
+      />
+    );
+  }
 
   return (
     <div className="space-y-6 pb-12 font-sans text-slate-100">
@@ -31,7 +46,7 @@ export const AnalysisHistoryView: React.FC<AnalysisHistoryViewProps> = ({
             <span>ANALYSIS HISTORY</span>
           </h2>
           <p className="text-xs text-slate-400 font-sans mt-0.5">
-            Complete historical registry of executed remote sensing observations, task modes, and confidence levels.
+            Complete historical registry of executed remote sensing observations, task modes, and confidence levels. Click any mission to inspect all Input/Output factors.
           </p>
         </div>
 
@@ -53,8 +68,8 @@ export const AnalysisHistoryView: React.FC<AnalysisHistoryViewProps> = ({
           <table className="w-full text-left text-xs text-slate-300">
             <thead className="bg-[#070a12] text-slate-400 uppercase text-[10px] border-b border-slate-800">
               <tr>
-                <th className="px-4 py-3">DATE</th>
-                <th className="px-4 py-3">INPUT</th>
+                <th className="px-4 py-3">DATE / ID</th>
+                <th className="px-4 py-3">INPUT RASTER</th>
                 <th className="px-4 py-3">TASK</th>
                 <th className="px-4 py-3 text-center">STATUS</th>
                 <th className="px-4 py-3 text-center">CONFIDENCE</th>
@@ -63,13 +78,18 @@ export const AnalysisHistoryView: React.FC<AnalysisHistoryViewProps> = ({
             </thead>
             <tbody className="divide-y divide-slate-800/80">
               {filteredLogs.map((log) => (
-                <tr key={log.id} className="hover:bg-slate-900/50 transition">
+                <tr
+                  key={log.id}
+                  onClick={() => setSelectedDetail(log)}
+                  className="hover:bg-slate-900/60 transition cursor-pointer group"
+                >
                   <td className="px-4 py-3 text-slate-400 whitespace-nowrap">
-                    <div>05 SEP 2026</div>
-                    <div className="text-[9px] text-slate-500">{log.id}</div>
+                    <div>{log.timestamp ? new Date(log.timestamp).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase() : '08 SEP 2026'}</div>
+                    <div className="text-[9px] text-cyan-400/80 group-hover:text-cyan-300 font-mono">{log.id.slice(-12)}</div>
                   </td>
                   <td className="px-4 py-3 text-slate-200 font-sans max-w-xs truncate">
-                    {log.mode === 'bitemporal' ? 'Bi-temporal optical imagery' : log.mode === 'optical-sar' ? 'Optical + SAR pair' : 'Single scene optical imagery'}
+                    <div className="font-semibold text-slate-100">{log.geoMetadata?.filename || 'Observation_Scene.tif'}</div>
+                    <div className="text-[10px] text-slate-500 truncate">{log.query}</div>
                   </td>
                   <td className="px-4 py-3 whitespace-nowrap">
                     <span className="px-2 py-0.5 rounded text-[10px] bg-slate-950 text-cyan-300 border border-slate-800 font-bold uppercase">
@@ -82,20 +102,26 @@ export const AnalysisHistoryView: React.FC<AnalysisHistoryViewProps> = ({
                     </span>
                   </td>
                   <td className="px-4 py-3 text-center font-bold text-cyan-400 whitespace-nowrap">
-                    {log.confidenceLevel || 'High'}
+                    {typeof log.confidence === 'number' ? `${Math.round(log.confidence <= 1 ? log.confidence * 100 : log.confidence)}%` : (log.confidenceLevel || 'High')}
                   </td>
-                  <td className="px-4 py-3 text-right whitespace-nowrap space-x-2">
+                  <td className="px-4 py-3 text-right whitespace-nowrap space-x-2" onClick={(e) => e.stopPropagation()}>
+                    <button
+                      onClick={() => setSelectedDetail(log)}
+                      className="px-2.5 py-1 bg-cyan-950/40 hover:bg-cyan-900/60 border border-cyan-500/40 text-cyan-300 rounded text-[11px] font-mono font-bold transition flex-inline items-center space-x-1"
+                    >
+                      <span>FACTORS</span>
+                    </button>
                     <button
                       onClick={() => onSelectResult(log)}
-                      className="px-2.5 py-1 bg-slate-950 hover:bg-slate-900 border border-slate-700 text-slate-200 rounded text-[11px] font-mono font-semibold transition"
+                      className="px-2.5 py-1 bg-slate-950 hover:bg-slate-900 border border-slate-700 text-slate-300 rounded text-[11px] font-mono font-semibold transition"
                     >
-                      OPEN
+                      VIEWER
                     </button>
                     <button
                       onClick={() => onGenerateReport(log)}
-                      className="px-2.5 py-1 bg-cyan-600 hover:bg-cyan-500 text-slate-950 rounded text-[11px] font-mono font-bold transition"
+                      className="px-2.5 py-1 bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-800 rounded text-[11px] font-mono transition"
                     >
-                      REPORT
+                      PDF
                     </button>
                   </td>
                 </tr>

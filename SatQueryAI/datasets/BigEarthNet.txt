@@ -1,0 +1,85 @@
+# ==============================================================================
+# BIGEARTHNET REMOTE SENSING BENCHMARK SPECIFICATION & INSTRUCTION DATASET
+# SIH 2026 Problem Statement 26167: Vision-Language Assistant for Orbital & Remote Sensing
+# Source: TU Berlin Remote Sensing Image Analysis Group (BigEarthNet-S2 / BigEarthNet-MM)
+# Taxonomy: BigEarthNet-19 Class Nomenclature & Multi-Spectral Sentinel-1/2 Signatures
+# ==============================================================================
+
+# [SECTION 1: BENCHMARK SPECIFICATION]
+# Archive: BigEarthNet (Sentinel-2 Multi-Spectral & Sentinel-1 SAR Benchmark)
+# Spatial Extent: 10 European countries (Austria, Belgium, Finland, Ireland, Kosovo, Lithuania, Luxembourg, Portugal, Serbia, Switzerland)
+# Original Tile Dimensions: 120 x 120 pixels @ 10m GSD (1.2 km x 1.2 km ground coverage)
+# Multi-Spectral Bands: 12 Sentinel-2 bands (B01-B12) + Sentinel-1 SAR Dual-Pol (VV, VH)
+# Radiometric Resolution: 16-bit surface reflectance / backscatter intensity (dB)
+
+# [SECTION 2: BIGEARTHNET-19 CLASS NOMENCLATURE]
+# 1. Urban fabric (CLC: 111, 112) - Continuous and discontinuous urban built-up areas, residential zones.
+# 2. Industrial or commercial units (CLC: 121) - Manufacturing facilities, logistical hubs, commercial complexes.
+# 3. Arable land (CLC: 211, 212, 213) - Non-irrigated arable land, permanently irrigated land, rice fields.
+# 4. Permanent crops (CLC: 221, 222, 223) - Vineyards, fruit trees, berry plantations, olive groves.
+# 5. Pastures (CLC: 231) - Dense, permanent grassland maintained for grazing and forage.
+# 6. Complex cultivation patterns (CLC: 242) - Mosaic of small parcel cultivated fields and orchards.
+# 7. Land principally occupied by agriculture, with significant areas of natural vegetation (CLC: 243)
+# 8. Agro-forestry areas (CLC: 244) - Annual crops or grazing land under forest canopy.
+# 9. Broad-leaved forest (CLC: 311) - Deciduous tree species with dense summer canopy and high NIR reflection.
+# 10. Coniferous forest (CLC: 312) - Evergreen needleleaf tree canopy with stable year-round NDVI.
+# 11. Mixed forest (CLC: 313) - Mixed deciduous and coniferous tree stands.
+# 12. Natural grassland and sparsely vegetated areas (CLC: 321, 333) - Alpine meadows, steppes, scrub.
+# 13. Moors, heathland and sclerophyllous vegetation (CLC: 322, 323) - Low shrubs, dwarf heath, maquis.
+# 14. Transitional woodland, shrub (CLC: 324) - Bushy vegetation with scattered trees, clear-cuts, young forest.
+# 15. Beaches, dunes, sands (CLC: 331) - Coastal sand accumulation, inland dunes, riverine banks.
+# 16. Inland wetlands (CLC: 411, 412) - Inland marshes, peat bogs, waterlogged soils.
+# 17. Coastal wetlands (CLC: 421, 422) - Salt marshes, salines, intertidal mudflats.
+# 18. Inland waters (CLC: 511, 512) - Natural and artificial watercourses, reservoirs, canals, lakes.
+# 19. Marine waters (CLC: 523) - Coastal waters, bays, estuaries, open sea.
+
+# [SECTION 3: MULTI-SPECTRAL & SAR SENSOR PROFILES]
+# Sentinel-2 Bands:
+#   B01 (443 nm, 60m): Coastal aerosol, atmospheric correction
+#   B02 (490 nm, 10m): Blue - Water penetration, soil/veg discrimination
+#   B03 (560 nm, 10m): Green - Peak vegetation reflectance
+#   B04 (665 nm, 10m): Red - Chlorophyll absorption
+#   B05 (705 nm, 20m): Red Edge 1 - Chlorophyll content
+#   B06 (740 nm, 20m): Red Edge 2 - Leaf area index
+#   B07 (783 nm, 20m): Red Edge 3 - Canopy structure
+#   B08 (842 nm, 10m): Broad NIR - Biomass, cellular structure
+#   B8A (865 nm, 20m): Narrow NIR - Water vapor absorption correction
+#   B09 (945 nm, 60m): Water vapor absorption
+#   B11 (1610 nm, 20m): SWIR-1 - Soil moisture, snow/cloud discrimination
+#   B12 (2190 nm, 20m): SWIR-2 - Vegetation moisture, mineral detection
+# Sentinel-1 SAR Dual-Pol (C-Band, 5.405 GHz):
+#   VV: Vertical transmit, Vertical receive - Surface roughness, water boundary delimitation
+#   VH: Vertical transmit, Horizontal receive - Volume scattering from forest canopy / vegetation structure
+
+# [SECTION 4: PAIRED REMOTE-SENSING INSTRUCTION SAMPLES]
+# FORMAT: JSON per line (JSONL), field "patch_id", "labels", "bands", "sensor", "conversations"
+
+{"patch_id": "S2A_MSIL2A_20170717T113321_N0205_R080_T29TNE_38_78", "labels": ["Broad-leaved forest", "Pastures"], "sensor": "Sentinel-2 Multi-Spectral", "gsd": 10.0, "crs": "EPSG:32629", "bands": ["B02", "B03", "B04", "B08"], "spectral_indices": {"NDVI": 0.742, "NDWI": -0.412, "NDBI": -0.285}, "conversations": [{"from": "human", "value": "Analyze this Sentinel-2 multi-spectral scene and classify the predominant land cover classes according to the BigEarthNet-19 taxonomy."}, {"from": "assistant", "value": "BigEarthNet-19 Multi-Spectral Analysis:\n1. Predominant Classes: 'Broad-leaved forest' and 'Pastures'.\n2. Spectral Signature: High near-infrared (NIR B08) reflectance coupled with steep red-edge gradient (B05-B07) indicates dense deciduous canopy coverage. The computed Normalized Difference Vegetation Index (NDVI = 0.74) confirms healthy, active photosynthetic biomass.\n3. Spatial Configuration: Continuous broad-leaved forest occupies the northern and eastern quadrants, while open permanent pastures with uniform green reflectance span the low-gradient southern sector."}]}
+
+{"patch_id": "S2B_MSIL2A_20180524T103019_N0208_R108_T31UFS_22_45", "labels": ["Urban fabric", "Industrial or commercial units"], "sensor": "Sentinel-2 Multi-Spectral", "gsd": 10.0, "crs": "EPSG:32631", "bands": ["B02", "B03", "B04", "B08", "B11", "B12"], "spectral_indices": {"NDVI": 0.184, "NDWI": -0.320, "NDBI": 0.418}, "conversations": [{"from": "human", "value": "Identify built-up infrastructure and land use types in this orbital patch using spectral reflectance."}, {"from": "assistant", "value": "BigEarthNet-19 Infrastructure Assessment:\n1. Classified Classes: 'Urban fabric' and 'Industrial or commercial units'.\n2. Spectral Signature: Strongly positive Normalized Difference Built-up Index (NDBI = 0.42) with high Short-Wave Infrared (SWIR B11/B12) reflectance relative to NIR (B08), typical of asphalt, concrete, and metal roof structures.\n3. Structural Characteristics: Linear transportation corridors, high-density residential fabric, and large rectangular footprint commercial warehouses are localized across the scene."}]}
+
+{"patch_id": "S2A_MSIL2A_20170828T100021_N0205_R122_T33UVP_54_12", "labels": ["Inland waters", "Arable land"], "sensor": "Sentinel-2 Multi-Spectral", "gsd": 10.0, "crs": "EPSG:32633", "bands": ["B02", "B03", "B04", "B08"], "spectral_indices": {"NDVI": 0.312, "NDWI": 0.685, "NDBI": -0.395}, "conversations": [{"from": "human", "value": "Examine water presence and agricultural parcels in this GeoTIFF raster."}, {"from": "assistant", "value": "BigEarthNet-19 Hydrological & Agricultural Assessment:\n1. Classified Classes: 'Inland waters' and 'Arable land'.\n2. Spectral Evidence: Highly positive Normalized Difference Water Index (NDWI = 0.69) with near-zero reflectance in NIR B08 and SWIR confirms open inland water bodies (reservoir/river channel). Surrounding parcels exhibit modular rectangular geometry with moderate NDVI (0.31) characteristic of cultivated arable fields."}]}
+
+{"patch_id": "S1A_IW_GRDH_1SDV_20180412T172814_RISAT_SAR_PATCH_01", "labels": ["Urban fabric", "Inland waters"], "sensor": "Sentinel-1 SAR C-Band", "gsd": 10.0, "crs": "EPSG:32643", "bands": ["VV", "VH"], "spectral_indices": {"VV_mean_dB": -8.4, "VH_mean_dB": -16.2, "pol_ratio": 0.52}, "conversations": [{"from": "human", "value": "Evaluate microwave SAR backscatter characteristics to delineate water and urban structures."}, {"from": "assistant", "value": "SAR Backscatter Interpretation (C-Band Microwave):\n1. Target Classes: 'Urban fabric' and 'Inland waters'.\n2. Dielectric & Roughness Analysis: Inland water bodies act as specular reflectors, yielding very low backscatter intensity (VV < -22 dB). In contrast, man-made orthogonal structures generate strong double-bounce dihedral reflections (VV > -6 dB, VH > -14 dB), distinctly isolating the urban boundary regardless of cloud cover."}]}
+
+{"patch_id": "S2A_MSIL2A_20170919T105021_N0205_R051_T31TFJ_15_82", "labels": ["Coniferous forest", "Mixed forest"], "sensor": "Sentinel-2 Multi-Spectral", "gsd": 10.0, "crs": "EPSG:32631", "bands": ["B02", "B03", "B04", "B08"], "spectral_indices": {"NDVI": 0.681, "NDWI": -0.354, "NDBI": -0.220}, "conversations": [{"from": "human", "value": "Differentiate forest canopy composition across this remote sensing scene."}, {"from": "assistant", "value": "BigEarthNet-19 Forestry Analysis:\n1. Classified Classes: 'Coniferous forest' and 'Mixed forest'.\n2. Spectral Characteristics: Moderate-to-high NDVI (0.68) with lower NIR reflectance in dense evergreen pine stands compared to adjoining deciduous patches. Red-edge slope confirms multi-tiered canopy structure."}]}
+
+{"patch_id": "S2B_MSIL2A_20180614T110629_N0208_R137_T30TYT_63_29", "labels": ["Arable land", "Complex cultivation patterns"], "sensor": "Sentinel-2 Multi-Spectral", "gsd": 10.0, "crs": "EPSG:32630", "bands": ["B02", "B03", "B04", "B08"], "spectral_indices": {"NDVI": 0.528, "NDWI": -0.290, "NDBI": -0.115}, "conversations": [{"from": "human", "value": "What agricultural patterns are identifiable in this high-resolution patch?"}, {"from": "assistant", "value": "BigEarthNet-19 Agricultural Classification:\n1. Classified Classes: 'Arable land' and 'Complex cultivation patterns'.\n2. Spectral Observations: Heterogeneous reflectance across small agricultural parcels with variable soil background signatures and vegetative vigor (NDVI ranging from 0.35 to 0.65). Pattern indicates active rotational cultivation."}]}
+
+{"patch_id": "S2A_MSIL2A_20170605T102031_N0205_R065_T32TMR_44_18", "labels": ["Beaches, dunes, sands", "Marine waters"], "sensor": "Sentinel-2 Multi-Spectral", "gsd": 10.0, "crs": "EPSG:32632", "bands": ["B02", "B03", "B04", "B08"], "spectral_indices": {"NDVI": -0.052, "NDWI": 0.814, "NDBI": 0.120}, "conversations": [{"from": "human", "value": "Analyze coastal interface and marine boundary in this orbital tile."}, {"from": "assistant", "value": "BigEarthNet-19 Coastal Classification:\n1. Classified Classes: 'Beaches, dunes, sands' and 'Marine waters'.\n2. Spectral Characteristics: High albedo across visible bands (B02, B03, B04) over quartz sand dunes with near-zero NDVI (-0.05). Sharp transition to marine waters characterized by strong red/NIR light absorption and NDWI > 0.80."}]}
+
+{"patch_id": "S2B_MSIL2A_20180702T095039_N0208_R079_T34TCT_19_71", "labels": ["Inland wetlands", "Pastures"], "sensor": "Sentinel-2 Multi-Spectral", "gsd": 10.0, "crs": "EPSG:32634", "bands": ["B02", "B03", "B04", "B08", "B11"], "spectral_indices": {"NDVI": 0.612, "NDWI": 0.245, "NDBI": -0.340}, "conversations": [{"from": "human", "value": "Detect wetland saturation and adjacent pasture land in this scene."}, {"from": "assistant", "value": "BigEarthNet-19 Wetland Assessment:\n1. Classified Classes: 'Inland wetlands' and 'Pastures'.\n2. Hydrological Profile: Co-occurrence of moderate NDVI (0.61) with positive NDWI (0.25) and depressed SWIR reflectance (B11) indicates waterlogged soils and hygrophilous marsh vegetation transitioning into upland grazing pastures."}]}
+
+{"patch_id": "S2A_MSIL2A_20170815T112111_N0205_R037_T29TPE_08_34", "labels": ["Permanent crops", "Arable land"], "sensor": "Sentinel-2 Multi-Spectral", "gsd": 10.0, "crs": "EPSG:32629", "bands": ["B02", "B03", "B04", "B08"], "spectral_indices": {"NDVI": 0.445, "NDWI": -0.210, "NDBI": -0.080}, "conversations": [{"from": "human", "value": "Examine perennial vegetation versus annual field crops in this scene."}, {"from": "assistant", "value": "BigEarthNet-19 Crop Evaluation:\n1. Classified Classes: 'Permanent crops' and 'Arable land'.\n2. Spatial Evidence: Regular row orientation and persistent woody biomass signature indicative of vineyards and olive groves, flanked by flat open parcels of non-irrigated arable land."}]}
+
+{"patch_id": "S2B_MSIL2A_20180903T104019_N0208_R008_T31UET_81_60", "labels": ["Transitional woodland, shrub", "Broad-leaved forest"], "sensor": "Sentinel-2 Multi-Spectral", "gsd": 10.0, "crs": "EPSG:32631", "bands": ["B02", "B03", "B04", "B08"], "spectral_indices": {"NDVI": 0.635, "NDWI": -0.315, "NDBI": -0.190}, "conversations": [{"from": "human", "value": "Identify forest succession and shrub regeneration stages."}, {"from": "assistant", "value": "BigEarthNet-19 Woodland Succession:\n1. Classified Classes: 'Transitional woodland, shrub' and 'Broad-leaved forest'.\n2. Texture & Vigor: Intermediate NDVI (0.64) with mottled canopy texture reflects degraded clearings, scrub recolonization, and young coppice stands adjacent to mature broadleaf forest."}]}
+
+{"patch_id": "S2A_MSIL2A_20170724T101031_N0205_R022_T32TPT_33_55", "labels": ["Industrial or commercial units", "Urban fabric"], "sensor": "Sentinel-2 Multi-Spectral", "gsd": 10.0, "crs": "EPSG:32632", "bands": ["B02", "B03", "B04", "B08", "B11"], "spectral_indices": {"NDVI": 0.142, "NDWI": -0.285, "NDBI": 0.485}, "conversations": [{"from": "human", "value": "Where are the commercial logistics facilities in this satellite image?"}, {"from": "assistant", "value": "BigEarthNet-19 Spatial Localization:\n1. Classified Classes: 'Industrial or commercial units' and 'Urban fabric'.\n2. Evidence: Highly reflective metallic building roofs (SWIR B11 high, NDBI = 0.49) spanning prominent rectangular footprint bounding clusters in the central sector, interconnected with transportation access routes."}]}
+
+{"patch_id": "S2B_MSIL2A_20180629T105619_N0208_R094_T31UGU_72_14", "labels": ["Natural grassland and sparsely vegetated areas"], "sensor": "Sentinel-2 Multi-Spectral", "gsd": 10.0, "crs": "EPSG:32631", "bands": ["B02", "B03", "B04", "B08"], "spectral_indices": {"NDVI": 0.385, "NDWI": -0.180, "NDBI": 0.050}, "conversations": [{"from": "human", "value": "Classify the semi-arid or alpine vegetation in this scene."}, {"from": "assistant", "value": "BigEarthNet-19 Natural Grassland Assessment:\n1. Classified Class: 'Natural grassland and sparsely vegetated areas'.\n2. Spectral Characteristics: Low-to-moderate vegetation greenness (NDVI = 0.39) with significant bare soil/rock background contribution across unmanaged terrain."}]}
+
+{"patch_id": "S2A_MSIL2A_20170809T111621_N0205_R137_T29TNE_50_22", "labels": ["Agro-forestry areas", "Pastures"], "sensor": "Sentinel-2 Multi-Spectral", "gsd": 10.0, "crs": "EPSG:32629", "bands": ["B02", "B03", "B04", "B08"], "spectral_indices": {"NDVI": 0.582, "NDWI": -0.270, "NDBI": -0.160}, "conversations": [{"from": "human", "value": "Evaluate agro-silvo-pastoral land use in this patch."}, {"from": "assistant", "value": "BigEarthNet-19 Agro-Forestry Mapping:\n1. Classified Classes: 'Agro-forestry areas' and 'Pastures'.\n2. Multi-Spectral Evidence: Scattered oak/cork tree canopy overlaying herbaceous understory pasture (dehesa/montado system), showing bimodal spectral signature with combined tree and grass reflectance."}]}
+
+{"patch_id": "S2B_MSIL2A_20180811T102019_N0208_R065_T32UPU_12_90", "labels": ["Coastal wetlands", "Marine waters"], "sensor": "Sentinel-2 Multi-Spectral", "gsd": 10.0, "crs": "EPSG:32632", "bands": ["B02", "B03", "B04", "B08"], "spectral_indices": {"NDVI": 0.210, "NDWI": 0.720, "NDBI": -0.260}, "conversations": [{"from": "human", "value": "Delineate tidal marsh zones and marine water bodies."}, {"from": "assistant", "value": "BigEarthNet-19 Marine & Coastal Wetlands:\n1. Classified Classes: 'Coastal wetlands' and 'Marine waters'.\n2. Hydrological Characteristics: Periodic tidal mudflats and halophytic saltmarsh vegetation along shallow littoral lagoon with high NDWI (0.72) and low infrared reflection."}]}
+
+{"patch_id": "S2A_MSIL2A_20170901T103021_N0205_R108_T32TNN_91_05", "labels": ["Moors, heathland and sclerophyllous vegetation"], "sensor": "Sentinel-2 Multi-Spectral", "gsd": 10.0, "crs": "EPSG:32632", "bands": ["B02", "B03", "B04", "B08"], "spectral_indices": {"NDVI": 0.472, "NDWI": -0.230, "NDBI": -0.090}, "conversations": [{"from": "human", "value": "What type of natural shrubland is observed in this upland terrain?"}, {"from": "assistant", "value": "BigEarthNet-19 Heathland Evaluation:\n1. Classified Class: 'Moors, heathland and sclerophyllous vegetation'.\n2. Radiometric Signature: Sclerophyllous scrub (maquis/garrigue) exhibiting compact woody canopy and subdued NIR peak compared to deciduous forest, resilient on nutrient-poor soils."}]}

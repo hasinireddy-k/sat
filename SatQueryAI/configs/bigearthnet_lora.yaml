@@ -1,0 +1,89 @@
+# SatQuery AI — Remote-Sensing Domain Adaptation Configuration
+# SIH 2026 Problem Statement 26167: Vision-Language Assistant for Orbital and Remote Sensing Datasets
+# Reference: BigEarthNet-19 Multi-Spectral Remote Sensing Benchmark
+
+model:
+  base_model: "Qwen/Qwen2-VL-2B-Instruct"
+  model_type: "DOMAIN-ADAPTED MODEL"
+  architecture: "Qwen2VLForConditionalGeneration"
+  domain: "Remote Sensing / Earth Observation (BigEarthNet-19)"
+  specialist_companion: "SatQuery Specialist (Spectral Index & High-Resolution Grounding)"
+
+dataset:
+  name: "BigEarthNet-19 Remote Sensing Benchmark"
+  primary_source: "datasets/BigEarthNet.txt"
+  train_manifest: "datasets/train_bigearthnet.jsonl"
+  val_manifest: "datasets/val_bigearthnet.jsonl"
+  image_dir: "datasets/images"
+  num_classes: 19
+  classes:
+    - "Urban fabric"
+    - "Industrial or commercial units"
+    - "Arable land"
+    - "Permanent crops"
+    - "Pastures"
+    - "Complex cultivation patterns"
+    - "Land principally occupied by agriculture, with significant areas of natural vegetation"
+    - "Agro-forestry areas"
+    - "Broad-leaved forest"
+    - "Coniferous forest"
+    - "Mixed forest"
+    - "Natural grassland and sparsely vegetated areas"
+    - "Moors, heathland and sclerophyllous vegetation"
+    - "Transitional woodland, shrub"
+    - "Beaches, dunes, sands"
+    - "Inland wetlands"
+    - "Coastal wetlands"
+    - "Inland waters"
+    - "Marine waters"
+  split_ratio:
+    train: 0.80
+    validation: 0.20
+  seed: 42
+
+preprocessing:
+  image_size: [256, 256]
+  channels: 3
+  rescaling: [0.0, 1.0]
+  percentile_clip: [2, 98]
+  max_seq_length: 512
+  bands_supported:
+    - "Sentinel-2 Multi-Spectral (B01-B12)"
+    - "Sentinel-1 SAR C-Band Dual-Pol (VV, VH)"
+    - "RGB Natural Color Composite"
+    - "False Color Composite (NIR-R-G)"
+
+lora:
+  task_type: "CAUSAL_LM"
+  r: 16
+  lora_alpha: 32
+  lora_dropout: 0.05
+  bias: "none"
+  target_modules:
+    - "q_proj"
+    - "k_proj"
+    - "v_proj"
+    - "o_proj"
+    - "gate_proj"
+    - "up_proj"
+    - "down_proj"
+
+training:
+  epochs: 3
+  batch_size: 1
+  gradient_accumulation_steps: 4
+  learning_rate: 0.0002
+  lr_scheduler_type: "cosine"
+  warmup_ratio: 0.05
+  weight_decay: 0.01
+  max_grad_norm: 1.0
+  precision: "fp32"
+  device: "auto"
+  logging_steps: 5
+  eval_steps: 20
+  save_steps: 50
+
+output:
+  adapter_dir: "models/adapters/bigearthnet_lora"
+  checkpoint_dir: "models/adapters/checkpoints"
+  metrics_file: "models/adapters/evaluation_metrics.json"

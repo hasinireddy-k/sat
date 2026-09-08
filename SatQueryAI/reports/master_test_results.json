@@ -1,0 +1,2503 @@
+{
+  "test_records": {
+    "TEST_A": {
+      "input": "sample_cartosat_utm43n.tif",
+      "query": "Describe this satellite image.",
+      "task": "vqa",
+      "model": "RemoteSensingVLMAdapter (BigEarthNet-19 LoRA Checkpoint)",
+      "preprocessing": "Standardized 4-band VNIR container to calibrated radiometric channels.",
+      "result": "This satellite scene ('file_1788871671_00931056.tif') is an Earth observation raster measuring 512 x 512 pixels in WGS 84 / UTM zone 43N with 4 spectral band(s). Radiometric analysis across the sensor channels demonstrates a peak NDVI of 0.9043 and mean NDVI of 0.0006, reflecting moderate, localized vegetative canopy. The domain-adapted remote-sensing model identifies dominant land cover characteristics consistent with Moors, heathland and sclerophyllous vegetation (model score: 0.5229) and Coastal wetlands (model score: 0.5094).",
+      "evidence": 4,
+      "confidence": null,
+      "evaluation_metric": "Not available",
+      "trace_steps": 6,
+      "inference_time": "124ms",
+      "status": "PASS"
+    },
+    "TEST_B": {
+      "input": "sample_cartosat_utm43n.tif",
+      "query": "Find buildings and structures.",
+      "task": "grounding",
+      "model": "SatQuery Remote Sensing Grounding Specialist (Spectral & Structural Morphology Engine)",
+      "preprocessing": "Native resolution (512x512) multi-spectral gradient extraction & non-vegetation mask.",
+      "result": "Spatial Grounding Specialist evaluated query: \"Find buildings and structures.\". Target Category: 'Building / Urban Structure'. Localized 6 genuine feature region(s) in file_1788871671_00931056.tif. Primary feature (Northeast Building / Urban Structure #1) localized at pixel coordinates [238, 0] to [512, 333] (274 x 333 px).",
+      "evidence": "6 bounding boxes localized",
+      "confidence": null,
+      "evaluation_metric": "Not available",
+      "trace_steps": 7,
+      "inference_time": "58ms",
+      "status": "PASS"
+    },
+    "TEST_C": {
+      "input": "sample_cartosat_utm43n.tif",
+      "query": "What type of land cover dominates this image?",
+      "task": "vqa",
+      "model": "RemoteSensingVLMAdapter (BigEarthNet-19 LoRA Checkpoint)",
+      "preprocessing": "BigEarthNet-19 19-class spectral distribution tensor mapping.",
+      "result": "The visible land cover in this scene is classified into the following primary Corine Land Cover categories: 1. Moors, heathland and sclerophyllous vegetation (activation score: 0.5268), 2. Beaches, dunes, sands (score: 0.5148), and 3. Coniferous forest (score: 0.5087). Spectral vegetative index measures peak NDVI at 0.9043, confirming open transitional vegetation mosaics.",
+      "evidence": 4,
+      "confidence": null,
+      "evaluation_metric": "Not available",
+      "trace_steps": 6,
+      "inference_time": "86ms",
+      "status": "PASS"
+    },
+    "TEST_D": {
+      "input": "bitemporal_t1_cartosat.tif + bitemporal_t2_cartosat.tif",
+      "query": "What changed between these images?",
+      "task": "change",
+      "model": "Bi-Temporal Change Analysis Specialist",
+      "preprocessing": "Spatial co-registration & pixel matrix radiometric differencing.",
+      "result": "Bi-Temporal Change Analysis between baseline 'bitemporal_t1_cartosat.tif' and observation 'bitemporal_t2_cartosat.tif'. Temporal baseline: T1 (2024:01:15 09:30:00) -> T2 (2024:06:20 10:15:00). Matrix differencing across 512 x 512 pixels reveals an actual changed area of 5.49% (14,400 out of 262,144 total pixels exceeding significance threshold tau = 0.18). Localized 1 prominent changed region(s). Primary change locus (ID: chg-1) exhibits 'added' dynamics with significant severity spanning 3,540.2 m^2 in bounds [43.0% N, 39.1% W to 66.4% S, 62.5% E].",
+      "evidence": "1 changed regions detected",
+      "confidence": null,
+      "evaluation_metric": "Not available",
+      "trace_steps": 8,
+      "inference_time": "70ms",
+      "status": "PASS"
+    },
+    "TEST_E": {
+      "input": "coregistered_optical_vnir.tif + coregistered_sar_cband.tif",
+      "query": "What information does SAR add compared with optical imagery?",
+      "task": "optical-sar",
+      "model": "Optical + SAR Cross-Modal Fusion Specialist",
+      "preprocessing": "Sub-pixel grid alignment, VNIR NDVI vegetation mask, C-band SAR specular & dihedral backscatter extraction.",
+      "result": "Optical-SAR Cross-Modal Analysis:\n\n1. Optical VNIR Observation: Multi-spectral VNIR analysis (4 channels) indicates mean canopy NDVI of 0.356. Vegetated zones demonstrate strong near-infrared plateau reflectance (mean DN: 141.7). Substantial atmospheric attenuation / cloud haze detected affecting 7.48% of the optical aperture.\n\n2. SAR Microwave Radar Observation: SAR C-Band radar backscatter operates at active microwave frequency (penetrating cloud cover). Dynamic intensity spans [0.2, 645.0] DN (mean: 42.8, sigma: 34.6). Identified 8.42% specular dark returns (quiescent water bodies / smooth flat surfaces) and 2628 discrete high-intensity double-bounce returns corresponding to vertical metallic/masonry facades.\n\n3. Complementary Cross-Modal Synthesis: SAR microwaves (5.4 GHz) successfully penetrated the 7.48% cloud/haze bank obscuring the optical frame, resolving underlying structural boundaries and ground geometry that were unidentifiable in VNIR. Water bodies delineated by specular radar reflection (8.42%) corroborate low optical NIR absorption zones, eliminating false-positive shadows in optical imagery. Dihedral radar wall-ground corner reflections (2628 spikes) pinpoint built structures regardless of optical shadow or illumination azimuth.",
+      "evidence": "7 cross-modal bounding boxes localized",
+      "confidence": null,
+      "evaluation_metric": "Not available",
+      "trace_steps": 8,
+      "inference_time": "25ms",
+      "status": "PASS"
+    },
+    "TEST_F": {
+      "input": "sample_cartosat_utm43n.tif",
+      "query": "Are there buildings or other man-made structures in this satellite image?",
+      "task": "vqa",
+      "model": "RemoteSensingVLMAdapter (BigEarthNet-19 LoRA Checkpoint)",
+      "preprocessing": "Orchestrator Intent Classifier & Input Guardian 10-dimension validation.",
+      "result": "No substantial urban agglomerations or dense man-made complexes are detected in this scene. The model's classification scores for built-up classes remain low: Urban fabric score is 0.4957 and Industrial/commercial units score is 0.5083, both below the primary activation threshold. The imagery is dominated by natural terrain and open agricultural/shrub cover (Complex cultivation patterns).",
+      "evidence": 4,
+      "confidence": null,
+      "evaluation_metric": "Not available",
+      "trace_steps": 6,
+      "inference_time": "77ms",
+      "status": "PASS"
+    }
+  },
+  "guardian_test": {
+    "passed": true,
+    "response": {
+      "valid": false,
+      "status": "BLOCKED",
+      "message": "BLOCKED: 1 critical incompatibility issue(s) detected: Dimension 1 (Number of Images): Task 'change' requires exactly 2 images. Received 1.",
+      "rejections": [
+        "Dimension 1 (Number of Images): Task 'change' requires exactly 2 images. Received 1."
+      ],
+      "warnings": [],
+      "checks": {
+        "number_of_images": {
+          "valid": false,
+          "required": 2,
+          "received": 1
+        },
+        "file_format": {
+          "valid": true,
+          "primary": "GEOTIFF"
+        },
+        "modality": {
+          "primary": "Optical/Multispectral"
+        },
+        "dimensions": {
+          "valid": true,
+          "primary": "512x512"
+        },
+        "bands": {
+          "primary": 4
+        },
+        "crs": {
+          "primary": "WGS 84 / UTM zone 43N"
+        },
+        "bounds": {
+          "primary": [
+            775000.0,
+            1434744.0,
+            775256.0,
+            1435000.0
+          ]
+        },
+        "spatial_compatibility": {
+          "valid": true,
+          "status": "Single image or unprojected bounds"
+        },
+        "temporal_compatibility": {
+          "primary_date": "Not available",
+          "valid": true
+        }
+      },
+      "metadata": {
+        "filename": "sample_cartosat_utm43n.tif",
+        "fileSize": "2.0 MB",
+        "fileSizeBytes": 2097664,
+        "dimensions": "512 \u00d7 512 px",
+        "width": 512,
+        "height": 512,
+        "bands": [
+          "Band 1 (Blue)",
+          "Band 2 (Green)",
+          "Band 3 (Red)",
+          "Band 4 (NIR)"
+        ],
+        "bandCount": 4,
+        "dtype": "uint16",
+        "crs": "WGS 84 / UTM zone 43N",
+        "transform": [
+          775000.0,
+          0.5,
+          0.0,
+          1435000.0,
+          0.0,
+          -0.5
+        ],
+        "bounds": [
+          775000.0,
+          1434744.0,
+          775256.0,
+          1435000.0
+        ],
+        "resolution": "0.5 m/px",
+        "nodata": "0",
+        "sensor": "Multispectral 4-Band (VNIR)",
+        "format": "GeoTIFF",
+        "acquisitionDate": "Not available",
+        "fileId": "file_1788871671_00931056",
+        "originalFileHash": "sha256-0093105693da62de886da0326d6a3b7be9b04aff5f2430e2edc13b7f240eac1e",
+        "previewHash": "sha256-7c4335714b2a4ddcc8114c44912cf7235abc54d732fe52009e8c2a20e3fc4798"
+      },
+      "detectedModality": "SINGLE-IMAGE"
+    }
+  },
+  "raw_responses": {
+    "test_a": {
+      "id": "analysis_1788871682_58062cf6",
+      "analysis_id": "analysis_1788871682_58062cf6",
+      "currentAnalysisId": "analysis_1788871682_58062cf6",
+      "file_id": "file_1788871671_00931056",
+      "currentFileId": "file_1788871671_00931056",
+      "query": "Describe this satellite image.",
+      "mode": "single",
+      "detectedTask": "Visual Question Answering",
+      "task": "vqa",
+      "model": "RemoteSensingVLMAdapter (BigEarthNet-19 LoRA Checkpoint)",
+      "answer": "This satellite scene ('file_1788871671_00931056.tif') is an Earth observation raster measuring 512 x 512 pixels in WGS 84 / UTM zone 43N with 4 spectral band(s). Radiometric analysis across the sensor channels demonstrates a peak NDVI of 0.9043 and mean NDVI of 0.0006, reflecting moderate, localized vegetative canopy. The domain-adapted remote-sensing model identifies dominant land cover characteristics consistent with Moors, heathland and sclerophyllous vegetation (model score: 0.5229) and Coastal wetlands (model score: 0.5094).",
+      "confidence": null,
+      "confidence_explanation": "Model produces raw uncalibrated sigmoid classification scores; formal temperature/Bayesian calibration is unavailable on this checkpoint.",
+      "input": {
+        "filename": "file_1788871671_00931056.tif",
+        "width": 512,
+        "height": 512,
+        "bands": 4,
+        "crs": "WGS 84 / UTM zone 43N"
+      },
+      "preprocessing": "4-band multispectral (VNIR: R, G, B, NIR) extracted -> 2-98% percentile dynamic range stretch to RGB -> Bilinear resize to 224x224 -> ImageNet normalization [0.485, 0.456, 0.406] / [0.229, 0.224, 0.225] -> PyTorch tensor [1, 3, 224, 224]",
+      "evidence": [],
+      "execution_trace": [
+        {
+          "stepNumber": 1,
+          "name": "Understanding Query",
+          "status": "success",
+          "description": "Query: \"Describe this satellite image.\" -> Classified intent: DESCRIPTION. Holistic scene characterization synthesizing sensor, geometry, indices, and land cover.",
+          "timestamp": "18:18:02"
+        },
+        {
+          "stepNumber": 2,
+          "name": "Validating Input",
+          "status": "success",
+          "description": "Validated raster: 512 x 512 px, 4 band(s), dtype=uint16, CRS=WGS 84 / UTM zone 43N, GSD=0.5 m/px.",
+          "timestamp": "18:18:02"
+        },
+        {
+          "stepNumber": 3,
+          "name": "Preparing Imagery",
+          "status": "success",
+          "description": "Applied preprocessing: 4-band multispectral (VNIR: R, G, B, NIR) extracted -> 2-98% percentile dynamic range stretch to RGB -> Bilinear resize to 224x224 -> ImageNet normalization [0.485, 0.456, 0.406] / [0.229, 0.224, 0.225] -> PyTorch tensor [1, 3, 224, 224]. Final model input dimensions: [1, 3, 224, 224].",
+          "timestamp": "18:18:02"
+        },
+        {
+          "stepNumber": 4,
+          "name": "Selecting VQA Model",
+          "status": "success",
+          "description": "Loaded RemoteSensingVLMAdapter (BigEarthNet-19 LoRA Checkpoint) on CPU. Ready for deterministic forward pass.",
+          "timestamp": "18:18:02"
+        },
+        {
+          "stepNumber": 5,
+          "name": "Running Inference",
+          "status": "success",
+          "description": "PyTorch forward pass executed in 22.7ms on CPU. Top remote-sensing class: Moors, heathland and sclerophyllous vegetation (sigmoid=0.5229).",
+          "timestamp": "18:18:02"
+        },
+        {
+          "stepNumber": 6,
+          "name": "Returning Answer",
+          "status": "success",
+          "description": "Completed answer generation (72 words) grounded in model probabilities and spectral evidence.",
+          "timestamp": "18:18:02"
+        }
+      ],
+      "orchestratorDecision": {
+        "specialistKey": "VQA",
+        "specialistName": "Visual Question Answering Specialist",
+        "inputCount": 1,
+        "taskReason": "Query requests comprehensive land-cover and thematic scene description."
+      },
+      "selectedModel": {
+        "id": "rs-vlm-adapter",
+        "name": "RemoteSensingVLMAdapter (BigEarthNet-19 LoRA Checkpoint)",
+        "type": "DOMAIN-ADAPTED MODEL",
+        "provider": "SatQuery Remote Sensing VLM (BigEarthNet-19 LoRA)",
+        "version": "2.0-rs-vqa",
+        "checkpoint": "models/adapters/bigearthnet_lora/adapter_model.pt",
+        "suitability": "SUITABLE FOR REMOTE SENSING VQA",
+        "status": "ACTIVE",
+        "domainAdaptation": "BigEarthNet-19 Multi-Spectral LoRA (19 Corine Classes)",
+        "taskSuitability": [
+          "Visual Question Answering"
+        ],
+        "accuracy": "Calibrated BigEarthNet-19 Activations",
+        "latencyAvg": "22.7ms",
+        "supportedInputTypes": [
+          "GeoTIFF",
+          "TIFF",
+          "PNG",
+          "JPEG"
+        ],
+        "maxResolution": "Native GSD"
+      },
+      "configuredParameters": {
+        "temperature": 0.1,
+        "topP": 0.9
+      },
+      "validationResult": {
+        "valid": true,
+        "status": "APPROVED",
+        "task": "CAPTIONING",
+        "format": "GEOTIFF",
+        "crsFound": true,
+        "dimensions": "512 \u00d7 512 px",
+        "rejections": [],
+        "warnings": [],
+        "checks": {
+          "number_of_images": {
+            "valid": true,
+            "count": 1
+          },
+          "file_format": {
+            "valid": true,
+            "primary": "GEOTIFF"
+          },
+          "modality": {
+            "primary": "Optical/Multispectral"
+          },
+          "dimensions": {
+            "valid": true,
+            "primary": "512x512"
+          },
+          "bands": {
+            "primary": 4
+          },
+          "crs": {
+            "primary": "WGS 84 / UTM zone 43N"
+          },
+          "bounds": {
+            "primary": [
+              775000.0,
+              1434744.0,
+              775256.0,
+              1435000.0
+            ]
+          },
+          "spatial_compatibility": {
+            "valid": true,
+            "status": "Single image or unprojected bounds"
+          },
+          "temporal_compatibility": {
+            "primary_date": "Not available",
+            "valid": true
+          },
+          "optical_sar_compatibility": {
+            "valid": true,
+            "notice": "Single image task"
+          }
+        },
+        "notes": "All 10 remote-sensing compatibility dimensions validated successfully."
+      },
+      "textAnswer": "This satellite scene ('file_1788871671_00931056.tif') is an Earth observation raster measuring 512 x 512 pixels in WGS 84 / UTM zone 43N with 4 spectral band(s). Radiometric analysis across the sensor channels demonstrates a peak NDVI of 0.9043 and mean NDVI of 0.0006, reflecting moderate, localized vegetative canopy. The domain-adapted remote-sensing model identifies dominant land cover characteristics consistent with Moors, heathland and sclerophyllous vegetation (model score: 0.5229) and Coastal wetlands (model score: 0.5094).",
+      "keyFindings": [
+        "VQA Model: RemoteSensingVLMAdapter (BigEarthNet-19 LoRA Checkpoint).",
+        "Primary Land Cover: Moors, heathland and sclerophyllous vegetation (score: 0.5229).",
+        "Secondary Land Cover: Coastal wetlands (score: 0.5094).",
+        "Spectral Verification: NDVI max = 0.9043, mean = 0.0006."
+      ],
+      "confidenceLevel": "Calibrated",
+      "mAP": null,
+      "IoU": null,
+      "spatialInterpretation": "This satellite scene ('file_1788871671_00931056.tif') is an Earth observation raster measuring 512 x 512 pixels in WGS 84 / UTM zone 43N with 4 spectral band(s). Radiometric analysis across the sensor channels demonstrates a peak NDVI of 0.9043 and mean NDVI of 0.0006, reflecting moderate, localized vegetative canopy. The domain-adapted remote-sensing model identifies dominant land cover characteristics consistent with Moors, heathland and sclerophyllous vegetation (model score: 0.5229) and Coastal wetlands (model score: 0.5094).",
+      "groundingBoxes": [],
+      "changeAreas": [],
+      "opticalSarInsight": null,
+      "trace": [
+        {
+          "stepNumber": 1,
+          "name": "Understanding Query",
+          "status": "success",
+          "description": "Query: \"Describe this satellite image.\" -> Classified intent: DESCRIPTION. Holistic scene characterization synthesizing sensor, geometry, indices, and land cover.",
+          "timestamp": "18:18:02"
+        },
+        {
+          "stepNumber": 2,
+          "name": "Validating Input",
+          "status": "success",
+          "description": "Validated raster: 512 x 512 px, 4 band(s), dtype=uint16, CRS=WGS 84 / UTM zone 43N, GSD=0.5 m/px.",
+          "timestamp": "18:18:02"
+        },
+        {
+          "stepNumber": 3,
+          "name": "Preparing Imagery",
+          "status": "success",
+          "description": "Applied preprocessing: 4-band multispectral (VNIR: R, G, B, NIR) extracted -> 2-98% percentile dynamic range stretch to RGB -> Bilinear resize to 224x224 -> ImageNet normalization [0.485, 0.456, 0.406] / [0.229, 0.224, 0.225] -> PyTorch tensor [1, 3, 224, 224]. Final model input dimensions: [1, 3, 224, 224].",
+          "timestamp": "18:18:02"
+        },
+        {
+          "stepNumber": 4,
+          "name": "Selecting VQA Model",
+          "status": "success",
+          "description": "Loaded RemoteSensingVLMAdapter (BigEarthNet-19 LoRA Checkpoint) on CPU. Ready for deterministic forward pass.",
+          "timestamp": "18:18:02"
+        },
+        {
+          "stepNumber": 5,
+          "name": "Running Inference",
+          "status": "success",
+          "description": "PyTorch forward pass executed in 22.7ms on CPU. Top remote-sensing class: Moors, heathland and sclerophyllous vegetation (sigmoid=0.5229).",
+          "timestamp": "18:18:02"
+        },
+        {
+          "stepNumber": 6,
+          "name": "Returning Answer",
+          "status": "success",
+          "description": "Completed answer generation (72 words) grounded in model probabilities and spectral evidence.",
+          "timestamp": "18:18:02"
+        }
+      ],
+      "geoMetadata": {
+        "filename": "sample_cartosat_utm43n.tif",
+        "fileSize": "2.0 MB",
+        "fileSizeBytes": 2097664,
+        "dimensions": "512 \u00d7 512 px",
+        "width": 512,
+        "height": 512,
+        "bands": [
+          "Band 1 (Blue)",
+          "Band 2 (Green)",
+          "Band 3 (Red)",
+          "Band 4 (NIR)"
+        ],
+        "bandCount": 4,
+        "dtype": "uint16",
+        "crs": "WGS 84 / UTM zone 43N",
+        "transform": [
+          775000.0,
+          0.5,
+          0.0,
+          1435000.0,
+          0.0,
+          -0.5
+        ],
+        "bounds": [
+          775000.0,
+          1434744.0,
+          775256.0,
+          1435000.0
+        ],
+        "resolution": "0.5 m/px",
+        "nodata": "0",
+        "sensor": "Multispectral 4-Band (VNIR)",
+        "format": "GeoTIFF",
+        "acquisitionDate": "Not available",
+        "fileId": "file_1788871671_00931056",
+        "originalFileHash": "sha256-0093105693da62de886da0326d6a3b7be9b04aff5f2430e2edc13b7f240eac1e",
+        "previewHash": "sha256-7c4335714b2a4ddcc8114c44912cf7235abc54d732fe52009e8c2a20e3fc4798"
+      },
+      "geoMetadataSecondary": null,
+      "timestamp": "2026-09-08 18:18:02",
+      "executionTimeTotalMs": 124,
+      "images": {
+        "primary": "http://localhost:8000/uploads/file_1788871671_00931056_preview.png",
+        "secondary": null,
+        "diff": null
+      },
+      "roundtrip_time_ms": 2267.5
+    },
+    "test_b": {
+      "id": "analysis_1788871684_0a52041a",
+      "analysis_id": "analysis_1788871684_0a52041a",
+      "currentAnalysisId": "analysis_1788871684_0a52041a",
+      "file_id": "file_1788871671_00931056",
+      "currentFileId": "file_1788871671_00931056",
+      "query": "Find buildings and structures.",
+      "mode": "single",
+      "detectedTask": "Spatial Grounding",
+      "task": "grounding",
+      "model": "SatQuery Remote Sensing Grounding Specialist (Spectral & Structural Morphology Engine)",
+      "detections": [
+        {
+          "id": "det-1",
+          "label": "Northeast Building / Urban Structure #1",
+          "confidence": null,
+          "bbox": {
+            "x_min": 238,
+            "y_min": 0,
+            "x_max": 512,
+            "y_max": 333
+          },
+          "normalized_bbox": {
+            "y_min_pct": 0.0,
+            "x_min_pct": 46.48,
+            "y_max_pct": 65.04,
+            "x_max_pct": 100.0
+          },
+          "pixel_dimensions": {
+            "width_px": 274,
+            "height_px": 333,
+            "area_px": 29964
+          },
+          "geo_coordinates": {
+            "crs": "WGS 84 / UTM zone 43N",
+            "bounds": [
+              775119.0,
+              1434833.5,
+              775256.0,
+              1435000.0
+            ]
+          }
+        },
+        {
+          "id": "det-2",
+          "label": "Northwest Building / Urban Structure #2",
+          "confidence": null,
+          "bbox": {
+            "x_min": 0,
+            "y_min": 0,
+            "x_max": 270,
+            "y_max": 366
+          },
+          "normalized_bbox": {
+            "y_min_pct": 0.0,
+            "x_min_pct": 0.0,
+            "y_max_pct": 71.48,
+            "x_max_pct": 52.73
+          },
+          "pixel_dimensions": {
+            "width_px": 270,
+            "height_px": 366,
+            "area_px": 28167
+          },
+          "geo_coordinates": {
+            "crs": "WGS 84 / UTM zone 43N",
+            "bounds": [
+              775000.0,
+              1434817.0,
+              775135.0,
+              1435000.0
+            ]
+          }
+        },
+        {
+          "id": "det-3",
+          "label": "Southeast Building / Urban Structure #3",
+          "confidence": null,
+          "bbox": {
+            "x_min": 181,
+            "y_min": 235,
+            "x_max": 512,
+            "y_max": 512
+          },
+          "normalized_bbox": {
+            "y_min_pct": 45.9,
+            "x_min_pct": 35.35,
+            "y_max_pct": 100.0,
+            "x_max_pct": 100.0
+          },
+          "pixel_dimensions": {
+            "width_px": 331,
+            "height_px": 277,
+            "area_px": 21664
+          },
+          "geo_coordinates": {
+            "crs": "WGS 84 / UTM zone 43N",
+            "bounds": [
+              775090.5,
+              1434744.0,
+              775256.0,
+              1434882.5
+            ]
+          }
+        },
+        {
+          "id": "det-4",
+          "label": "Southwest Building / Urban Structure #4",
+          "confidence": null,
+          "bbox": {
+            "x_min": 0,
+            "y_min": 344,
+            "x_max": 125,
+            "y_max": 512
+          },
+          "normalized_bbox": {
+            "y_min_pct": 67.19,
+            "x_min_pct": 0.0,
+            "y_max_pct": 100.0,
+            "x_max_pct": 24.41
+          },
+          "pixel_dimensions": {
+            "width_px": 125,
+            "height_px": 168,
+            "area_px": 7535
+          },
+          "geo_coordinates": {
+            "crs": "WGS 84 / UTM zone 43N",
+            "bounds": [
+              775000.0,
+              1434744.0,
+              775062.5,
+              1434828.0
+            ]
+          }
+        },
+        {
+          "id": "det-5",
+          "label": "Southwest Building / Urban Structure #5",
+          "confidence": null,
+          "bbox": {
+            "x_min": 141,
+            "y_min": 373,
+            "x_max": 330,
+            "y_max": 512
+          },
+          "normalized_bbox": {
+            "y_min_pct": 72.85,
+            "x_min_pct": 27.54,
+            "y_max_pct": 100.0,
+            "x_max_pct": 64.45
+          },
+          "pixel_dimensions": {
+            "width_px": 189,
+            "height_px": 139,
+            "area_px": 6446
+          },
+          "geo_coordinates": {
+            "crs": "WGS 84 / UTM zone 43N",
+            "bounds": [
+              775070.5,
+              1434744.0,
+              775165.0,
+              1434813.5
+            ]
+          }
+        },
+        {
+          "id": "det-6",
+          "label": "Northwest Building / Urban Structure #6",
+          "confidence": null,
+          "bbox": {
+            "x_min": 171,
+            "y_min": 30,
+            "x_max": 279,
+            "y_max": 175
+          },
+          "normalized_bbox": {
+            "y_min_pct": 5.86,
+            "x_min_pct": 33.4,
+            "y_max_pct": 34.18,
+            "x_max_pct": 54.49
+          },
+          "pixel_dimensions": {
+            "width_px": 108,
+            "height_px": 145,
+            "area_px": 5819
+          },
+          "geo_coordinates": {
+            "crs": "WGS 84 / UTM zone 43N",
+            "bounds": [
+              775085.5,
+              1434912.5,
+              775139.5,
+              1434985.0
+            ]
+          }
+        }
+      ],
+      "image": {
+        "width": 512,
+        "height": 512,
+        "bands": 4,
+        "crs": "WGS 84 / UTM zone 43N"
+      },
+      "evidence": [
+        {
+          "type": "bounding_box",
+          "label": "Northeast Building / Urban Structure #1",
+          "bbox": [
+            0,
+            238,
+            333,
+            512
+          ],
+          "confidence": null
+        },
+        {
+          "type": "bounding_box",
+          "label": "Northwest Building / Urban Structure #2",
+          "bbox": [
+            0,
+            0,
+            366,
+            270
+          ],
+          "confidence": null
+        },
+        {
+          "type": "bounding_box",
+          "label": "Southeast Building / Urban Structure #3",
+          "bbox": [
+            235,
+            181,
+            512,
+            512
+          ],
+          "confidence": null
+        },
+        {
+          "type": "bounding_box",
+          "label": "Southwest Building / Urban Structure #4",
+          "bbox": [
+            344,
+            0,
+            512,
+            125
+          ],
+          "confidence": null
+        },
+        {
+          "type": "bounding_box",
+          "label": "Southwest Building / Urban Structure #5",
+          "bbox": [
+            373,
+            141,
+            512,
+            330
+          ],
+          "confidence": null
+        },
+        {
+          "type": "bounding_box",
+          "label": "Northwest Building / Urban Structure #6",
+          "bbox": [
+            30,
+            171,
+            175,
+            279
+          ],
+          "confidence": null
+        }
+      ],
+      "execution_trace": [
+        {
+          "stepNumber": 1,
+          "name": "Understanding Query",
+          "status": "success",
+          "description": "Query: \"Find buildings and structures.\" -> Target: Building / Urban Structure. Constraint: global spatial sector.",
+          "timestamp": "18:18:04"
+        },
+        {
+          "stepNumber": 2,
+          "name": "Validating Input",
+          "status": "success",
+          "description": "Validated raster container: 512 x 512 px, 4 band(s), CRS=WGS 84 / UTM zone 43N, GSD=0.5 m/px.",
+          "timestamp": "18:18:04"
+        },
+        {
+          "stepNumber": 3,
+          "name": "Preparing Imagery",
+          "status": "success",
+          "description": "Extracted native resolution channels: 512 x 512 px. 4-band raster converted to multi-spectral feature channels and grayscale intensity.",
+          "timestamp": "18:18:04"
+        },
+        {
+          "stepNumber": 4,
+          "name": "Selecting Grounding Model",
+          "status": "success",
+          "description": "Loaded SatQuery Remote Sensing Grounding Specialist (Spectral & Structural Morphology Engine). Configured for Building / Urban Structure detection.",
+          "timestamp": "18:18:04"
+        },
+        {
+          "stepNumber": 5,
+          "name": "Running Grounding",
+          "status": "success",
+          "description": "Grounding pass completed in 28.4ms. Detected 6 candidate feature region(s).",
+          "timestamp": "18:18:04"
+        },
+        {
+          "stepNumber": 6,
+          "name": "Mapping Coordinates",
+          "status": "success",
+          "description": "Mapped 6 detection(s) to original pixel coordinates and geographic ground coordinates (WGS 84 / UTM zone 43N).",
+          "timestamp": "18:18:04"
+        },
+        {
+          "stepNumber": 7,
+          "name": "Rendering Evidence",
+          "status": "success",
+          "description": "Rendered 6 spatial bounding evidence layer(s). Evaluation metric: Not available.",
+          "timestamp": "18:18:04"
+        }
+      ],
+      "evaluation_metric": "Not available",
+      "confidence": null,
+      "confidence_explanation": "Model produces deterministic geometric & spectral region localizations; calibrated probabilistic confidence is unavailable.",
+      "orchestratorDecision": {
+        "specialistKey": "GROUNDING",
+        "specialistName": "SatQuery Remote Sensing Grounding Specialist (Spectral & Structural Morphology Engine)",
+        "inputCount": 1,
+        "taskReason": "Query requests localized spatial boundaries and coordinates for visual targets."
+      },
+      "selectedModel": {
+        "id": "satquery-grounding-specialist",
+        "name": "SatQuery Remote Sensing Grounding Specialist (Spectral & Structural Morphology Engine)",
+        "type": "SPECIALIST MODEL",
+        "provider": "SatQuery Remote Sensing Vision Engine",
+        "version": "2.0-grounding",
+        "checkpoint": "None (Deterministic Spectral-Structural Computer Vision Model)",
+        "suitability": "SUITABLE FOR TEXT-GUIDED REGION GROUNDING",
+        "status": "ACTIVE",
+        "domainAdaptation": "Multi-Spectral Radiometric & Structural Gradient Grounding",
+        "taskSuitability": [
+          "Text-Guided Region Grounding"
+        ],
+        "accuracy": "Evaluation metric: Not available",
+        "latencyAvg": "28.4ms",
+        "supportedInputTypes": [
+          "GeoTIFF",
+          "TIFF",
+          "PNG",
+          "JPEG"
+        ],
+        "maxResolution": "Native GSD"
+      },
+      "configuredParameters": {
+        "temperature": 0.1,
+        "topP": 0.9
+      },
+      "validationResult": {
+        "valid": true,
+        "status": "APPROVED",
+        "task": "GROUNDING",
+        "format": "GEOTIFF",
+        "crsFound": true,
+        "dimensions": "512 \u00d7 512 px",
+        "rejections": [],
+        "warnings": [],
+        "checks": {
+          "number_of_images": {
+            "valid": true,
+            "count": 1
+          },
+          "file_format": {
+            "valid": true,
+            "primary": "GEOTIFF"
+          },
+          "modality": {
+            "primary": "Optical/Multispectral"
+          },
+          "dimensions": {
+            "valid": true,
+            "primary": "512x512"
+          },
+          "bands": {
+            "primary": 4
+          },
+          "crs": {
+            "primary": "WGS 84 / UTM zone 43N"
+          },
+          "bounds": {
+            "primary": [
+              775000.0,
+              1434744.0,
+              775256.0,
+              1435000.0
+            ]
+          },
+          "spatial_compatibility": {
+            "valid": true,
+            "status": "Single image or unprojected bounds"
+          },
+          "temporal_compatibility": {
+            "primary_date": "Not available",
+            "valid": true
+          },
+          "optical_sar_compatibility": {
+            "valid": true,
+            "notice": "Single image task"
+          }
+        },
+        "notes": "All 10 remote-sensing compatibility dimensions validated successfully."
+      },
+      "textAnswer": "Spatial Grounding Specialist evaluated query: \"Find buildings and structures.\". Target Category: 'Building / Urban Structure'. Localized 6 genuine feature region(s) in file_1788871671_00931056.tif. Primary feature (Northeast Building / Urban Structure #1) localized at pixel coordinates [238, 0] to [512, 333] (274 x 333 px).",
+      "keyFindings": [
+        "Grounding Model: SatQuery Remote Sensing Grounding Specialist (Spectral & Structural Morphology Engine).",
+        "Detected Targets: 6 region(s) matching 'Building / Urban Structure'.",
+        "Raster Native Dimensions: 512 x 512 px (CRS: WGS 84 / UTM zone 43N).",
+        "Evaluation Metric: Not available (No ground-truth reference bounding boxes).",
+        "Primary Detection: Northeast Building / Urban Structure #1 (Area: 29964 px)."
+      ],
+      "confidenceLevel": "Calibrated",
+      "mAP": null,
+      "IoU": null,
+      "spatialInterpretation": "Spatial Grounding Specialist evaluated query: \"Find buildings and structures.\". Target Category: 'Building / Urban Structure'. Localized 6 genuine feature region(s) in file_1788871671_00931056.tif. Primary feature (Northeast Building / Urban Structure #1) localized at pixel coordinates [238, 0] to [512, 333] (274 x 333 px).",
+      "groundingBoxes": [
+        {
+          "id": "gb-1",
+          "label": "Northeast Building / Urban Structure #1 (274x333 px)",
+          "category": "Building / Urban Structure",
+          "confidence": null,
+          "box": [
+            0.0,
+            46.48,
+            65.04,
+            100.0
+          ],
+          "color": "#0084ff",
+          "pixel_dimensions": {
+            "width_px": 274,
+            "height_px": 333,
+            "area_px": 29964
+          },
+          "geo_coordinates": {
+            "crs": "WGS 84 / UTM zone 43N",
+            "bounds": [
+              775119.0,
+              1434833.5,
+              775256.0,
+              1435000.0
+            ]
+          }
+        },
+        {
+          "id": "gb-2",
+          "label": "Northwest Building / Urban Structure #2 (270x366 px)",
+          "category": "Building / Urban Structure",
+          "confidence": null,
+          "box": [
+            0.0,
+            0.0,
+            71.48,
+            52.73
+          ],
+          "color": "#00e5ff",
+          "pixel_dimensions": {
+            "width_px": 270,
+            "height_px": 366,
+            "area_px": 28167
+          },
+          "geo_coordinates": {
+            "crs": "WGS 84 / UTM zone 43N",
+            "bounds": [
+              775000.0,
+              1434817.0,
+              775135.0,
+              1435000.0
+            ]
+          }
+        },
+        {
+          "id": "gb-3",
+          "label": "Southeast Building / Urban Structure #3 (331x277 px)",
+          "category": "Building / Urban Structure",
+          "confidence": null,
+          "box": [
+            45.9,
+            35.35,
+            100.0,
+            100.0
+          ],
+          "color": "#10b981",
+          "pixel_dimensions": {
+            "width_px": 331,
+            "height_px": 277,
+            "area_px": 21664
+          },
+          "geo_coordinates": {
+            "crs": "WGS 84 / UTM zone 43N",
+            "bounds": [
+              775090.5,
+              1434744.0,
+              775256.0,
+              1434882.5
+            ]
+          }
+        },
+        {
+          "id": "gb-4",
+          "label": "Southwest Building / Urban Structure #4 (125x168 px)",
+          "category": "Building / Urban Structure",
+          "confidence": null,
+          "box": [
+            67.19,
+            0.0,
+            100.0,
+            24.41
+          ],
+          "color": "#f59e0b",
+          "pixel_dimensions": {
+            "width_px": 125,
+            "height_px": 168,
+            "area_px": 7535
+          },
+          "geo_coordinates": {
+            "crs": "WGS 84 / UTM zone 43N",
+            "bounds": [
+              775000.0,
+              1434744.0,
+              775062.5,
+              1434828.0
+            ]
+          }
+        },
+        {
+          "id": "gb-5",
+          "label": "Southwest Building / Urban Structure #5 (189x139 px)",
+          "category": "Building / Urban Structure",
+          "confidence": null,
+          "box": [
+            72.85,
+            27.54,
+            100.0,
+            64.45
+          ],
+          "color": "#ec4899",
+          "pixel_dimensions": {
+            "width_px": 189,
+            "height_px": 139,
+            "area_px": 6446
+          },
+          "geo_coordinates": {
+            "crs": "WGS 84 / UTM zone 43N",
+            "bounds": [
+              775070.5,
+              1434744.0,
+              775165.0,
+              1434813.5
+            ]
+          }
+        },
+        {
+          "id": "gb-6",
+          "label": "Northwest Building / Urban Structure #6 (108x145 px)",
+          "category": "Building / Urban Structure",
+          "confidence": null,
+          "box": [
+            5.86,
+            33.4,
+            34.18,
+            54.49
+          ],
+          "color": "#8b5cf6",
+          "pixel_dimensions": {
+            "width_px": 108,
+            "height_px": 145,
+            "area_px": 5819
+          },
+          "geo_coordinates": {
+            "crs": "WGS 84 / UTM zone 43N",
+            "bounds": [
+              775085.5,
+              1434912.5,
+              775139.5,
+              1434985.0
+            ]
+          }
+        }
+      ],
+      "changeAreas": [],
+      "opticalSarInsight": null,
+      "trace": [
+        {
+          "stepNumber": 1,
+          "name": "Understanding Query",
+          "status": "success",
+          "description": "Query: \"Find buildings and structures.\" -> Target: Building / Urban Structure. Constraint: global spatial sector.",
+          "timestamp": "18:18:04"
+        },
+        {
+          "stepNumber": 2,
+          "name": "Validating Input",
+          "status": "success",
+          "description": "Validated raster container: 512 x 512 px, 4 band(s), CRS=WGS 84 / UTM zone 43N, GSD=0.5 m/px.",
+          "timestamp": "18:18:04"
+        },
+        {
+          "stepNumber": 3,
+          "name": "Preparing Imagery",
+          "status": "success",
+          "description": "Extracted native resolution channels: 512 x 512 px. 4-band raster converted to multi-spectral feature channels and grayscale intensity.",
+          "timestamp": "18:18:04"
+        },
+        {
+          "stepNumber": 4,
+          "name": "Selecting Grounding Model",
+          "status": "success",
+          "description": "Loaded SatQuery Remote Sensing Grounding Specialist (Spectral & Structural Morphology Engine). Configured for Building / Urban Structure detection.",
+          "timestamp": "18:18:04"
+        },
+        {
+          "stepNumber": 5,
+          "name": "Running Grounding",
+          "status": "success",
+          "description": "Grounding pass completed in 28.4ms. Detected 6 candidate feature region(s).",
+          "timestamp": "18:18:04"
+        },
+        {
+          "stepNumber": 6,
+          "name": "Mapping Coordinates",
+          "status": "success",
+          "description": "Mapped 6 detection(s) to original pixel coordinates and geographic ground coordinates (WGS 84 / UTM zone 43N).",
+          "timestamp": "18:18:04"
+        },
+        {
+          "stepNumber": 7,
+          "name": "Rendering Evidence",
+          "status": "success",
+          "description": "Rendered 6 spatial bounding evidence layer(s). Evaluation metric: Not available.",
+          "timestamp": "18:18:04"
+        }
+      ],
+      "geoMetadata": {
+        "filename": "sample_cartosat_utm43n.tif",
+        "fileSize": "2.0 MB",
+        "fileSizeBytes": 2097664,
+        "dimensions": "512 \u00d7 512 px",
+        "width": 512,
+        "height": 512,
+        "bands": [
+          "Band 1 (Blue)",
+          "Band 2 (Green)",
+          "Band 3 (Red)",
+          "Band 4 (NIR)"
+        ],
+        "bandCount": 4,
+        "dtype": "uint16",
+        "crs": "WGS 84 / UTM zone 43N",
+        "transform": [
+          775000.0,
+          0.5,
+          0.0,
+          1435000.0,
+          0.0,
+          -0.5
+        ],
+        "bounds": [
+          775000.0,
+          1434744.0,
+          775256.0,
+          1435000.0
+        ],
+        "resolution": "0.5 m/px",
+        "nodata": "0",
+        "sensor": "Multispectral 4-Band (VNIR)",
+        "format": "GeoTIFF",
+        "acquisitionDate": "Not available",
+        "fileId": "file_1788871671_00931056",
+        "originalFileHash": "sha256-0093105693da62de886da0326d6a3b7be9b04aff5f2430e2edc13b7f240eac1e",
+        "previewHash": "sha256-7c4335714b2a4ddcc8114c44912cf7235abc54d732fe52009e8c2a20e3fc4798"
+      },
+      "geoMetadataSecondary": null,
+      "timestamp": "2026-09-08 18:18:04",
+      "executionTimeTotalMs": 58,
+      "images": {
+        "primary": "http://localhost:8000/uploads/file_1788871671_00931056_preview.png",
+        "secondary": null,
+        "diff": null
+      },
+      "asset_hashes": {
+        "original_file_sha256": "0093105693da62de886da0326d6a3b7be9b04aff5f2430e2edc13b7f240eac1e"
+      },
+      "roundtrip_time_ms": 2105.0
+    },
+    "test_c": {
+      "id": "analysis_1788871686_47f44aab",
+      "analysis_id": "analysis_1788871686_47f44aab",
+      "currentAnalysisId": "analysis_1788871686_47f44aab",
+      "file_id": "file_1788871671_00931056",
+      "currentFileId": "file_1788871671_00931056",
+      "query": "What type of land cover dominates this image?",
+      "mode": "single",
+      "detectedTask": "Visual Question Answering",
+      "task": "vqa",
+      "model": "RemoteSensingVLMAdapter (BigEarthNet-19 LoRA Checkpoint)",
+      "answer": "The visible land cover in this scene is classified into the following primary Corine Land Cover categories: 1. Moors, heathland and sclerophyllous vegetation (activation score: 0.5268), 2. Beaches, dunes, sands (score: 0.5148), and 3. Coniferous forest (score: 0.5087). Spectral vegetative index measures peak NDVI at 0.9043, confirming open transitional vegetation mosaics.",
+      "confidence": null,
+      "confidence_explanation": "Model produces raw uncalibrated sigmoid classification scores; formal temperature/Bayesian calibration is unavailable on this checkpoint.",
+      "input": {
+        "filename": "file_1788871671_00931056.tif",
+        "width": 512,
+        "height": 512,
+        "bands": 4,
+        "crs": "WGS 84 / UTM zone 43N"
+      },
+      "preprocessing": "4-band multispectral (VNIR: R, G, B, NIR) extracted -> 2-98% percentile dynamic range stretch to RGB -> Bilinear resize to 224x224 -> ImageNet normalization [0.485, 0.456, 0.406] / [0.229, 0.224, 0.225] -> PyTorch tensor [1, 3, 224, 224]",
+      "evidence": [],
+      "execution_trace": [
+        {
+          "stepNumber": 1,
+          "name": "Understanding Query",
+          "status": "success",
+          "description": "Query: \"What type of land cover dominates this image?\" -> Classified intent: LAND_COVER. Evaluates Corine Land Cover classifications and vegetation/agricultural coverage.",
+          "timestamp": "18:18:06"
+        },
+        {
+          "stepNumber": 2,
+          "name": "Validating Input",
+          "status": "success",
+          "description": "Validated raster: 512 x 512 px, 4 band(s), dtype=uint16, CRS=WGS 84 / UTM zone 43N, GSD=0.5 m/px.",
+          "timestamp": "18:18:06"
+        },
+        {
+          "stepNumber": 3,
+          "name": "Preparing Imagery",
+          "status": "success",
+          "description": "Applied preprocessing: 4-band multispectral (VNIR: R, G, B, NIR) extracted -> 2-98% percentile dynamic range stretch to RGB -> Bilinear resize to 224x224 -> ImageNet normalization [0.485, 0.456, 0.406] / [0.229, 0.224, 0.225] -> PyTorch tensor [1, 3, 224, 224]. Final model input dimensions: [1, 3, 224, 224].",
+          "timestamp": "18:18:06"
+        },
+        {
+          "stepNumber": 4,
+          "name": "Selecting VQA Model",
+          "status": "success",
+          "description": "Loaded RemoteSensingVLMAdapter (BigEarthNet-19 LoRA Checkpoint) on CPU. Ready for deterministic forward pass.",
+          "timestamp": "18:18:06"
+        },
+        {
+          "stepNumber": 5,
+          "name": "Running Inference",
+          "status": "success",
+          "description": "PyTorch forward pass executed in 13.2ms on CPU. Top remote-sensing class: Moors, heathland and sclerophyllous vegetation (sigmoid=0.5268).",
+          "timestamp": "18:18:06"
+        },
+        {
+          "stepNumber": 6,
+          "name": "Returning Answer",
+          "status": "success",
+          "description": "Completed answer generation (51 words) grounded in model probabilities and spectral evidence.",
+          "timestamp": "18:18:06"
+        }
+      ],
+      "orchestratorDecision": {
+        "specialistKey": "VQA",
+        "specialistName": "Visual Question Answering Specialist",
+        "inputCount": 1,
+        "taskReason": "Specific visual question regarding spectral reflectance and land classes."
+      },
+      "selectedModel": {
+        "id": "rs-vlm-adapter",
+        "name": "RemoteSensingVLMAdapter (BigEarthNet-19 LoRA Checkpoint)",
+        "type": "DOMAIN-ADAPTED MODEL",
+        "provider": "SatQuery Remote Sensing VLM (BigEarthNet-19 LoRA)",
+        "version": "2.0-rs-vqa",
+        "checkpoint": "models/adapters/bigearthnet_lora/adapter_model.pt",
+        "suitability": "SUITABLE FOR REMOTE SENSING VQA",
+        "status": "ACTIVE",
+        "domainAdaptation": "BigEarthNet-19 Multi-Spectral LoRA (19 Corine Classes)",
+        "taskSuitability": [
+          "Visual Question Answering"
+        ],
+        "accuracy": "Calibrated BigEarthNet-19 Activations",
+        "latencyAvg": "13.2ms",
+        "supportedInputTypes": [
+          "GeoTIFF",
+          "TIFF",
+          "PNG",
+          "JPEG"
+        ],
+        "maxResolution": "Native GSD"
+      },
+      "configuredParameters": {
+        "temperature": 0.1,
+        "topP": 0.9
+      },
+      "validationResult": {
+        "valid": true,
+        "status": "APPROVED",
+        "task": "VQA",
+        "format": "GEOTIFF",
+        "crsFound": true,
+        "dimensions": "512 \u00d7 512 px",
+        "rejections": [],
+        "warnings": [],
+        "checks": {
+          "number_of_images": {
+            "valid": true,
+            "count": 1
+          },
+          "file_format": {
+            "valid": true,
+            "primary": "GEOTIFF"
+          },
+          "modality": {
+            "primary": "Optical/Multispectral"
+          },
+          "dimensions": {
+            "valid": true,
+            "primary": "512x512"
+          },
+          "bands": {
+            "primary": 4
+          },
+          "crs": {
+            "primary": "WGS 84 / UTM zone 43N"
+          },
+          "bounds": {
+            "primary": [
+              775000.0,
+              1434744.0,
+              775256.0,
+              1435000.0
+            ]
+          },
+          "spatial_compatibility": {
+            "valid": true,
+            "status": "Single image or unprojected bounds"
+          },
+          "temporal_compatibility": {
+            "primary_date": "Not available",
+            "valid": true
+          },
+          "optical_sar_compatibility": {
+            "valid": true,
+            "notice": "Single image task"
+          }
+        },
+        "notes": "All 10 remote-sensing compatibility dimensions validated successfully."
+      },
+      "textAnswer": "The visible land cover in this scene is classified into the following primary Corine Land Cover categories: 1. Moors, heathland and sclerophyllous vegetation (activation score: 0.5268), 2. Beaches, dunes, sands (score: 0.5148), and 3. Coniferous forest (score: 0.5087). Spectral vegetative index measures peak NDVI at 0.9043, confirming open transitional vegetation mosaics.",
+      "keyFindings": [
+        "VQA Model: RemoteSensingVLMAdapter (BigEarthNet-19 LoRA Checkpoint).",
+        "Primary Land Cover: Moors, heathland and sclerophyllous vegetation (score: 0.5268).",
+        "Secondary Land Cover: Beaches, dunes, sands (score: 0.5148).",
+        "Spectral Verification: NDVI max = 0.9043, mean = 0.0006."
+      ],
+      "confidenceLevel": "Calibrated",
+      "mAP": null,
+      "IoU": null,
+      "spatialInterpretation": "The visible land cover in this scene is classified into the following primary Corine Land Cover categories: 1. Moors, heathland and sclerophyllous vegetation (activation score: 0.5268), 2. Beaches, dunes, sands (score: 0.5148), and 3. Coniferous forest (score: 0.5087). Spectral vegetative index measures peak NDVI at 0.9043, confirming open transitional vegetation mosaics.",
+      "groundingBoxes": [],
+      "changeAreas": [],
+      "opticalSarInsight": null,
+      "trace": [
+        {
+          "stepNumber": 1,
+          "name": "Understanding Query",
+          "status": "success",
+          "description": "Query: \"What type of land cover dominates this image?\" -> Classified intent: LAND_COVER. Evaluates Corine Land Cover classifications and vegetation/agricultural coverage.",
+          "timestamp": "18:18:06"
+        },
+        {
+          "stepNumber": 2,
+          "name": "Validating Input",
+          "status": "success",
+          "description": "Validated raster: 512 x 512 px, 4 band(s), dtype=uint16, CRS=WGS 84 / UTM zone 43N, GSD=0.5 m/px.",
+          "timestamp": "18:18:06"
+        },
+        {
+          "stepNumber": 3,
+          "name": "Preparing Imagery",
+          "status": "success",
+          "description": "Applied preprocessing: 4-band multispectral (VNIR: R, G, B, NIR) extracted -> 2-98% percentile dynamic range stretch to RGB -> Bilinear resize to 224x224 -> ImageNet normalization [0.485, 0.456, 0.406] / [0.229, 0.224, 0.225] -> PyTorch tensor [1, 3, 224, 224]. Final model input dimensions: [1, 3, 224, 224].",
+          "timestamp": "18:18:06"
+        },
+        {
+          "stepNumber": 4,
+          "name": "Selecting VQA Model",
+          "status": "success",
+          "description": "Loaded RemoteSensingVLMAdapter (BigEarthNet-19 LoRA Checkpoint) on CPU. Ready for deterministic forward pass.",
+          "timestamp": "18:18:06"
+        },
+        {
+          "stepNumber": 5,
+          "name": "Running Inference",
+          "status": "success",
+          "description": "PyTorch forward pass executed in 13.2ms on CPU. Top remote-sensing class: Moors, heathland and sclerophyllous vegetation (sigmoid=0.5268).",
+          "timestamp": "18:18:06"
+        },
+        {
+          "stepNumber": 6,
+          "name": "Returning Answer",
+          "status": "success",
+          "description": "Completed answer generation (51 words) grounded in model probabilities and spectral evidence.",
+          "timestamp": "18:18:06"
+        }
+      ],
+      "geoMetadata": {
+        "filename": "sample_cartosat_utm43n.tif",
+        "fileSize": "2.0 MB",
+        "fileSizeBytes": 2097664,
+        "dimensions": "512 \u00d7 512 px",
+        "width": 512,
+        "height": 512,
+        "bands": [
+          "Band 1 (Blue)",
+          "Band 2 (Green)",
+          "Band 3 (Red)",
+          "Band 4 (NIR)"
+        ],
+        "bandCount": 4,
+        "dtype": "uint16",
+        "crs": "WGS 84 / UTM zone 43N",
+        "transform": [
+          775000.0,
+          0.5,
+          0.0,
+          1435000.0,
+          0.0,
+          -0.5
+        ],
+        "bounds": [
+          775000.0,
+          1434744.0,
+          775256.0,
+          1435000.0
+        ],
+        "resolution": "0.5 m/px",
+        "nodata": "0",
+        "sensor": "Multispectral 4-Band (VNIR)",
+        "format": "GeoTIFF",
+        "acquisitionDate": "Not available",
+        "fileId": "file_1788871671_00931056",
+        "originalFileHash": "sha256-0093105693da62de886da0326d6a3b7be9b04aff5f2430e2edc13b7f240eac1e",
+        "previewHash": "sha256-7c4335714b2a4ddcc8114c44912cf7235abc54d732fe52009e8c2a20e3fc4798"
+      },
+      "geoMetadataSecondary": null,
+      "timestamp": "2026-09-08 18:18:06",
+      "executionTimeTotalMs": 86,
+      "images": {
+        "primary": "http://localhost:8000/uploads/file_1788871671_00931056_preview.png",
+        "secondary": null,
+        "diff": null
+      },
+      "roundtrip_time_ms": 2095.8
+    },
+    "test_d": {
+      "id": "analysis_1788871688_568b97d1",
+      "analysis_id": "analysis_1788871688_568b97d1",
+      "currentAnalysisId": "analysis_1788871688_568b97d1",
+      "file_id": "file_1788871673_5151ba34",
+      "currentFileId": "file_1788871673_5151ba34",
+      "query": "What changed between these images?",
+      "mode": "change",
+      "detectedTask": "Temporal Change Analysis",
+      "task": "change",
+      "model": "Bi-Temporal Change Analysis Specialist",
+      "answer": "Bi-Temporal Change Analysis between baseline 'bitemporal_t1_cartosat.tif' and observation 'bitemporal_t2_cartosat.tif'. Temporal baseline: T1 (2024:01:15 09:30:00) -> T2 (2024:06:20 10:15:00). Matrix differencing across 512 x 512 pixels reveals an actual changed area of 5.49% (14,400 out of 262,144 total pixels exceeding significance threshold tau = 0.18). Localized 1 prominent changed region(s). Primary change locus (ID: chg-1) exhibits 'added' dynamics with significant severity spanning 3,540.2 m^2 in bounds [43.0% N, 39.1% W to 66.4% S, 62.5% E].",
+      "confidence": null,
+      "confidence_explanation": "Model produces physical remote-sensing differencing and synthesis; uncalibrated confidence reported as null.",
+      "evaluation_metric": "Not available",
+      "orchestratorDecision": {
+        "specialistKey": "CHANGE_ANALYSIS",
+        "specialistName": "Bi-Temporal Change Analysis Specialist",
+        "inputCount": 2,
+        "taskReason": "Dual image temporal sequence provided for bi-temporal difference mapping."
+      },
+      "selectedModel": {
+        "id": "change_analysis_specialist",
+        "name": "Bi-Temporal Change Analysis Specialist [SPECIALIST MODEL]",
+        "type": "SPECIALIST MODEL",
+        "provider": "SatQuery Bi-Temporal Matrix Differencing Engine",
+        "version": "2.0-orchestrated",
+        "checkpoint": "SatQuery Bi-Temporal Matrix Differencing Engine",
+        "suitability": "SUITABLE FOR TEMPORAL CHANGE ANALYSIS",
+        "status": "ACTIVE",
+        "domainAdaptation": "Pixel-exact difference matrix",
+        "taskSuitability": [
+          "Temporal Change Analysis"
+        ],
+        "accuracy": "Deterministic Sub-pixel & Calibrated RS",
+        "latencyAvg": "70ms",
+        "supportedInputTypes": [
+          "GeoTIFF",
+          "PNG"
+        ],
+        "maxResolution": "Native GSD"
+      },
+      "configuredParameters": {
+        "temperature": 0.1,
+        "topP": 0.9
+      },
+      "validationResult": {
+        "valid": true,
+        "status": "APPROVED",
+        "task": "CHANGE_ANALYSIS",
+        "format": "GEOTIFF",
+        "crsFound": true,
+        "dimensions": "512 \u00d7 512 px",
+        "rejections": [],
+        "warnings": [],
+        "checks": {
+          "number_of_images": {
+            "valid": true,
+            "count": 2
+          },
+          "file_format": {
+            "valid": true,
+            "primary": "GEOTIFF",
+            "secondary": "GEOTIFF"
+          },
+          "modality": {
+            "primary": "Optical/Multispectral",
+            "secondary": "Optical/Multispectral"
+          },
+          "dimensions": {
+            "valid": true,
+            "primary": "512x512",
+            "secondary": "512x512",
+            "compatible": true
+          },
+          "bands": {
+            "primary": 4,
+            "secondary": 4
+          },
+          "crs": {
+            "primary": "WGS 84 / UTM zone 43N",
+            "secondary": "WGS 84 / UTM zone 43N",
+            "compatible": true
+          },
+          "bounds": {
+            "primary": [
+              775000.0,
+              1434744.0,
+              775256.0,
+              1435000.0
+            ],
+            "secondary": [
+              775000.0,
+              1434744.0,
+              775256.0,
+              1435000.0
+            ]
+          },
+          "spatial_compatibility": {
+            "valid": true,
+            "overlap_iou": 1.0,
+            "status": "Co-registered"
+          },
+          "temporal_compatibility": {
+            "primary_date": "2024:01:15 09:30:00",
+            "secondary_date": "2024:06:20 10:15:00",
+            "valid": true,
+            "baseline": "2024:01:15 09:30:00 -> 2024:06:20 10:15:00"
+          },
+          "optical_sar_compatibility": {
+            "valid": true,
+            "notice": "Homogeneous sensor pair"
+          }
+        },
+        "notes": "All 10 remote-sensing compatibility dimensions validated successfully."
+      },
+      "textAnswer": "Bi-Temporal Change Analysis between baseline 'bitemporal_t1_cartosat.tif' and observation 'bitemporal_t2_cartosat.tif'. Temporal baseline: T1 (2024:01:15 09:30:00) -> T2 (2024:06:20 10:15:00). Matrix differencing across 512 x 512 pixels reveals an actual changed area of 5.49% (14,400 out of 262,144 total pixels exceeding significance threshold tau = 0.18). Localized 1 prominent changed region(s). Primary change locus (ID: chg-1) exhibits 'added' dynamics with significant severity spanning 3,540.2 m^2 in bounds [43.0% N, 39.1% W to 66.4% S, 62.5% E].",
+      "keyFindings": [
+        "Detected Task: Temporal Change Analysis (Optical-Optical Multi-Spectral Differencing).",
+        "Temporal Baseline: T1 (2024:01:15 09:30:00) -> T2 (2024:06:20 10:15:00).",
+        "Actual Measured Change: 5.49% (14,400 / 262,144 px).",
+        "Localized Changes: 1 discrete changed region(s) identified.",
+        "Dominant Change: Change Region #1 (Added, 3540.2 m^2) (added)."
+      ],
+      "confidenceLevel": "Calibrated",
+      "mAP": null,
+      "IoU": null,
+      "spatialInterpretation": "Bi-Temporal Change Analysis between baseline 'bitemporal_t1_cartosat.tif' and observation 'bitemporal_t2_cartosat.tif'. Temporal baseline: T1 (2024:01:15 09:30:00) -> T2 (2024:06:20 10:15:00). Matrix differencing across 512 x 512 pixels reveals an actual changed area of 5.49% (14,400 out of 262,144 total pixels exceeding significance threshold tau = 0.18). Localized 1 prominent changed region(s). Primary change locus (ID: chg-1) exhibits 'added' dynamics with significant severity spanning 3,540.2 m^2 in bounds [43.0% N, 39.1% W to 66.4% S, 62.5% E].",
+      "groundingBoxes": [],
+      "changeAreas": [
+        {
+          "id": "chg-1",
+          "label": "Change Region #1 (Added, 3540.2 m^2)",
+          "box": [
+            43.0,
+            39.1,
+            66.4,
+            62.5
+          ],
+          "type": "added",
+          "changeSeverity": "significant",
+          "areaSqMeters": 3540.2,
+          "pixelCount": 14161,
+          "description": "New high-reflectance surface structures / increased albedo in T2."
+        }
+      ],
+      "opticalSarInsight": null,
+      "trace": [
+        {
+          "id": "trace-stage-1",
+          "stepNumber": 1,
+          "name": "Understanding Query",
+          "description": "Query: \"What changed between these images?\" -> Task Classified as Temporal Change Analysis. Reason: Dual image temporal sequence provided for bi-temporal difference mapping.",
+          "status": "success",
+          "latencyMs": 18,
+          "timestamp": "18:18:08"
+        },
+        {
+          "id": "trace-stage-2",
+          "stepNumber": 2,
+          "name": "Validating Input",
+          "description": "VALIDATED: 2 image(s) ingested. Format: GeoTIFF | Primary: Optical VNIR (4 bands) (512 \u00d7 512 px), CRS: WGS 84 / UTM zone 43N. Secondary: Optical VNIR (4 bands) (512 \u00d7 512 px), CRS: WGS 84 / UTM zone 43N. (10/10 remote-sensing dimensions passed)",
+          "status": "success",
+          "latencyMs": 22,
+          "timestamp": "18:18:08"
+        },
+        {
+          "id": "trace-stage-3",
+          "stepNumber": 3,
+          "name": "Detecting Input Configuration",
+          "description": "Configuration: 2 raster input(s) detected (Optical VNIR (4 bands) primary, Optical VNIR (4 bands) secondary). Target task: Temporal Change Analysis.",
+          "status": "success",
+          "latencyMs": 14,
+          "timestamp": "18:18:08"
+        },
+        {
+          "id": "trace-stage-4",
+          "stepNumber": 4,
+          "name": "Selecting Specialist",
+          "description": "Selected Specialist: Bi-Temporal Change Analysis Specialist [SPECIALIST MODEL]. Provider: SatQuery Bi-Temporal Matrix Differencing Engine.",
+          "status": "success",
+          "latencyMs": 12,
+          "timestamp": "18:18:08"
+        },
+        {
+          "id": "trace-stage-5",
+          "stepNumber": 5,
+          "name": "Preparing Imagery",
+          "description": "Standardized raster matrix to native resolution (512 \u00d7 512 px, CRS: WGS 84 / UTM zone 43N). Multi-spectral channels normalized.",
+          "status": "success",
+          "latencyMs": 19,
+          "timestamp": "18:18:08"
+        },
+        {
+          "id": "trace-stage-6",
+          "stepNumber": 6,
+          "name": "Running Model",
+          "description": "Model execution completed in 70ms. Evaluated pixel difference matrix (262,144 px). Found 5.49% change.",
+          "status": "success",
+          "latencyMs": 70,
+          "timestamp": "18:18:08"
+        },
+        {
+          "id": "trace-stage-7",
+          "stepNumber": 7,
+          "name": "Extracting Evidence",
+          "description": "Extracted 1 changed polygon contour(s). Difference overlay raster generated.",
+          "status": "success",
+          "latencyMs": 28,
+          "timestamp": "18:18:08"
+        },
+        {
+          "id": "trace-stage-8",
+          "stepNumber": 8,
+          "name": "Generating Response",
+          "description": "Completed. Synthesized answer narrative (74 words) with 5 verified findings. Evaluation metric: Not available.",
+          "status": "success",
+          "latencyMs": 16,
+          "timestamp": "18:18:08"
+        }
+      ],
+      "execution_trace": [
+        {
+          "id": "trace-stage-1",
+          "stepNumber": 1,
+          "name": "Understanding Query",
+          "description": "Query: \"What changed between these images?\" -> Task Classified as Temporal Change Analysis. Reason: Dual image temporal sequence provided for bi-temporal difference mapping.",
+          "status": "success",
+          "latencyMs": 18,
+          "timestamp": "18:18:08"
+        },
+        {
+          "id": "trace-stage-2",
+          "stepNumber": 2,
+          "name": "Validating Input",
+          "description": "VALIDATED: 2 image(s) ingested. Format: GeoTIFF | Primary: Optical VNIR (4 bands) (512 \u00d7 512 px), CRS: WGS 84 / UTM zone 43N. Secondary: Optical VNIR (4 bands) (512 \u00d7 512 px), CRS: WGS 84 / UTM zone 43N. (10/10 remote-sensing dimensions passed)",
+          "status": "success",
+          "latencyMs": 22,
+          "timestamp": "18:18:08"
+        },
+        {
+          "id": "trace-stage-3",
+          "stepNumber": 3,
+          "name": "Detecting Input Configuration",
+          "description": "Configuration: 2 raster input(s) detected (Optical VNIR (4 bands) primary, Optical VNIR (4 bands) secondary). Target task: Temporal Change Analysis.",
+          "status": "success",
+          "latencyMs": 14,
+          "timestamp": "18:18:08"
+        },
+        {
+          "id": "trace-stage-4",
+          "stepNumber": 4,
+          "name": "Selecting Specialist",
+          "description": "Selected Specialist: Bi-Temporal Change Analysis Specialist [SPECIALIST MODEL]. Provider: SatQuery Bi-Temporal Matrix Differencing Engine.",
+          "status": "success",
+          "latencyMs": 12,
+          "timestamp": "18:18:08"
+        },
+        {
+          "id": "trace-stage-5",
+          "stepNumber": 5,
+          "name": "Preparing Imagery",
+          "description": "Standardized raster matrix to native resolution (512 \u00d7 512 px, CRS: WGS 84 / UTM zone 43N). Multi-spectral channels normalized.",
+          "status": "success",
+          "latencyMs": 19,
+          "timestamp": "18:18:08"
+        },
+        {
+          "id": "trace-stage-6",
+          "stepNumber": 6,
+          "name": "Running Model",
+          "description": "Model execution completed in 70ms. Evaluated pixel difference matrix (262,144 px). Found 5.49% change.",
+          "status": "success",
+          "latencyMs": 70,
+          "timestamp": "18:18:08"
+        },
+        {
+          "id": "trace-stage-7",
+          "stepNumber": 7,
+          "name": "Extracting Evidence",
+          "description": "Extracted 1 changed polygon contour(s). Difference overlay raster generated.",
+          "status": "success",
+          "latencyMs": 28,
+          "timestamp": "18:18:08"
+        },
+        {
+          "id": "trace-stage-8",
+          "stepNumber": 8,
+          "name": "Generating Response",
+          "description": "Completed. Synthesized answer narrative (74 words) with 5 verified findings. Evaluation metric: Not available.",
+          "status": "success",
+          "latencyMs": 16,
+          "timestamp": "18:18:08"
+        }
+      ],
+      "geoMetadata": {
+        "filename": "bitemporal_t1_cartosat.tif",
+        "fileSize": "1.0 MB",
+        "fileSizeBytes": 1049056,
+        "dimensions": "512 \u00d7 512 px",
+        "width": 512,
+        "height": 512,
+        "bands": [
+          "Band 1 (Blue)",
+          "Band 2 (Green)",
+          "Band 3 (Red)",
+          "Band 4 (NIR)"
+        ],
+        "bandCount": 4,
+        "dtype": "uint8",
+        "crs": "WGS 84 / UTM zone 43N",
+        "transform": [
+          775000.0,
+          0.5,
+          0.0,
+          1435000.0,
+          0.0,
+          -0.5
+        ],
+        "bounds": [
+          775000.0,
+          1434744.0,
+          775256.0,
+          1435000.0
+        ],
+        "resolution": "0.5 m/px",
+        "nodata": "Not available",
+        "sensor": "Multispectral 4-Band (VNIR)",
+        "format": "GeoTIFF",
+        "acquisitionDate": "2024:01:15 09:30:00",
+        "fileId": "file_1788871673_5151ba34",
+        "originalFileHash": "sha256-5151ba347ef612425982400bd4bb6567e7357277bf5af7da8db08139377aa22b",
+        "previewHash": "sha256-309a1a952b1cabc2c21e86725761342f92de27489fdbf59264c59fc429fa342e"
+      },
+      "geoMetadataSecondary": {
+        "filename": "bitemporal_t2_cartosat.tif",
+        "fileSize": "1.0 MB",
+        "fileSizeBytes": 1049056,
+        "dimensions": "512 \u00d7 512 px",
+        "width": 512,
+        "height": 512,
+        "bands": [
+          "Band 1 (Blue)",
+          "Band 2 (Green)",
+          "Band 3 (Red)",
+          "Band 4 (NIR)"
+        ],
+        "bandCount": 4,
+        "dtype": "uint8",
+        "crs": "WGS 84 / UTM zone 43N",
+        "transform": [
+          775000.0,
+          0.5,
+          0.0,
+          1435000.0,
+          0.0,
+          -0.5
+        ],
+        "bounds": [
+          775000.0,
+          1434744.0,
+          775256.0,
+          1435000.0
+        ],
+        "resolution": "0.5 m/px",
+        "nodata": "Not available",
+        "sensor": "Multispectral 4-Band (VNIR)",
+        "format": "GeoTIFF",
+        "acquisitionDate": "2024:06:20 10:15:00",
+        "fileId": "file_1788871676_fa270849",
+        "originalFileHash": "sha256-fa270849768cd107a597e8784e7b23ea50e4d72f7f37a5864938de7abc4ca275",
+        "previewHash": "sha256-aeaa9d5558ca71f747bcaa1c934fe526dece6cc97250d29ced7e92c025fd0f2e"
+      },
+      "timestamp": "2026-09-08 18:18:08",
+      "executionTimeTotalMs": 70,
+      "images": {
+        "primary": "http://localhost:8000/uploads/file_1788871673_5151ba34_preview.png",
+        "secondary": "http://localhost:8000/uploads/file_1788871676_fa270849_preview.png",
+        "diff": "http://localhost:8000/uploads/analysis_1788871688_568b97d1_diff.png"
+      },
+      "roundtrip_time_ms": 2101.9
+    },
+    "test_e": {
+      "id": "analysis_1788871690_10605724",
+      "analysis_id": "analysis_1788871690_10605724",
+      "currentAnalysisId": "analysis_1788871690_10605724",
+      "file_id": "file_1788871678_5bddb9fd",
+      "currentFileId": "file_1788871678_5bddb9fd",
+      "query": "What information does SAR add compared with optical imagery?",
+      "mode": "optical-sar",
+      "detectedTask": "Cross-Modal Optical-SAR Fusion",
+      "task": "optical-sar",
+      "model": "Optical + SAR Cross-Modal Fusion Specialist",
+      "answer": "Optical-SAR Cross-Modal Analysis:\n\n1. Optical VNIR Observation: Multi-spectral VNIR analysis (4 channels) indicates mean canopy NDVI of 0.356. Vegetated zones demonstrate strong near-infrared plateau reflectance (mean DN: 141.7). Substantial atmospheric attenuation / cloud haze detected affecting 7.48% of the optical aperture.\n\n2. SAR Microwave Radar Observation: SAR C-Band radar backscatter operates at active microwave frequency (penetrating cloud cover). Dynamic intensity spans [0.2, 645.0] DN (mean: 42.8, sigma: 34.6). Identified 8.42% specular dark returns (quiescent water bodies / smooth flat surfaces) and 2628 discrete high-intensity double-bounce returns corresponding to vertical metallic/masonry facades.\n\n3. Complementary Cross-Modal Synthesis: SAR microwaves (5.4 GHz) successfully penetrated the 7.48% cloud/haze bank obscuring the optical frame, resolving underlying structural boundaries and ground geometry that were unidentifiable in VNIR. Water bodies delineated by specular radar reflection (8.42%) corroborate low optical NIR absorption zones, eliminating false-positive shadows in optical imagery. Dihedral radar wall-ground corner reflections (2628 spikes) pinpoint built structures regardless of optical shadow or illumination azimuth.",
+      "confidence": null,
+      "confidence_explanation": "Model produces physical remote-sensing differencing and synthesis; uncalibrated confidence reported as null.",
+      "evaluation_metric": "Not available",
+      "orchestratorDecision": {
+        "specialistKey": "OPTICAL_SAR_FUSION",
+        "specialistName": "Optical + SAR Cross-Modal Fusion Specialist",
+        "inputCount": 2,
+        "taskReason": "Multi-sensor Optical+SAR pair provided for cross-modal synthesis."
+      },
+      "selectedModel": {
+        "id": "optical_sar_fusion_specialist",
+        "name": "Optical + SAR Cross-Modal Fusion Specialist [SPECIALIST MODEL]",
+        "type": "SPECIALIST MODEL",
+        "provider": "SatQuery VNIR-Microwave Cross-Modal Physics Engine",
+        "version": "2.0-orchestrated",
+        "checkpoint": "SatQuery VNIR-Microwave Cross-Modal Physics Engine",
+        "suitability": "SUITABLE FOR CROSS-MODAL OPTICAL-SAR FUSION",
+        "status": "ACTIVE",
+        "domainAdaptation": "Cloud penetration",
+        "taskSuitability": [
+          "Cross-Modal Optical-SAR Fusion"
+        ],
+        "accuracy": "Deterministic Sub-pixel & Calibrated RS",
+        "latencyAvg": "24ms",
+        "supportedInputTypes": [
+          "GeoTIFF",
+          "PNG"
+        ],
+        "maxResolution": "Native GSD"
+      },
+      "configuredParameters": {
+        "temperature": 0.1,
+        "topP": 0.9
+      },
+      "validationResult": {
+        "valid": true,
+        "status": "APPROVED",
+        "task": "OPTICAL_SAR_FUSION",
+        "format": "GEOTIFF",
+        "crsFound": true,
+        "dimensions": "512 \u00d7 512 px",
+        "rejections": [],
+        "warnings": [],
+        "checks": {
+          "number_of_images": {
+            "valid": true,
+            "count": 2
+          },
+          "file_format": {
+            "valid": true,
+            "primary": "GEOTIFF",
+            "secondary": "GEOTIFF"
+          },
+          "modality": {
+            "primary": "Optical/Multispectral",
+            "secondary": "SAR Microwave"
+          },
+          "dimensions": {
+            "valid": true,
+            "primary": "512x512",
+            "secondary": "512x512",
+            "compatible": true
+          },
+          "bands": {
+            "primary": 4,
+            "secondary": 1
+          },
+          "crs": {
+            "primary": "WGS 84 / UTM zone 43N",
+            "secondary": "WGS 84 / UTM zone 43N",
+            "compatible": true
+          },
+          "bounds": {
+            "primary": [
+              775000.0,
+              1434744.0,
+              775256.0,
+              1435000.0
+            ],
+            "secondary": [
+              775000.0,
+              1434744.0,
+              775256.0,
+              1435000.0
+            ]
+          },
+          "spatial_compatibility": {
+            "valid": true,
+            "overlap_iou": 1.0,
+            "status": "Co-registered"
+          },
+          "temporal_compatibility": {
+            "primary_date": "2024:05:10 11:20:00",
+            "secondary_date": "2024:05:10 11:20:00",
+            "valid": true
+          },
+          "optical_sar_compatibility": {
+            "valid": true,
+            "pair": "Optical/Multispectral + SAR Microwave"
+          }
+        },
+        "notes": "All 10 remote-sensing compatibility dimensions validated successfully."
+      },
+      "textAnswer": "Optical-SAR Cross-Modal Analysis:\n\n1. Optical VNIR Observation: Multi-spectral VNIR analysis (4 channels) indicates mean canopy NDVI of 0.356. Vegetated zones demonstrate strong near-infrared plateau reflectance (mean DN: 141.7). Substantial atmospheric attenuation / cloud haze detected affecting 7.48% of the optical aperture.\n\n2. SAR Microwave Radar Observation: SAR C-Band radar backscatter operates at active microwave frequency (penetrating cloud cover). Dynamic intensity spans [0.2, 645.0] DN (mean: 42.8, sigma: 34.6). Identified 8.42% specular dark returns (quiescent water bodies / smooth flat surfaces) and 2628 discrete high-intensity double-bounce returns corresponding to vertical metallic/masonry facades.\n\n3. Complementary Cross-Modal Synthesis: SAR microwaves (5.4 GHz) successfully penetrated the 7.48% cloud/haze bank obscuring the optical frame, resolving underlying structural boundaries and ground geometry that were unidentifiable in VNIR. Water bodies delineated by specular radar reflection (8.42%) corroborate low optical NIR absorption zones, eliminating false-positive shadows in optical imagery. Dihedral radar wall-ground corner reflections (2628 spikes) pinpoint built structures regardless of optical shadow or illumination azimuth.",
+      "keyFindings": [
+        "Modality Alignment: Optical (coregistered_optical_vnir.tif) + SAR (coregistered_sar_cband.tif).",
+        "Co-Registration State: Sub-pixel Co-registered (Identical CRS, Bounds & Grid).",
+        "Optical Spectral State: Clouds/Haze present (7.48%) (NDVI: 0.356).",
+        "SAR Microwave State: 2628 dihedral structure returns, 8.42% specular water.",
+        "Complementary Synthesis: SAR microwaves (5.4 GHz) successfully penetrated the 7.48% cloud/haze bank obscuring the optical frame, resolving underlying structural boundaries and ground geometry that were unidentifiable in VNIR. Water bodies delineated by specular radar reflection (8.42%) corroborate low optical NIR absorption zones, eliminating false-positive shadows in optical imagery. Dihedral radar wall-ground corner reflections (2628 spikes) pinpoint built structures regardless of optical shadow or illumination azimuth."
+      ],
+      "confidenceLevel": "Calibrated",
+      "mAP": null,
+      "IoU": null,
+      "spatialInterpretation": "Optical-SAR Cross-Modal Analysis:\n\n1. Optical VNIR Observation: Multi-spectral VNIR analysis (4 channels) indicates mean canopy NDVI of 0.356. Vegetated zones demonstrate strong near-infrared plateau reflectance (mean DN: 141.7). Substantial atmospheric attenuation / cloud haze detected affecting 7.48% of the optical aperture.\n\n2. SAR Microwave Radar Observation: SAR C-Band radar backscatter operates at active microwave frequency (penetrating cloud cover). Dynamic intensity spans [0.2, 645.0] DN (mean: 42.8, sigma: 34.6). Identified 8.42% specular dark returns (quiescent water bodies / smooth flat surfaces) and 2628 discrete high-intensity double-bounce returns corresponding to vertical metallic/masonry facades.\n\n3. Complementary Cross-Modal Synthesis: SAR microwaves (5.4 GHz) successfully penetrated the 7.48% cloud/haze bank obscuring the optical frame, resolving underlying structural boundaries and ground geometry that were unidentifiable in VNIR. Water bodies delineated by specular radar reflection (8.42%) corroborate low optical NIR absorption zones, eliminating false-positive shadows in optical imagery. Dihedral radar wall-ground corner reflections (2628 spikes) pinpoint built structures regardless of optical shadow or illumination azimuth.",
+      "groundingBoxes": [
+        {
+          "id": "ev-01",
+          "label": "Built Infrastructure (Double-Bounce)",
+          "confidence": null,
+          "box": [
+            0.0938,
+            0.0,
+            0.1289,
+            0.0332
+          ],
+          "modality_cross_evidence": "SAR Double-Bounce + Optical Verification",
+          "description": "SAR dihedral corner reflection confirms vertical building walls through optical haze."
+        },
+        {
+          "id": "ev-02",
+          "label": "Built Infrastructure (Double-Bounce)",
+          "confidence": null,
+          "box": [
+            0.5312,
+            0.002,
+            0.5645,
+            0.0371
+          ],
+          "modality_cross_evidence": "SAR Double-Bounce + Optical Verification",
+          "description": "SAR dihedral corner reflection confirms vertical building walls through optical haze."
+        },
+        {
+          "id": "ev-03",
+          "label": "Built Infrastructure (Double-Bounce)",
+          "confidence": null,
+          "box": [
+            0.0,
+            0.0195,
+            0.0273,
+            0.0527
+          ],
+          "modality_cross_evidence": "SAR Double-Bounce + Optical Verification",
+          "description": "SAR dihedral corner reflection confirms vertical building walls through optical haze."
+        },
+        {
+          "id": "ev-04",
+          "label": "Built Infrastructure (Double-Bounce)",
+          "confidence": null,
+          "box": [
+            0.2812,
+            0.0195,
+            0.3164,
+            0.0547
+          ],
+          "modality_cross_evidence": "SAR Double-Bounce + Optical Verification",
+          "description": "SAR dihedral corner reflection confirms vertical building walls through optical haze."
+        },
+        {
+          "id": "ev-05",
+          "label": "Built Infrastructure (Double-Bounce)",
+          "confidence": null,
+          "box": [
+            0.1973,
+            0.0254,
+            0.2305,
+            0.0605
+          ],
+          "modality_cross_evidence": "SAR Double-Bounce + Optical Verification",
+          "description": "SAR dihedral corner reflection confirms vertical building walls through optical haze."
+        },
+        {
+          "id": "ev-06",
+          "label": "Built Infrastructure (Double-Bounce)",
+          "confidence": null,
+          "box": [
+            0.2637,
+            0.0332,
+            0.2988,
+            0.0684
+          ],
+          "modality_cross_evidence": "SAR Double-Bounce + Optical Verification",
+          "description": "SAR dihedral corner reflection confirms vertical building walls through optical haze."
+        },
+        {
+          "id": "ev-07",
+          "label": "Quiescent Water Body",
+          "confidence": null,
+          "box": [
+            0.0957,
+            0.5859,
+            0.3535,
+            0.8809
+          ],
+          "modality_cross_evidence": "Specular Microwave Absence + Low Optical NIR",
+          "description": "Smooth specular water surface reflects microwave radar pulses away from sensor."
+        }
+      ],
+      "changeAreas": [],
+      "opticalSarInsight": {
+        "opticalObservations": "Multi-spectral VNIR analysis (4 channels) indicates mean canopy NDVI of 0.356. Vegetated zones demonstrate strong near-infrared plateau reflectance (mean DN: 141.7). Substantial atmospheric attenuation / cloud haze detected affecting 7.48% of the optical aperture.",
+        "sarObservations": "SAR C-Band radar backscatter operates at active microwave frequency (penetrating cloud cover). Dynamic intensity spans [0.2, 645.0] DN (mean: 42.8, sigma: 34.6). Identified 8.42% specular dark returns (quiescent water bodies / smooth flat surfaces) and 2628 discrete high-intensity double-bounce returns corresponding to vertical metallic/masonry facades.",
+        "complementarySynthesis": "SAR microwaves (5.4 GHz) successfully penetrated the 7.48% cloud/haze bank obscuring the optical frame, resolving underlying structural boundaries and ground geometry that were unidentifiable in VNIR. Water bodies delineated by specular radar reflection (8.42%) corroborate low optical NIR absorption zones, eliminating false-positive shadows in optical imagery. Dihedral radar wall-ground corner reflections (2628 spikes) pinpoint built structures regardless of optical shadow or illumination azimuth.",
+        "coRegistrationStatus": "Sub-pixel Co-registered (Identical CRS, Bounds & Grid)",
+        "isCoRegistered": true,
+        "cloudPenetrationDemonstrated": true
+      },
+      "trace": [
+        {
+          "id": "trace-stage-1",
+          "stepNumber": 1,
+          "name": "Understanding Query",
+          "description": "Query: \"What information does SAR add compared with optical imagery?\" -> Task Classified as Cross-Modal Optical-SAR Fusion. Reason: Multi-sensor Optical+SAR pair provided for cross-modal synthesis.",
+          "status": "success",
+          "latencyMs": 18,
+          "timestamp": "18:18:10"
+        },
+        {
+          "id": "trace-stage-2",
+          "stepNumber": 2,
+          "name": "Validating Input",
+          "description": "VALIDATED: 2 image(s) ingested. Format: GeoTIFF | Primary: Optical VNIR (4 bands) (512 \u00d7 512 px), CRS: WGS 84 / UTM zone 43N. Secondary: SAR Microwave (512 \u00d7 512 px), CRS: WGS 84 / UTM zone 43N. (10/10 remote-sensing dimensions passed)",
+          "status": "success",
+          "latencyMs": 22,
+          "timestamp": "18:18:10"
+        },
+        {
+          "id": "trace-stage-3",
+          "stepNumber": 3,
+          "name": "Detecting Input Configuration",
+          "description": "Configuration: 2 raster input(s) detected (Optical VNIR (4 bands) primary, SAR Microwave secondary). Target task: Cross-Modal Optical-SAR Fusion.",
+          "status": "success",
+          "latencyMs": 14,
+          "timestamp": "18:18:10"
+        },
+        {
+          "id": "trace-stage-4",
+          "stepNumber": 4,
+          "name": "Selecting Specialist",
+          "description": "Selected Specialist: Optical + SAR Cross-Modal Fusion Specialist [SPECIALIST MODEL]. Provider: SatQuery VNIR-Microwave Cross-Modal Physics Engine.",
+          "status": "success",
+          "latencyMs": 12,
+          "timestamp": "18:18:10"
+        },
+        {
+          "id": "trace-stage-5",
+          "stepNumber": 5,
+          "name": "Preparing Imagery",
+          "description": "Standardized raster matrix to native resolution (512 \u00d7 512 px, CRS: WGS 84 / UTM zone 43N). Multi-spectral channels normalized.",
+          "status": "success",
+          "latencyMs": 19,
+          "timestamp": "18:18:10"
+        },
+        {
+          "id": "trace-stage-6",
+          "stepNumber": 6,
+          "name": "Running Model",
+          "description": "Model execution completed in 24ms. Executed Dual-Stream VNIR/C-band fusion. Co-registration: Sub-pixel Co-registered (Identical CRS, Bounds & Grid).",
+          "status": "success",
+          "latencyMs": 24,
+          "timestamp": "18:18:10"
+        },
+        {
+          "id": "trace-stage-7",
+          "stepNumber": 7,
+          "name": "Extracting Evidence",
+          "description": "Extracted 7 calibrated bounding box coordinates with spatial cross-evidence.",
+          "status": "success",
+          "latencyMs": 28,
+          "timestamp": "18:18:10"
+        },
+        {
+          "id": "trace-stage-8",
+          "stepNumber": 8,
+          "name": "Generating Response",
+          "description": "Completed. Synthesized answer narrative (158 words) with 5 verified findings. Evaluation metric: Not available.",
+          "status": "success",
+          "latencyMs": 16,
+          "timestamp": "18:18:10"
+        }
+      ],
+      "execution_trace": [
+        {
+          "id": "trace-stage-1",
+          "stepNumber": 1,
+          "name": "Understanding Query",
+          "description": "Query: \"What information does SAR add compared with optical imagery?\" -> Task Classified as Cross-Modal Optical-SAR Fusion. Reason: Multi-sensor Optical+SAR pair provided for cross-modal synthesis.",
+          "status": "success",
+          "latencyMs": 18,
+          "timestamp": "18:18:10"
+        },
+        {
+          "id": "trace-stage-2",
+          "stepNumber": 2,
+          "name": "Validating Input",
+          "description": "VALIDATED: 2 image(s) ingested. Format: GeoTIFF | Primary: Optical VNIR (4 bands) (512 \u00d7 512 px), CRS: WGS 84 / UTM zone 43N. Secondary: SAR Microwave (512 \u00d7 512 px), CRS: WGS 84 / UTM zone 43N. (10/10 remote-sensing dimensions passed)",
+          "status": "success",
+          "latencyMs": 22,
+          "timestamp": "18:18:10"
+        },
+        {
+          "id": "trace-stage-3",
+          "stepNumber": 3,
+          "name": "Detecting Input Configuration",
+          "description": "Configuration: 2 raster input(s) detected (Optical VNIR (4 bands) primary, SAR Microwave secondary). Target task: Cross-Modal Optical-SAR Fusion.",
+          "status": "success",
+          "latencyMs": 14,
+          "timestamp": "18:18:10"
+        },
+        {
+          "id": "trace-stage-4",
+          "stepNumber": 4,
+          "name": "Selecting Specialist",
+          "description": "Selected Specialist: Optical + SAR Cross-Modal Fusion Specialist [SPECIALIST MODEL]. Provider: SatQuery VNIR-Microwave Cross-Modal Physics Engine.",
+          "status": "success",
+          "latencyMs": 12,
+          "timestamp": "18:18:10"
+        },
+        {
+          "id": "trace-stage-5",
+          "stepNumber": 5,
+          "name": "Preparing Imagery",
+          "description": "Standardized raster matrix to native resolution (512 \u00d7 512 px, CRS: WGS 84 / UTM zone 43N). Multi-spectral channels normalized.",
+          "status": "success",
+          "latencyMs": 19,
+          "timestamp": "18:18:10"
+        },
+        {
+          "id": "trace-stage-6",
+          "stepNumber": 6,
+          "name": "Running Model",
+          "description": "Model execution completed in 24ms. Executed Dual-Stream VNIR/C-band fusion. Co-registration: Sub-pixel Co-registered (Identical CRS, Bounds & Grid).",
+          "status": "success",
+          "latencyMs": 24,
+          "timestamp": "18:18:10"
+        },
+        {
+          "id": "trace-stage-7",
+          "stepNumber": 7,
+          "name": "Extracting Evidence",
+          "description": "Extracted 7 calibrated bounding box coordinates with spatial cross-evidence.",
+          "status": "success",
+          "latencyMs": 28,
+          "timestamp": "18:18:10"
+        },
+        {
+          "id": "trace-stage-8",
+          "stepNumber": 8,
+          "name": "Generating Response",
+          "description": "Completed. Synthesized answer narrative (158 words) with 5 verified findings. Evaluation metric: Not available.",
+          "status": "success",
+          "latencyMs": 16,
+          "timestamp": "18:18:10"
+        }
+      ],
+      "geoMetadata": {
+        "filename": "coregistered_optical_vnir.tif",
+        "fileSize": "1.0 MB",
+        "fileSizeBytes": 1049056,
+        "dimensions": "512 \u00d7 512 px",
+        "width": 512,
+        "height": 512,
+        "bands": [
+          "Band 1 (Blue)",
+          "Band 2 (Green)",
+          "Band 3 (Red)",
+          "Band 4 (NIR)"
+        ],
+        "bandCount": 4,
+        "dtype": "uint8",
+        "crs": "WGS 84 / UTM zone 43N",
+        "transform": [
+          775000.0,
+          0.5,
+          0.0,
+          1435000.0,
+          0.0,
+          -0.5
+        ],
+        "bounds": [
+          775000.0,
+          1434744.0,
+          775256.0,
+          1435000.0
+        ],
+        "resolution": "0.5 m/px",
+        "nodata": "Not available",
+        "sensor": "Multispectral 4-Band (VNIR)",
+        "format": "GeoTIFF",
+        "acquisitionDate": "2024:05:10 11:20:00",
+        "fileId": "file_1788871678_5bddb9fd",
+        "originalFileHash": "sha256-5bddb9fd632a319d79b5dd7161ea5c28edc446f8f2072d6302b88ed10e359d31",
+        "previewHash": "sha256-1c044bad92c28765aebcc5707760737f4abf3a18c57ea2de13ff3b69b3b9e916"
+      },
+      "geoMetadataSecondary": {
+        "filename": "coregistered_sar_cband.tif",
+        "fileSize": "1.0 MB",
+        "fileSizeBytes": 1049008,
+        "dimensions": "512 \u00d7 512 px",
+        "width": 512,
+        "height": 512,
+        "bands": [
+          "Band 1 (Single Band / SAR Intensity / Grayscale)"
+        ],
+        "bandCount": 1,
+        "dtype": "float32",
+        "crs": "WGS 84 / UTM zone 43N",
+        "transform": [
+          775000.0,
+          0.5,
+          0.0,
+          1435000.0,
+          0.0,
+          -0.5
+        ],
+        "bounds": [
+          775000.0,
+          1434744.0,
+          775256.0,
+          1435000.0
+        ],
+        "resolution": "0.5 m/px",
+        "nodata": "Not available",
+        "sensor": "SAR / Single-Band Sensor",
+        "format": "GeoTIFF",
+        "acquisitionDate": "2024:05:10 11:20:00",
+        "fileId": "file_1788871680_61674e97",
+        "originalFileHash": "sha256-61674e97e41c189cec952794092d3300f687ec95ae70f508cb9a8397ad816d48",
+        "previewHash": "sha256-3c1d7e654b4a37bd6f341e0ee5f347fad55d2a9cf60a0615582b91125ca3f190"
+      },
+      "timestamp": "2026-09-08 18:18:10",
+      "executionTimeTotalMs": 25,
+      "images": {
+        "primary": "http://localhost:8000/uploads/file_1788871678_5bddb9fd_preview.png",
+        "secondary": "http://localhost:8000/uploads/file_1788871680_61674e97_preview.png",
+        "diff": null
+      },
+      "roundtrip_time_ms": 2068.8
+    },
+    "test_f": {
+      "id": "analysis_1788871692_c71b8c92",
+      "analysis_id": "analysis_1788871692_c71b8c92",
+      "currentAnalysisId": "analysis_1788871692_c71b8c92",
+      "file_id": "file_1788871671_00931056",
+      "currentFileId": "file_1788871671_00931056",
+      "query": "Are there buildings or other man-made structures in this satellite image?",
+      "mode": "single",
+      "detectedTask": "Visual Question Answering",
+      "task": "vqa",
+      "model": "RemoteSensingVLMAdapter (BigEarthNet-19 LoRA Checkpoint)",
+      "answer": "No substantial urban agglomerations or dense man-made complexes are detected in this scene. The model's classification scores for built-up classes remain low: Urban fabric score is 0.4957 and Industrial/commercial units score is 0.5083, both below the primary activation threshold. The imagery is dominated by natural terrain and open agricultural/shrub cover (Complex cultivation patterns).",
+      "confidence": null,
+      "confidence_explanation": "Model produces raw uncalibrated sigmoid classification scores; formal temperature/Bayesian calibration is unavailable on this checkpoint.",
+      "input": {
+        "filename": "file_1788871671_00931056.tif",
+        "width": 512,
+        "height": 512,
+        "bands": 4,
+        "crs": "WGS 84 / UTM zone 43N"
+      },
+      "preprocessing": "4-band multispectral (VNIR: R, G, B, NIR) extracted -> 2-98% percentile dynamic range stretch to RGB -> Bilinear resize to 224x224 -> ImageNet normalization [0.485, 0.456, 0.406] / [0.229, 0.224, 0.225] -> PyTorch tensor [1, 3, 224, 224]",
+      "evidence": [],
+      "execution_trace": [
+        {
+          "stepNumber": 1,
+          "name": "Understanding Query",
+          "status": "success",
+          "description": "Query: \"Are there buildings or other man-made structures in this satellite image?\" -> Classified intent: BUILDINGS. Evaluates presence, distribution, and density of built structures / man-made surfaces.",
+          "timestamp": "18:18:12"
+        },
+        {
+          "stepNumber": 2,
+          "name": "Validating Input",
+          "status": "success",
+          "description": "Validated raster: 512 x 512 px, 4 band(s), dtype=uint16, CRS=WGS 84 / UTM zone 43N, GSD=0.5 m/px.",
+          "timestamp": "18:18:12"
+        },
+        {
+          "stepNumber": 3,
+          "name": "Preparing Imagery",
+          "status": "success",
+          "description": "Applied preprocessing: 4-band multispectral (VNIR: R, G, B, NIR) extracted -> 2-98% percentile dynamic range stretch to RGB -> Bilinear resize to 224x224 -> ImageNet normalization [0.485, 0.456, 0.406] / [0.229, 0.224, 0.225] -> PyTorch tensor [1, 3, 224, 224]. Final model input dimensions: [1, 3, 224, 224].",
+          "timestamp": "18:18:13"
+        },
+        {
+          "stepNumber": 4,
+          "name": "Selecting VQA Model",
+          "status": "success",
+          "description": "Loaded RemoteSensingVLMAdapter (BigEarthNet-19 LoRA Checkpoint) on CPU. Ready for deterministic forward pass.",
+          "timestamp": "18:18:13"
+        },
+        {
+          "stepNumber": 5,
+          "name": "Running Inference",
+          "status": "success",
+          "description": "PyTorch forward pass executed in 13.7ms on CPU. Top remote-sensing class: Complex cultivation patterns (sigmoid=0.52).",
+          "timestamp": "18:18:13"
+        },
+        {
+          "stepNumber": 6,
+          "name": "Returning Answer",
+          "status": "success",
+          "description": "Completed answer generation (53 words) grounded in model probabilities and spectral evidence.",
+          "timestamp": "18:18:13"
+        }
+      ],
+      "orchestratorDecision": {
+        "specialistKey": "VQA",
+        "specialistName": "Visual Question Answering Specialist",
+        "inputCount": 1,
+        "taskReason": "Specific visual question regarding spectral reflectance and land classes."
+      },
+      "selectedModel": {
+        "id": "rs-vlm-adapter",
+        "name": "RemoteSensingVLMAdapter (BigEarthNet-19 LoRA Checkpoint)",
+        "type": "DOMAIN-ADAPTED MODEL",
+        "provider": "SatQuery Remote Sensing VLM (BigEarthNet-19 LoRA)",
+        "version": "2.0-rs-vqa",
+        "checkpoint": "models/adapters/bigearthnet_lora/adapter_model.pt",
+        "suitability": "SUITABLE FOR REMOTE SENSING VQA",
+        "status": "ACTIVE",
+        "domainAdaptation": "BigEarthNet-19 Multi-Spectral LoRA (19 Corine Classes)",
+        "taskSuitability": [
+          "Visual Question Answering"
+        ],
+        "accuracy": "Calibrated BigEarthNet-19 Activations",
+        "latencyAvg": "13.7ms",
+        "supportedInputTypes": [
+          "GeoTIFF",
+          "TIFF",
+          "PNG",
+          "JPEG"
+        ],
+        "maxResolution": "Native GSD"
+      },
+      "configuredParameters": {
+        "temperature": 0.1,
+        "topP": 0.9
+      },
+      "validationResult": {
+        "valid": true,
+        "status": "APPROVED",
+        "task": "VQA",
+        "format": "GEOTIFF",
+        "crsFound": true,
+        "dimensions": "512 \u00d7 512 px",
+        "rejections": [],
+        "warnings": [],
+        "checks": {
+          "number_of_images": {
+            "valid": true,
+            "count": 1
+          },
+          "file_format": {
+            "valid": true,
+            "primary": "GEOTIFF"
+          },
+          "modality": {
+            "primary": "Optical/Multispectral"
+          },
+          "dimensions": {
+            "valid": true,
+            "primary": "512x512"
+          },
+          "bands": {
+            "primary": 4
+          },
+          "crs": {
+            "primary": "WGS 84 / UTM zone 43N"
+          },
+          "bounds": {
+            "primary": [
+              775000.0,
+              1434744.0,
+              775256.0,
+              1435000.0
+            ]
+          },
+          "spatial_compatibility": {
+            "valid": true,
+            "status": "Single image or unprojected bounds"
+          },
+          "temporal_compatibility": {
+            "primary_date": "Not available",
+            "valid": true
+          },
+          "optical_sar_compatibility": {
+            "valid": true,
+            "notice": "Single image task"
+          }
+        },
+        "notes": "All 10 remote-sensing compatibility dimensions validated successfully."
+      },
+      "textAnswer": "No substantial urban agglomerations or dense man-made complexes are detected in this scene. The model's classification scores for built-up classes remain low: Urban fabric score is 0.4957 and Industrial/commercial units score is 0.5083, both below the primary activation threshold. The imagery is dominated by natural terrain and open agricultural/shrub cover (Complex cultivation patterns).",
+      "keyFindings": [
+        "VQA Model: RemoteSensingVLMAdapter (BigEarthNet-19 LoRA Checkpoint).",
+        "Primary Land Cover: Complex cultivation patterns (score: 0.52).",
+        "Secondary Land Cover: Coastal wetlands (score: 0.5192).",
+        "Spectral Verification: NDVI max = 0.9043, mean = 0.0006."
+      ],
+      "confidenceLevel": "Calibrated",
+      "mAP": null,
+      "IoU": null,
+      "spatialInterpretation": "No substantial urban agglomerations or dense man-made complexes are detected in this scene. The model's classification scores for built-up classes remain low: Urban fabric score is 0.4957 and Industrial/commercial units score is 0.5083, both below the primary activation threshold. The imagery is dominated by natural terrain and open agricultural/shrub cover (Complex cultivation patterns).",
+      "groundingBoxes": [],
+      "changeAreas": [],
+      "opticalSarInsight": null,
+      "trace": [
+        {
+          "stepNumber": 1,
+          "name": "Understanding Query",
+          "status": "success",
+          "description": "Query: \"Are there buildings or other man-made structures in this satellite image?\" -> Classified intent: BUILDINGS. Evaluates presence, distribution, and density of built structures / man-made surfaces.",
+          "timestamp": "18:18:12"
+        },
+        {
+          "stepNumber": 2,
+          "name": "Validating Input",
+          "status": "success",
+          "description": "Validated raster: 512 x 512 px, 4 band(s), dtype=uint16, CRS=WGS 84 / UTM zone 43N, GSD=0.5 m/px.",
+          "timestamp": "18:18:12"
+        },
+        {
+          "stepNumber": 3,
+          "name": "Preparing Imagery",
+          "status": "success",
+          "description": "Applied preprocessing: 4-band multispectral (VNIR: R, G, B, NIR) extracted -> 2-98% percentile dynamic range stretch to RGB -> Bilinear resize to 224x224 -> ImageNet normalization [0.485, 0.456, 0.406] / [0.229, 0.224, 0.225] -> PyTorch tensor [1, 3, 224, 224]. Final model input dimensions: [1, 3, 224, 224].",
+          "timestamp": "18:18:13"
+        },
+        {
+          "stepNumber": 4,
+          "name": "Selecting VQA Model",
+          "status": "success",
+          "description": "Loaded RemoteSensingVLMAdapter (BigEarthNet-19 LoRA Checkpoint) on CPU. Ready for deterministic forward pass.",
+          "timestamp": "18:18:13"
+        },
+        {
+          "stepNumber": 5,
+          "name": "Running Inference",
+          "status": "success",
+          "description": "PyTorch forward pass executed in 13.7ms on CPU. Top remote-sensing class: Complex cultivation patterns (sigmoid=0.52).",
+          "timestamp": "18:18:13"
+        },
+        {
+          "stepNumber": 6,
+          "name": "Returning Answer",
+          "status": "success",
+          "description": "Completed answer generation (53 words) grounded in model probabilities and spectral evidence.",
+          "timestamp": "18:18:13"
+        }
+      ],
+      "geoMetadata": {
+        "filename": "sample_cartosat_utm43n.tif",
+        "fileSize": "2.0 MB",
+        "fileSizeBytes": 2097664,
+        "dimensions": "512 \u00d7 512 px",
+        "width": 512,
+        "height": 512,
+        "bands": [
+          "Band 1 (Blue)",
+          "Band 2 (Green)",
+          "Band 3 (Red)",
+          "Band 4 (NIR)"
+        ],
+        "bandCount": 4,
+        "dtype": "uint16",
+        "crs": "WGS 84 / UTM zone 43N",
+        "transform": [
+          775000.0,
+          0.5,
+          0.0,
+          1435000.0,
+          0.0,
+          -0.5
+        ],
+        "bounds": [
+          775000.0,
+          1434744.0,
+          775256.0,
+          1435000.0
+        ],
+        "resolution": "0.5 m/px",
+        "nodata": "0",
+        "sensor": "Multispectral 4-Band (VNIR)",
+        "format": "GeoTIFF",
+        "acquisitionDate": "Not available",
+        "fileId": "file_1788871671_00931056",
+        "originalFileHash": "sha256-0093105693da62de886da0326d6a3b7be9b04aff5f2430e2edc13b7f240eac1e",
+        "previewHash": "sha256-7c4335714b2a4ddcc8114c44912cf7235abc54d732fe52009e8c2a20e3fc4798"
+      },
+      "geoMetadataSecondary": null,
+      "timestamp": "2026-09-08 18:18:13",
+      "executionTimeTotalMs": 77,
+      "images": {
+        "primary": "http://localhost:8000/uploads/file_1788871671_00931056_preview.png",
+        "secondary": null,
+        "diff": null
+      },
+      "roundtrip_time_ms": 2101.6
+    }
+  }
+}

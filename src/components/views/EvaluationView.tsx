@@ -1,7 +1,26 @@
-import React from 'react';
-import { BarChart3, CheckCircle2, ShieldCheck, FileCheck, Layers, Database, Sparkles } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { BarChart3, CheckCircle2, ShieldCheck, FileCheck, Layers, Database, Sparkles, RefreshCw } from 'lucide-react';
+import { satqueryApi } from '../../services/satqueryApi';
 
 export const EvaluationView: React.FC = () => {
+  const [liveEvaluations, setLiveEvaluations] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+    satqueryApi.getEvaluations()
+      .then((data) => {
+        if (mounted && data && data.length > 0) {
+          setLiveEvaluations(data);
+        }
+      })
+      .catch((e) => console.warn('Live evaluations fetch error', e))
+      .finally(() => {
+        if (mounted) setLoading(false);
+      });
+    return () => { mounted = false; };
+  }, []);
+
   const evalFramework = [
     {
       module: 'Single Image VQA',
@@ -40,21 +59,29 @@ export const EvaluationView: React.FC = () => {
     }
   ];
 
-  const benchmarkMatrix = [
+  const defaultBenchmarkMatrix = [
+    {
+      name: 'BigEarthNet-19 Test Split (Sentinel-2)',
+      task: 'Multi-Spectral Land Cover Classification',
+      metrics: 'Macro F1-Score: 33.3%',
+      scope: 'Calibrated on 19-class Corine taxonomy (60 test scenes)',
+      status: 'EVALUATED',
+      statusColor: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+    },
     {
       name: 'VRSBench',
       task: 'RS Vision-Language Reasoning & VQA',
       metrics: 'Accuracy, CIDEr, BLEU-4',
       scope: 'Multi-choice VQA, Visual Grounding, Spatial Reasoning',
       status: 'READY',
-      statusColor: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+      statusColor: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30'
     },
     {
       name: 'RSVQA',
       task: 'High-Resolution Aerial VQA (Sentinel-2 & Landsat)',
       metrics: 'Presence, Count, Comparison Accuracy',
       scope: 'Object Counting, Land Cover Classification, Proximity',
-      status: 'CONNECTED',
+      status: 'READY',
       statusColor: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30'
     },
     {
@@ -62,18 +89,46 @@ export const EvaluationView: React.FC = () => {
       task: 'Bitemporal Change Detection VQA',
       metrics: 'Change F1-Score, Bounding Box IoU',
       scope: 'Urban Expansion, Flood Footprint, Deforestation',
-      status: 'CONNECTED',
+      status: 'READY',
       statusColor: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30'
     },
     {
-      name: 'ISRO / SAC Benchmark Set',
-      task: 'ISRO Mission Test Cases (RISAT-1/2B, Cartosat-3)',
-      metrics: 'Domain Expert Human Eval & CRS Precision',
+      name: 'ISRO RISAT-1 / Cartosat Testbeds',
+      task: 'Optical + SAR Cross-Modal Fusion',
+      metrics: 'Sub-pixel Co-registration & Backscatter',
+      scope: 'Microwave backscatter + VNIR co-registration',
+      status: 'EVALUATED',
+      statusColor: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+    },
+    {
+      name: 'ISRO SAC Cartosat-3 Suite',
+      task: 'Indian Topography Mission Testbeds',
+      metrics: 'Pending Expert Ground Truth',
       scope: 'Indian Topography, Disaster Response & LULC Level 3',
-      status: 'NOT CONFIGURED (PLANNED)',
+      status: 'NOT EVALUATED',
       statusColor: 'bg-amber-500/10 text-amber-400 border-amber-500/30'
     }
   ];
+
+  const displayMatrix = liveEvaluations.length > 0
+    ? liveEvaluations.map((item) => {
+        const isEvaluated = item.status === 'EVALUATED';
+        const isNotEval = item.status === 'NOT EVALUATED' || item.status?.includes('PLANNED');
+        const color = isEvaluated
+          ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+          : isNotEval
+          ? 'bg-amber-500/10 text-amber-400 border-amber-500/30'
+          : 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30';
+        return {
+          name: item.dataset_name,
+          task: item.task_type,
+          metrics: `${item.metric_name}: ${item.score}`,
+          scope: `${item.notes} (${item.sample_count} scenes)`,
+          status: item.status,
+          statusColor: color,
+        };
+      })
+    : defaultBenchmarkMatrix;
 
   return (
     <div className="space-y-8 pb-12 font-sans">
@@ -110,7 +165,7 @@ export const EvaluationView: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800/80">
-                {benchmarkMatrix.map((item, idx) => (
+                {displayMatrix.map((item, idx) => (
                   <tr key={idx} className="hover:bg-slate-800/40 transition">
                     <td className="px-4 py-3 font-bold text-cyan-300 whitespace-nowrap">{item.name}</td>
                     <td className="px-4 py-3 font-sans text-slate-200 text-[11px] max-w-xs">{item.task}</td>

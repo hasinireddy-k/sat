@@ -20,6 +20,10 @@ export interface AgentControllerParams {
   primaryMetadata?: GeoMetadata;
   secondaryMetadata?: GeoMetadata;
   forcedMode?: AnalysisMode;
+  fileId?: string;
+  file_id?: string;
+  secondary_file_id?: string;
+  secondaryFileId?: string;
 }
 
 export class SatQueryAgentController {

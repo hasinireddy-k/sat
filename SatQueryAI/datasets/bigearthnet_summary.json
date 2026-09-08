@@ -1,0 +1,34 @@
+{
+  "dataset_name": "BigEarthNet-19 Remote Sensing Benchmark",
+  "taxonomy": "BigEarthNet-19 (CORINE Land Cover)",
+  "total_validated_samples": 15,
+  "train_samples_count": 12,
+  "val_samples_count": 3,
+  "split_ratio": "80/20",
+  "random_seed": 42,
+  "class_distribution": {
+    "Urban fabric": 3,
+    "Industrial or commercial units": 2,
+    "Arable land": 3,
+    "Permanent crops": 1,
+    "Pastures": 3,
+    "Complex cultivation patterns": 1,
+    "Agro-forestry areas": 1,
+    "Broad-leaved forest": 2,
+    "Coniferous forest": 1,
+    "Mixed forest": 1,
+    "Natural grassland and sparsely vegetated areas": 1,
+    "Moors, heathland and sclerophyllous vegetation": 1,
+    "Transitional woodland, shrub": 1,
+    "Beaches, dunes, sands": 1,
+    "Inland wetlands": 1,
+    "Coastal wetlands": 1,
+    "Inland waters": 2,
+    "Marine waters": 2
+  },
+  "artifacts_generated": {
+    "train_manifest": "c:\\Users\\hasin\\OneDrive\\Desktop\\sat1\\SatQueryAI\\datasets\\train_bigearthnet.jsonl",
+    "val_manifest": "c:\\Users\\hasin\\OneDrive\\Desktop\\sat1\\SatQueryAI\\datasets\\val_bigearthnet.jsonl",
+    "image_directory": "c:\\Users\\hasin\\OneDrive\\Desktop\\sat1\\SatQueryAI\\datasets\\images"
+  }
+}

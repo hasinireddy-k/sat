@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ViewTab, ExecutionResult, DemoMission, GeoMetadata, UserProfile, AppSettings } from './types/satquery';
 import { DEMO_MISSIONS } from './data/demoMissions';
 import { Header } from './components/common/Header';
@@ -42,9 +42,18 @@ export const App: React.FC = () => {
     notificationsEnabled: true,
   });
 
-  const [historyLogs, setHistoryLogs] = useState<ExecutionResult[]>(
-    DEMO_MISSIONS.map((m) => m.precomputedResult)
-  );
+  const [historyLogs, setHistoryLogs] = useState<ExecutionResult[]>([]);
+
+  useEffect(() => {
+    // Fetch real historical analysis records from persistent backend database/store
+    satqueryApi.getHistory().then((realHistory) => {
+      if (realHistory && realHistory.length > 0) {
+        setHistoryLogs(realHistory);
+      } else {
+        setHistoryLogs(DEMO_MISSIONS.map((m) => m.precomputedResult));
+      }
+    });
+  }, []);
 
   const handleStartAnalysis = async (
     primarySrc: string,
@@ -53,11 +62,7 @@ export const App: React.FC = () => {
     primaryMeta?: GeoMetadata,
     secondaryMeta?: GeoMetadata
   ) => {
-    // 1. Instantly transition to Analysis Workspace tab & clear stale active result
-    setActiveResult(null);
-    setActiveTab('scene-analysis');
-
-    // 2. Set initial metadata state for workspace view
+    // 1. Set initial metadata state for workspace view
     const initialMetadata: GeoMetadata = primaryMeta || {
       filename: 'Uploaded_Scene.tif',
       fileSize: 'Not available',
@@ -96,7 +101,7 @@ export const App: React.FC = () => {
         dimensions: initialMetadata.dimensions || '1024 × 1024 px',
         notes: `Validated ${initialMetadata.format || 'GeoTIFF'} header and spatial resolution.`,
       },
-      textAnswer: 'Executing PyTorch multi-spectral specialist analysis pipeline...',
+      textAnswer: 'Executing PyTorch multi-spectral specialist analysis pipeline on uploaded raster...',
       keyFindings: [
         `Input imagery header validated (${initialMetadata.crs}).`,
         'Raster preview and feature pyramid aligned.',
@@ -121,11 +126,14 @@ export const App: React.FC = () => {
       },
     };
 
+    // 2. Set activeResult immediately and transition to Analysis Workspace
     setActiveResult(tempResult);
+    setActiveTab('scene-analysis');
 
     // 3. Execute query and update with finalized backend response
     try {
-      const fileId = primaryMeta?.fileId;
+      const fileId = primaryMeta?.fileId || (primaryMeta as any)?.file_id;
+      const secondaryFileId = secondaryMeta?.fileId || (secondaryMeta as any)?.file_id;
       const finalResult = await satqueryApi.executeQuery(
         {
           query,
@@ -133,7 +141,8 @@ export const App: React.FC = () => {
           secondaryImage: secondarySrc,
           primaryMetadata: primaryMeta,
           secondaryMetadata: secondaryMeta,
-          fileId
+          fileId,
+          secondaryFileId,
         } as any,
         (updatedTrace) => {
           setActiveResult((prev) => (prev ? { ...prev, trace: updatedTrace } : prev));
@@ -160,7 +169,7 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-black text-slate-100 font-sans overflow-x-hidden">
+    <div className="flex h-screen w-screen bg-black text-slate-100 font-sans overflow-hidden">
       <SpaceBackground />
 
       <Header
@@ -169,20 +178,23 @@ export const App: React.FC = () => {
         user={user}
         demoMode={demoMode}
         setDemoMode={setDemoMode}
+        hasLoadedImages={Boolean(activeResult)}
+        onResetUpload={() => setActiveResult(null)}
       />
 
-      <main className="relative pt-16 min-h-[calc(100vh-4rem)]">
+      <main className="flex-1 h-screen overflow-y-auto relative z-10 px-6 py-8 md:px-12 md:py-10">
         {activeTab === 'mission-control' && (
           <HomeUploadView
             onStartAnalysis={handleStartAnalysis}
-            onSelectMission={handleSelectDemoMission}
-            demoMissions={DEMO_MISSIONS}
+            onSelectDemoMission={handleSelectDemoMission}
           />
         )}
 
         {activeTab === 'scene-analysis' && (
           <MainAnalysisWorkspace
             activeResult={activeResult}
+            onBackToHome={() => setActiveTab('mission-control')}
+            onGenerateReport={() => setActiveTab('reports')}
             onNewQuery={(q) => {
               if (activeResult) {
                 handleStartAnalysis(
@@ -197,21 +209,27 @@ export const App: React.FC = () => {
           />
         )}
 
-        {activeTab === 'mission-gallery' && (
+        {(activeTab === 'gallery' || activeTab === 'mission-gallery') && (
           <MissionGalleryView
             missions={DEMO_MISSIONS}
             onSelectMission={handleSelectDemoMission}
           />
         )}
 
-        {activeTab === 'history-logs' && (
+        {(activeTab === 'history' || activeTab === 'history-logs') && (
           <AnalysisHistoryView
             logs={historyLogs}
+            historyLogs={historyLogs}
             onSelectLog={handleSelectHistoryItem}
+            onSelectResult={handleSelectHistoryItem}
+            onGenerateReport={(item) => {
+              setActiveResult(item);
+              setActiveTab('reports');
+            }}
           />
         )}
 
-        {activeTab === 'report-generator' && (
+        {(activeTab === 'reports' || activeTab === 'report-generator') && (
           <ReportGeneratorView activeResult={activeResult} />
         )}
 

@@ -79,7 +79,7 @@ export const DEMO_MISSIONS: DemoMission[] = [
       isPrecomputed: true,
       isDemoAnalysis: true,
       images: {
-        primary: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80'
+        primary: '/assets/scenes/cartosat_sample.png'
       }
     }
   },
@@ -92,7 +92,7 @@ export const DEMO_MISSIONS: DemoMission[] = [
     location: 'Brahmaputra Basin, Assam, India',
     coordinates: '26.5775° N, 93.1711° E',
     sensor: 'Cartosat-3 + Sentinel-2',
-    thumbnail: 'https://images.unsplash.com/photo-1547683905-f686c993aae5?auto=format&fit=crop&w=800&q=80',
+    thumbnail: '/assets/scenes/bitemporal_t1.png',
     description: 'Bitemporal change detection comparing pre-event (T1 2024) and post-event (T2 2026) satellite scenes to measure construction expansion and inundation extent.',
     sampleQueries: ['What changed between these pre-event and post-event images?'],
     precomputedResult: {
@@ -180,8 +180,8 @@ export const DEMO_MISSIONS: DemoMission[] = [
       isPrecomputed: true,
       isDemoAnalysis: true,
       images: {
-        primary: 'https://images.unsplash.com/photo-1547683905-f686c993aae5?auto=format&fit=crop&w=1200&q=80',
-        secondary: 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?auto=format&fit=crop&w=1200&q=80'
+        primary: '/assets/scenes/bitemporal_t1.png',
+        secondary: '/assets/scenes/bitemporal_t2.png'
       }
     }
   },
@@ -194,7 +194,7 @@ export const DEMO_MISSIONS: DemoMission[] = [
     location: 'JNPT Port, Mumbai, India',
     coordinates: '18.9500° N, 72.9500° E',
     sensor: 'Sentinel-2 MSI + RISAT-1 SAR',
-    thumbnail: 'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=800&q=80',
+    thumbnail: '/assets/scenes/optical_vnir.png',
     description: 'Cross-modal cloud penetration using C-band radar backscatter to resolve vessel traffic hidden beneath monsoon stratocumulus clouds.',
     sampleQueries: ['What information does SAR reveal that optical imagery misses?'],
     precomputedResult: {
@@ -277,8 +277,8 @@ export const DEMO_MISSIONS: DemoMission[] = [
       isPrecomputed: true,
       isDemoAnalysis: true,
       images: {
-        primary: 'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=1200&q=80',
-        secondary: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1200&q=80'
+        primary: '/assets/scenes/optical_vnir.png',
+        secondary: '/assets/scenes/sar_cband.png'
       }
     }
   },
@@ -349,7 +349,7 @@ export const DEMO_MISSIONS: DemoMission[] = [
       executionTimeTotalMs: 348,
       isPrecomputed: true,
       isDemoAnalysis: true,
-      images: { primary: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80' }
+      images: { primary: '/assets/scenes/cartosat_sample.png' }
     }
   },
   {
@@ -361,7 +361,7 @@ export const DEMO_MISSIONS: DemoMission[] = [
     location: 'Ludhiana District, Punjab, India',
     coordinates: '30.9010° N, 75.8573° E',
     sensor: 'Resourcesat-2A LISS-IV',
-    thumbnail: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=800&q=80',
+    thumbnail: '/assets/scenes/cartosat_sample.png',
     description: 'Multispectral scene description analyzing paddy crop growth stages, NDVI health index, and harvested stubble risk areas.',
     sampleQueries: ['Describe the dominant land-cover patterns.'],
     precomputedResult: {
@@ -413,7 +413,7 @@ export const DEMO_MISSIONS: DemoMission[] = [
       executionTimeTotalMs: 296,
       isPrecomputed: true,
       isDemoAnalysis: true,
-      images: { primary: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80' }
+      images: { primary: '/assets/scenes/cartosat_sample.png' }
     }
   },
   {
@@ -425,7 +425,7 @@ export const DEMO_MISSIONS: DemoMission[] = [
     location: 'Brahmaputra Highway Corridor, Assam, India',
     coordinates: '26.5775° N, 93.1711° E',
     sensor: 'Cartosat-3 PAN-Sharpened',
-    thumbnail: 'https://images.unsplash.com/photo-1545558014-8692077e9b5c?auto=format&fit=crop&w=800&q=80',
+    thumbnail: '/assets/scenes/cartosat_sample.png',
     description: 'Text-guided region grounding detecting national highway bridge spans, rail embankments, and culverts.',
     sampleQueries: ['Identify major linear structures.'],
     precomputedResult: {
@@ -479,7 +479,7 @@ export const DEMO_MISSIONS: DemoMission[] = [
       executionTimeTotalMs: 310,
       isPrecomputed: true,
       isDemoAnalysis: true,
-      images: { primary: 'https://images.unsplash.com/photo-1545558014-8692077e9b5c?auto=format&fit=crop&w=1200&q=80' }
+      images: { primary: '/assets/scenes/cartosat_sample.png' }
     }
   },
   {
@@ -491,7 +491,7 @@ export const DEMO_MISSIONS: DemoMission[] = [
     location: 'Kaziranga Brahmaputra Basin, Assam, India',
     coordinates: '26.5775° N, 93.1711° E',
     sensor: 'Sentinel-2A MSI + Cartosat-3',
-    thumbnail: 'https://images.unsplash.com/photo-1547683905-f686c993aae5?auto=format&fit=crop&w=800&q=80',
+    thumbnail: '/assets/scenes/bitemporal_t1.png',
     description: 'Comprehensive change intelligence analyzing flood inundation extent and river bank erosion.',
     sampleQueries: ['Summarize the most significant changes.'],
     precomputedResult: {
@@ -546,8 +546,8 @@ export const DEMO_MISSIONS: DemoMission[] = [
       isPrecomputed: true,
       isDemoAnalysis: true,
       images: {
-        primary: 'https://images.unsplash.com/photo-1547683905-f686c993aae5?auto=format&fit=crop&w=1200&q=80',
-        secondary: 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?auto=format&fit=crop&w=1200&q=80'
+        primary: '/assets/scenes/bitemporal_t1.png',
+        secondary: '/assets/scenes/bitemporal_t2.png'
       }
     }
   }
