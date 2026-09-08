@@ -11,7 +11,12 @@ export interface FileValidationResult {
 
 const MAX_FILE_SIZE_MB = 500;
 
-export function parseAndValidateImageFile(file: File): Promise<FileValidationResult> {
+export type ExpectedModality = 'OPTICAL' | 'MULTISPECTRAL' | 'SAR' | 'BITEMPORAL';
+
+export function parseAndValidateImageFile(
+  file: File,
+  expectedModality?: ExpectedModality
+): Promise<FileValidationResult> {
   return new Promise((resolve) => {
     const filename = file.name;
     const ext = filename.split('.').pop()?.toLowerCase() || '';
@@ -60,6 +65,19 @@ export function parseAndValidateImageFile(file: File): Promise<FileValidationRes
         errorMessage: `UNSUPPORTED FORMAT\n\nSupported formats:\nGeoTIFF (.tif, .tiff)\nPNG (.png)\nJPEG (.jpg, .jpeg)`,
         previewUrl: '',
         metadata: createFallbackMetadata(filename, sizeMbStr, 'Unknown')
+      });
+      return;
+    }
+
+    // 4. Modality Compatibility Validation
+    if (expectedModality === 'MULTISPECTRAL' && (fileFormat === 'JPEG' || fileFormat === 'PNG')) {
+      resolve({
+        valid: false,
+        fileFormat,
+        status: 'READY',
+        errorMessage: 'INCOMPATIBLE INPUT Expected multispectral imagery. Required: Multi-band GeoTIFF/TIFF',
+        previewUrl: '',
+        metadata: createFallbackMetadata(filename, sizeMbStr, fileFormat)
       });
       return;
     }

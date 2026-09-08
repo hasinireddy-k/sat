@@ -25,11 +25,16 @@ export class SatQueryApiService {
     this.baseUrl = baseUrl;
   }
 
-  public async uploadImage(file: File, isSecondary = false): Promise<UploadResponse> {
+  public async uploadImage(
+    file: File,
+    isSecondary = false,
+    expectedModality?: any
+  ): Promise<UploadResponse> {
     try {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('type', isSecondary ? 'secondary' : 'primary');
+      if (expectedModality) formData.append('expectedModality', expectedModality);
 
       const response = await fetch(`${this.baseUrl}/api/upload`, {
         method: 'POST',
@@ -50,8 +55,8 @@ export class SatQueryApiService {
             sensor: isSecondary ? 'SAR / SENTINEL-1' : 'OPTICAL / SENTINEL-2',
             format: file.name.endsWith('.tif') || file.name.endsWith('.tiff') ? 'GeoTIFF' : 'PNG',
             acquisitionDate: new Date().toISOString().split('T')[0],
-            bands: isSecondary ? 'C-Band VV/VH' : 'RGB + NIR',
-            status: 'READY',
+            bands: isSecondary ? ['VV (Co-pol)', 'VH (Cross-pol)'] : ['Red', 'Green', 'Blue', 'NIR'],
+            bounds: [77.58, 12.97, 77.62, 13.02],
           },
           status: 'READY',
         };
@@ -61,15 +66,24 @@ export class SatQueryApiService {
     }
 
     // Local fallback processing
-    const validation = await parseAndValidateImageFile(file);
+    const validation = await parseAndValidateImageFile(file, expectedModality);
+    if (!validation.valid) {
+      return {
+        imageId: `img_invalid_${Date.now()}`,
+        url: '',
+        metadata: validation.metadata,
+        status: 'INCOMPATIBLE',
+        message: validation.errorMessage,
+      } as any;
+    }
+
     return {
       imageId: `img_local_${Date.now()}`,
       url: validation.previewUrl,
       metadata: {
         ...validation.metadata,
-        status: validation.status,
       },
-      status: validation.status as any,
+      status: 'READY',
     };
   }
 

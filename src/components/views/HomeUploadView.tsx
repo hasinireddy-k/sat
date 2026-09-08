@@ -42,14 +42,18 @@ export const HomeUploadView: React.FC<HomeUploadViewProps> = ({
     return () => clearInterval(interval);
   }, []);
 
-  const handleFileUpload = async (file: File, isSecondary = false) => {
+  const [activeModality, setActiveModality] = useState<'OPTICAL' | 'MULTISPECTRAL' | 'SAR' | 'BITEMPORAL'>('OPTICAL');
+
+  const handleFileUpload = async (file: File, isSecondary = false, modalityOverride?: any) => {
     setErrorMessage(null);
     setIsValidating(true);
 
+    const mod = modalityOverride || activeModality;
+
     try {
-      const uploadRes = await satqueryApi.uploadImage(file, isSecondary);
+      const uploadRes = await satqueryApi.uploadImage(file, isSecondary, mod);
       if (uploadRes.status === 'INCOMPATIBLE') {
-        setErrorMessage('UNSUPPORTED FORMAT OR INCOMPATIBLE METADATA');
+        setErrorMessage(uploadRes.message || 'UNSUPPORTED FORMAT OR INCOMPATIBLE METADATA');
         setIsValidating(false);
         return;
       }
@@ -105,17 +109,38 @@ export const HomeUploadView: React.FC<HomeUploadViewProps> = ({
           </div>
         )}
 
+        {/* Selected File Metadata Card */}
+        {(primaryMeta || secondaryMeta) && (
+          <div className="mb-4 p-3 bg-[#070a12] border border-cyan-500/30 rounded flex flex-wrap items-center justify-between gap-3 text-xs mono text-slate-300">
+            <div className="flex items-center space-x-3">
+              <span className="text-emerald-400 font-bold uppercase">✔ INGESTED SCENE:</span>
+              <span>{primaryMeta?.filename || 'T1 Scene'}</span>
+              {secondaryMeta && <span>+ {secondaryMeta.filename} (T2)</span>}
+            </div>
+            <div className="flex items-center space-x-2 text-[10px] text-slate-400">
+              <span>FORMAT: <strong className="text-slate-200">{primaryMeta?.format || 'GeoTIFF'}</strong></span>
+              <span>•</span>
+              <span>DIM: <strong className="text-slate-200">{primaryMeta?.dimensions || '2048x2048'}</strong></span>
+              <span>•</span>
+              <span>CRS: <strong className="text-slate-200">{primaryMeta?.crs || 'EPSG:32643'}</strong></span>
+            </div>
+          </div>
+        )}
+
         <div className="grid grid-cols-2 lg:grid-cols-4 relative z-0 border border-white/15">
           {/* OPTICAL CARD */}
           <div
-            onClick={() => fileInputRef1.current?.click()}
+            onClick={() => {
+              setActiveModality('OPTICAL');
+              fileInputRef1.current?.click();
+            }}
             className="group shimmer-trigger relative overflow-hidden border-r border-white/10 bg-white/[0.02] p-6 flex flex-col items-center justify-center gap-4 h-[180px] cursor-pointer hover:bg-[#0084ff]/10 hover:border-[#0084ff] hover:shadow-[0_0_20px_rgba(0,132,255,0.15)] transition-all duration-300"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400 group-hover:text-[#0084ff] transition-colors"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
             <div className="flex flex-col items-center gap-1">
               <span className="mono text-[10px] font-semibold text-slate-400 tracking-widest group-hover:text-white">OPTICAL</span>
               <span className="mono text-[8px] text-slate-600 uppercase group-hover:text-blue-400 transition-colors">
-                {primarySrc ? '1 SCENE LOADED' : 'OPTICAL: RGB Panchromatic'}
+                {primarySrc ? `LOADED: ${primaryMeta?.filename || 'SCENE 1'}` : 'OPTICAL: RGB Panchromatic'}
               </span>
             </div>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-500 opacity-0 group-hover:opacity-100 transition-all duration-300"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
@@ -123,51 +148,79 @@ export const HomeUploadView: React.FC<HomeUploadViewProps> = ({
 
           {/* MULTISPECTRAL CARD */}
           <div
-            onClick={() => fileInputRef1.current?.click()}
+            onClick={() => {
+              setActiveModality('MULTISPECTRAL');
+              fileInputRef1.current?.click();
+            }}
             className="group shimmer-trigger relative overflow-hidden border-r border-white/10 bg-white/[0.02] p-6 flex flex-col items-center justify-center gap-4 h-[180px] cursor-pointer hover:bg-[#0084ff]/10 hover:border-[#0084ff] hover:shadow-[0_0_20px_rgba(0,132,255,0.15)] transition-all duration-300"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400 group-hover:text-[#0084ff] transition-colors"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg>
             <div className="flex flex-col items-center gap-1">
               <span className="mono text-[10px] font-semibold text-slate-400 tracking-widest group-hover:text-white">MULTISPECTRAL</span>
-              <span className="mono text-[8px] text-slate-600 uppercase group-hover:text-blue-400 transition-colors">8-13 BANDS</span>
+              <span className="mono text-[8px] text-slate-600 uppercase group-hover:text-blue-400 transition-colors">8-13 BANDS (GeoTIFF)</span>
             </div>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-500 opacity-0 group-hover:opacity-100 transition-all duration-300"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
           </div>
 
           {/* SAR CARD */}
           <div
-            onClick={() => fileInputRef2.current?.click()}
+            onClick={() => {
+              setActiveModality('SAR');
+              fileInputRef2.current?.click();
+            }}
             className="group shimmer-trigger relative overflow-hidden border-r border-white/10 bg-white/[0.02] p-6 flex flex-col items-center justify-center gap-4 h-[180px] cursor-pointer hover:bg-[#0084ff]/10 hover:border-[#0084ff] hover:shadow-[0_0_20px_rgba(0,132,255,0.15)] transition-all duration-300"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400 group-hover:text-[#0084ff] transition-colors"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
             <div className="flex flex-col items-center gap-1">
               <span className="mono text-[10px] font-semibold text-slate-400 tracking-widest group-hover:text-white">SAR</span>
-              <span className="mono text-[8px] text-slate-600 uppercase group-hover:text-blue-400 transition-colors">C-BAND HH/VV</span>
+              <span className="mono text-[8px] text-slate-600 uppercase group-hover:text-blue-400 transition-colors">
+                {secondarySrc ? `SAR LOADED: ${secondaryMeta?.filename}` : 'C-BAND HH/VV'}
+              </span>
             </div>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-500 opacity-0 group-hover:opacity-100 transition-all duration-300"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
           </div>
 
           {/* BI-TEMPORAL CARD */}
           <div
-            onClick={() => fileInputRef2.current?.click()}
+            onClick={() => {
+              setActiveModality('BITEMPORAL');
+              if (!primarySrc) {
+                fileInputRef1.current?.click();
+              } else {
+                fileInputRef2.current?.click();
+              }
+            }}
             className="group shimmer-trigger relative overflow-hidden border-r border-white/10 bg-white/[0.02] p-6 flex flex-col items-center justify-center gap-4 h-[180px] cursor-pointer hover:bg-[#0084ff]/10 hover:border-[#0084ff] hover:shadow-[0_0_20px_rgba(0,132,255,0.15)] transition-all duration-300"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400 group-hover:text-[#0084ff] transition-colors"><path d="M8 3 4 7l4 4"/><path d="M4 7h16"/><path d="m16 21 4-4-4-4"/><path d="M20 17H4"/></svg>
             <div className="flex flex-col items-center gap-1">
               <span className="mono text-[10px] font-semibold text-slate-400 tracking-widest group-hover:text-white">BI-TEMPORAL</span>
               <span className="mono text-[8px] text-slate-600 uppercase group-hover:text-blue-400 transition-colors">
-                {secondarySrc ? 'T2 PAIR LOADED' : 'CHANGE DETECTION'}
+                {secondarySrc ? 'T1 + T2 PAIR LOADED' : primarySrc ? 'CLICK TO UPLOAD T2 (AFTER)' : 'CLICK TO UPLOAD T1 (BEFORE)'}
               </span>
             </div>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-500 opacity-0 group-hover:opacity-100 transition-all duration-300"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
           </div>
         </div>
 
-        <input ref={fileInputRef1} type="file" multiple accept=".tif,.tiff,.geotiff,.png,.jpg,.jpeg" className="hidden" onChange={(e) => {
-          if (e.target.files && e.target.files[0]) handleFileUpload(e.target.files[0], false);
-          if (e.target.files && e.target.files[1]) handleFileUpload(e.target.files[1], true);
-        }} />
-        <input ref={fileInputRef2} type="file" accept=".tif,.tiff,.geotiff,.png,.jpg,.jpeg" className="hidden" onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], true)} />
+        <input
+          ref={fileInputRef1}
+          type="file"
+          multiple
+          accept=".tif,.tiff,.geotiff,.png,.jpg,.jpeg"
+          className="hidden"
+          onChange={(e) => {
+            if (e.target.files && e.target.files[0]) handleFileUpload(e.target.files[0], false, activeModality);
+            if (e.target.files && e.target.files[1]) handleFileUpload(e.target.files[1], true, activeModality);
+          }}
+        />
+        <input
+          ref={fileInputRef2}
+          type="file"
+          accept=".tif,.tiff,.geotiff,.png,.jpg,.jpeg"
+          className="hidden"
+          onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], true, activeModality)}
+        />
       </section>
 
       {/* Mission Query Console */}
