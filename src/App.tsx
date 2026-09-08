@@ -119,7 +119,7 @@ export const App: React.FC = () => {
       />
 
       {/* Stage */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-6">
+      <main className="flex-1 max-w-[calc(100vw-240px)] flex flex-col items-center pt-24 px-12 pb-12 overflow-y-auto relative">
         {activeTab === 'login' && (
           <div className="animate-fade-slide-view">
             <LoginView onLoginSuccess={handleLoginSuccess} />
