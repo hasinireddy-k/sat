@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ExecutionResult } from '../../types/satquery';
-import { ChevronDown, ChevronUp, Sliders, CheckCircle2, ShieldCheck, Activity, Database } from 'lucide-react';
+import { ChevronDown, ChevronUp, Sliders, CheckCircle2, ShieldCheck, Activity, Database, Cpu } from 'lucide-react';
 
 interface AnalysisDetailsDrawerProps {
   result: ExecutionResult;
@@ -47,9 +47,9 @@ export const AnalysisDetailsDrawer: React.FC<AnalysisDetailsDrawerProps> = ({ re
 
       {/* Expandable Technical Trace & Dataset Validation Drawer */}
       {isOpen && (
-        <div className="mt-3 bg-[#0b0f19] border border-slate-800 rounded-xl p-5 space-y-5 text-slate-300 shadow-xl">
+        <div className="mt-3 bg-[#0b0f19] border border-slate-800 rounded-xl p-5 space-y-5 text-slate-300 shadow-xl animate-fade-slide-view">
           {/* Dataset Status Checklist & Agentic Summary */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* DATASET STATUS PANEL */}
             <div className="bg-[#070a12] p-4 rounded-xl border border-slate-800 space-y-2">
               <div className="text-[10px] text-slate-400 font-bold uppercase flex items-center space-x-1.5 border-b border-slate-800 pb-2">
@@ -80,6 +80,35 @@ export const AnalysisDetailsDrawer: React.FC<AnalysisDetailsDrawerProps> = ({ re
                   </li>
                 ))}
               </ul>
+            </div>
+
+            {/* REMOTE-SENSING MODEL / ADAPTATION STATUS (PS 26167 SECTION D) */}
+            <div className="bg-[#070a12] p-4 rounded-xl border border-cyan-500/30 space-y-2">
+              <div className="text-[10px] text-cyan-400 font-bold uppercase flex items-center justify-between border-b border-slate-800 pb-2">
+                <span className="flex items-center space-x-1.5">
+                  <Cpu className="w-3.5 h-3.5 text-cyan-400" />
+                  <span>RS MODEL / ADAPTATION</span>
+                </span>
+                <span className="text-[9px] bg-emerald-950 text-emerald-400 border border-emerald-800 px-1.5 rounded">ADAPTED / READY</span>
+              </div>
+              <div className="space-y-1 text-[11px] font-sans">
+                <div>
+                  <strong className="text-slate-400 font-mono text-[10px] uppercase">DATASET:</strong>
+                  <span className="text-slate-200 block font-mono text-[11px]">BigEarthNet.txt + Sentinel/RISAT</span>
+                </div>
+                <div>
+                  <strong className="text-slate-400 font-mono text-[10px] uppercase">MODALITIES:</strong>
+                  <span className="text-slate-200 block font-mono text-[11px]">Optical S2 (12 bands) + SAR C-Band</span>
+                </div>
+                <div>
+                  <strong className="text-slate-400 font-mono text-[10px] uppercase">COMPONENT:</strong>
+                  <span className="text-cyan-300 block font-mono text-[11px]">Dual-Stream Swin-RS Encoder</span>
+                </div>
+                <div>
+                  <strong className="text-slate-400 font-mono text-[10px] uppercase">PURPOSE:</strong>
+                  <span className="text-slate-300 block">LULC Taxonomy & Cross-Modal Alignment</span>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -118,4 +147,5 @@ export const AnalysisDetailsDrawer: React.FC<AnalysisDetailsDrawerProps> = ({ re
     </div>
   );
 };
+
 

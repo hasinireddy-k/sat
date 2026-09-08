@@ -4,10 +4,11 @@ import { Cpu, Layers, ArrowRight, ShieldCheck, Activity, Database, CheckCircle2,
 
 export const ArchitectureView: React.FC = () => {
   const rsDatasets = [
-    { name: 'BigEarthNet', desc: 'Multi-spectral Sentinel-2 & Sentinel-1 land cover dataset.' },
-    { name: 'VRSBench', desc: 'Remote sensing vision-language reasoning & VQA benchmark.' },
-    { name: 'RSVQA', desc: 'Visual question answering dataset for high-resolution aerial imagery.' },
-    { name: 'CDVQA', desc: 'Bitemporal change detection visual question answering dataset.' },
+    { name: 'BigEarthNet', desc: 'Multi-spectral Sentinel-2 & Sentinel-1 land cover dataset.', status: 'READY', color: 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10' },
+    { name: 'VRSBench', desc: 'Remote sensing vision-language reasoning & VQA benchmark.', status: 'READY', color: 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10' },
+    { name: 'RSVQA', desc: 'Visual question answering dataset for high-resolution aerial imagery.', status: 'CONNECTED', color: 'text-cyan-400 border-cyan-500/30 bg-cyan-500/10' },
+    { name: 'CDVQA', desc: 'Bitemporal change detection visual question answering dataset.', status: 'CONNECTED', color: 'text-cyan-400 border-cyan-500/30 bg-cyan-500/10' },
+    { name: 'ISRO / SAC Benchmark Set', desc: 'Proprietary ISRO mission evaluation suite for Cartosat & RISAT imagery.', status: 'NOT CONFIGURED (PLANNED)', color: 'text-amber-400 border-amber-500/30 bg-amber-500/10' },
   ];
 
   return (
@@ -67,20 +68,27 @@ export const ArchitectureView: React.FC = () => {
         <div className="flex items-center justify-between border-b border-slate-800 pb-3">
           <h3 className="text-xs font-bold uppercase tracking-wider text-slate-100 font-mono flex items-center space-x-2">
             <Database className="w-4 h-4 text-cyan-400" />
-            <span>REMOTE-SENSING INTELLIGENCE & DOMAIN ADAPTATION</span>
+            <span>REMOTE-SENSING INTELLIGENCE & BENCHMARK ADAPTATION</span>
           </h3>
-          <span className="text-[10px] text-cyan-400 font-mono">SIH Requirement Compliant</span>
+          <span className="text-[10px] text-cyan-400 font-mono">Section S Compliant</span>
         </div>
 
         <p className="text-xs text-slate-300 leading-relaxed font-sans">
-          SatQuery AI uses a dedicated <strong>Remote-Sensing Adaptation Layer</strong>. Specialist models are calibrated against remote sensing benchmarks rather than relying solely on generic LLMs/VLMs.
+          SatQuery AI uses a dedicated <strong>Remote-Sensing Adaptation Layer</strong> calibrated against standard Earth Observation benchmark suites:
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-mono pt-2">
           {rsDatasets.map((ds, i) => (
-            <div key={i} className="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1">
-              <span className="text-cyan-300 font-bold">{ds.name}</span>
-              <p className="text-[11px] text-slate-400 font-sans">{ds.desc}</p>
+            <div key={i} className="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1.5 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between">
+                  <span className="text-cyan-300 font-bold">{ds.name}</span>
+                  <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold border ${ds.color}`}>
+                    {ds.status}
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-400 font-sans mt-1">{ds.desc}</p>
+              </div>
             </div>
           ))}
         </div>
