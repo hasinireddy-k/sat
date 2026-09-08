@@ -119,15 +119,15 @@ export const App: React.FC = () => {
       />
 
       {/* Stage */}
-      <main className="flex-1 max-w-[calc(100vw-240px)] flex flex-col items-center pt-24 px-12 pb-12 overflow-y-auto relative">
+      <main className="flex-1 w-full max-w-[calc(100vw-240px)] flex flex-col items-center pt-16 px-8 pb-12 overflow-y-auto relative">
         {activeTab === 'login' && (
-          <div className="w-full max-w-5xl animate-fade-slide-view">
+          <div className="w-full max-w-6xl mx-auto animate-fade-slide-view">
             <LoginView onLoginSuccess={handleLoginSuccess} />
           </div>
         )}
 
         {activeTab === 'mission-control' && !activeResult && (
-          <div className="w-full max-w-5xl animate-fade-slide-view">
+          <div className="w-full max-w-6xl mx-auto animate-fade-slide-view">
             <HomeUploadView
               onStartAnalysis={handleStartAnalysis}
               onSelectDemoMission={handleSelectDemoMission}
@@ -145,7 +145,7 @@ export const App: React.FC = () => {
           activeTab !== 'help' &&
           activeTab !== 'architecture' &&
           activeTab !== 'evaluation' && (
-            <div className="w-full max-w-5xl animate-fade-slide-view">
+            <div className="w-full max-w-6xl mx-auto animate-fade-slide-view">
               <MainAnalysisWorkspace
                 initialResult={activeResult || DEMO_MISSIONS[0].precomputedResult}
                 onGenerateReport={handleGenerateReport}
@@ -155,7 +155,7 @@ export const App: React.FC = () => {
           )}
 
         {activeTab === 'gallery' && (
-          <div className="w-full max-w-5xl animate-fade-slide-view">
+          <div className="w-full max-w-6xl mx-auto animate-fade-slide-view">
             <MissionGalleryView
               onSelectMission={handleSelectDemoMission}
               setActiveTab={setActiveTab}
@@ -164,7 +164,7 @@ export const App: React.FC = () => {
         )}
 
         {activeTab === 'history' && (
-          <div className="w-full max-w-5xl animate-fade-slide-view">
+          <div className="w-full max-w-6xl mx-auto animate-fade-slide-view">
             <AnalysisHistoryView
               historyLogs={historyLogs}
               onSelectResult={(res) => {
@@ -177,19 +177,19 @@ export const App: React.FC = () => {
         )}
 
         {activeTab === 'reports' && (
-          <div className="w-full max-w-5xl animate-fade-slide-view">
+          <div className="w-full max-w-6xl mx-auto animate-fade-slide-view">
             <ReportGeneratorView result={activeResult || DEMO_MISSIONS[0].precomputedResult} />
           </div>
         )}
 
         {activeTab === 'profile' && (
-          <div className="w-full max-w-5xl animate-fade-slide-view">
+          <div className="w-full max-w-6xl mx-auto animate-fade-slide-view">
             <ProfileView user={user} onSignOut={handleSignOut} />
           </div>
         )}
 
         {activeTab === 'settings' && (
-          <div className="w-full max-w-5xl animate-fade-slide-view">
+          <div className="w-full max-w-6xl mx-auto animate-fade-slide-view">
             <SettingsView
               settings={settings}
               onUpdateSettings={(newS) => setSettings((prev) => ({ ...prev, ...newS }))}
@@ -199,31 +199,23 @@ export const App: React.FC = () => {
         )}
 
         {activeTab === 'help' && (
-          <div className="w-full max-w-5xl animate-fade-slide-view">
+          <div className="w-full max-w-6xl mx-auto animate-fade-slide-view">
             <HelpView />
           </div>
         )}
 
         {activeTab === 'architecture' && (
-          <div className="w-full max-w-5xl animate-fade-slide-view">
+          <div className="w-full max-w-6xl mx-auto animate-fade-slide-view">
             <ArchitectureView />
           </div>
         )}
 
         {activeTab === 'evaluation' && (
-          <div className="w-full max-w-5xl animate-fade-slide-view">
+          <div className="w-full max-w-6xl mx-auto animate-fade-slide-view">
             <EvaluationView />
           </div>
         )}
       </main>
-
-      {/* Restrained Space Footer */}
-      <footer className="bg-[#060810] border-t border-slate-900 py-3 px-4 text-xs font-mono text-slate-500 print:hidden">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
-          <div>SatQuery AI — Turn satellite imagery into answers.</div>
-          <div>ISRO SIH 2026 Problem Statement 26167</div>
-        </div>
-      </footer>
     </SpaceBackground>
   );
 };

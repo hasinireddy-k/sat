@@ -77,7 +77,7 @@ export const HomeUploadView: React.FC<HomeUploadViewProps> = ({
   };
 
   return (
-    <div className="w-full max-w-5xl">
+    <div className="w-full max-w-6xl mx-auto space-y-12">
       {/* Superdesign Hero Header */}
       <header className="mb-16 text-left animate-[fade-slide-up_0.6s_ease-out_forwards]">
         <h1 className="heading text-5xl lg:text-6xl font-bold text-white mb-6 uppercase tracking-tight">
