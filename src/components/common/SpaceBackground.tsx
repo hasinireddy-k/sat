@@ -2,7 +2,7 @@ import React from 'react';
 
 export const SpaceBackground: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
-    <div className="flex min-h-screen relative bg-black text-white selection:bg-[#0084ff] selection:text-white overflow-hidden">
+    <div className="flex h-screen w-screen relative bg-black text-white selection:bg-[#0084ff] selection:text-white overflow-hidden">
       {/* Multi-layered Drifting Starfields */}
       <div className="starfield star-layer-1"></div>
       <div className="starfield star-layer-2"></div>
@@ -20,7 +20,7 @@ export const SpaceBackground: React.FC<{ children: React.ReactNode }> = ({ child
       <div className="orbital-bg"></div>
       <div className="orbital-arcs"></div>
 
-      <div className="flex-1 flex min-h-screen z-10 w-full">
+      <div className="flex-1 flex h-screen z-10 w-full overflow-hidden">
         {children}
       </div>
     </div>
