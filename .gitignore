@@ -4,8 +4,11 @@ logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
 lerna-debug.log*
+
+# Uploads directory
+uploads/*
+!uploads/.gitkeep
 
 node_modules
 dist

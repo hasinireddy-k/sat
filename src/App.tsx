@@ -53,21 +53,22 @@ export const App: React.FC = () => {
     primaryMeta?: GeoMetadata,
     secondaryMeta?: GeoMetadata
   ) => {
-    // 1. Instantly transition to Analysis Workspace tab
+    // 1. Instantly transition to Analysis Workspace tab & clear stale active result
+    setActiveResult(null);
     setActiveTab('scene-analysis');
 
-    // 2. Set active result immediately so MainAnalysisWorkspace mounts without delay
+    // 2. Set initial metadata state for workspace view
     const initialMetadata: GeoMetadata = primaryMeta || {
-      filename: 'Observation_Scene_1.tif',
-      fileSize: '12.4 MB',
-      dimensions: '2048 x 2048 px',
-      crs: 'EPSG:32643 (UTM Zone 43N)',
-      resolution: '0.5m/px',
-      sensor: secondarySrc ? 'OPTICAL + SAR PAIR' : 'OPTICAL / SENTINEL-2',
+      filename: 'Uploaded_Scene.tif',
+      fileSize: 'Not available',
+      dimensions: '1024 × 1024 px',
+      crs: 'CRS: Not available',
+      resolution: 'Not available',
+      sensor: secondarySrc ? 'OPTICAL + SAR PAIR' : 'Multispectral GeoTIFF Sensor',
       format: 'GeoTIFF',
       acquisitionDate: new Date().toISOString().split('T')[0],
       bands: ['Red', 'Green', 'Blue', 'NIR'],
-      bounds: [77.58, 12.97, 77.62, 13.02],
+      bounds: undefined,
     };
 
     const tempResult: ExecutionResult = {
@@ -77,43 +78,43 @@ export const App: React.FC = () => {
       detectedTask: secondarySrc ? 'Temporal Change Analysis' : 'Visual Question Answering',
       selectedModel: {
         id: 'geovlm-v2',
-        name: 'GeoVLM Sentinel Adapter v2.4',
-        provider: 'ISRO SAC / Open-RS',
-        version: 'v2.4',
+        name: 'GeoVLM PyTorch Specialist Engine',
+        provider: 'SatQuery Remote Sensing AI',
+        version: 'v2.6',
         status: 'online',
         taskSuitability: ['Visual Question Answering'],
-        accuracy: '94.2%',
-        latencyAvg: '420ms',
-        supportedInputTypes: ['GeoTIFF', 'PNG'],
-        maxResolution: '0.5m',
+        accuracy: 'Evaluated per raster',
+        latencyAvg: '180ms',
+        supportedInputTypes: ['GeoTIFF', 'PNG', 'JPEG'],
+        maxResolution: 'Native GSD',
       },
       configuredParameters: { temperature: 0.1, topP: 0.9 },
       validationResult: {
         valid: true,
-        format: 'GeoTIFF',
-        crsFound: true,
-        dimensions: '2048 x 2048 px',
-        notes: 'Validated GeoTIFF header and spatial resolution.',
+        format: initialMetadata.format || 'GeoTIFF',
+        crsFound: initialMetadata.crs !== 'CRS: Not available',
+        dimensions: initialMetadata.dimensions || '1024 × 1024 px',
+        notes: `Validated ${initialMetadata.format || 'GeoTIFF'} header and spatial resolution.`,
       },
-      textAnswer: 'Executing multi-spectral specialist analysis pipeline...',
+      textAnswer: 'Executing PyTorch multi-spectral specialist analysis pipeline...',
       keyFindings: [
-        'Input imagery header validated (CRS EPSG:32643).',
-        'Multi-spectral feature pyramid aligned.',
-        'Extracting spatial evidence and confidence scores...'
+        `Input imagery header validated (${initialMetadata.crs}).`,
+        'Raster preview and feature pyramid aligned.',
+        'Extracting spatial evidence and contours...'
       ],
-      confidence: 94.2,
+      confidence: null,
       confidenceLevel: 'High',
       spatialInterpretation: 'Initial feature pyramid alignment in progress.',
       groundingBoxes: [],
       changeAreas: [],
       trace: [
-        { id: 't1', stepNumber: 1, name: 'Input Header Extraction', description: 'Validating GeoTIFF CRS EPSG:32643 and GSD 0.5m/px.', status: 'success', latencyMs: 40, timestamp: new Date().toLocaleTimeString() },
-        { id: 't2', stepNumber: 2, name: 'Natural Language Intent Classification', description: `Executing query: "${query}"`, status: 'running', latencyMs: 80, timestamp: new Date().toLocaleTimeString() }
+        { id: 't1', stepNumber: 1, name: 'Input Header Extraction', description: `Inspecting ${initialMetadata.filename}. ${initialMetadata.crs}.`, status: 'success', latencyMs: 35, timestamp: new Date().toLocaleTimeString() },
+        { id: 't2', stepNumber: 2, name: 'Query Intent Classification', description: `Executing query: "${query}"`, status: 'running', latencyMs: 45, timestamp: new Date().toLocaleTimeString() }
       ],
       geoMetadata: initialMetadata,
       geoMetadataSecondary: secondaryMeta,
       timestamp: new Date().toISOString(),
-      executionTimeTotalMs: 420,
+      executionTimeTotalMs: 325,
       images: {
         primary: primarySrc,
         secondary: secondarySrc,
@@ -124,6 +125,7 @@ export const App: React.FC = () => {
 
     // 3. Execute query and update with finalized backend response
     try {
+      const fileId = primaryMeta?.fileId;
       const finalResult = await satqueryApi.executeQuery(
         {
           query,
@@ -131,170 +133,99 @@ export const App: React.FC = () => {
           secondaryImage: secondarySrc,
           primaryMetadata: primaryMeta,
           secondaryMetadata: secondaryMeta,
-        },
+          fileId
+        } as any,
         (updatedTrace) => {
           setActiveResult((prev) => (prev ? { ...prev, trace: updatedTrace } : prev));
         }
       );
 
       setActiveResult(finalResult);
-      setHistoryLogs((prev) => [finalResult, ...prev.filter((h) => h.id !== tempResult.id)]);
-    } catch (err) {
-      console.error('[SatQuery Analysis Error]', err);
+
+      // 4. Save to history
+      setHistoryLogs((prev) => [finalResult, ...prev]);
+    } catch (error) {
+      console.error('[SatQuery App] Execution failed:', error);
     }
   };
 
   const handleSelectDemoMission = (mission: DemoMission) => {
     setActiveResult(mission.precomputedResult);
-    if (!historyLogs.some((h) => h.id === mission.precomputedResult.id)) {
-      setHistoryLogs((prev) => [mission.precomputedResult, ...prev]);
-    }
     setActiveTab('scene-analysis');
   };
 
-  const handleGenerateReport = (res: ExecutionResult) => {
-    setActiveResult(res);
-    setActiveTab('reports');
-  };
-
-  const handleResetUpload = () => {
-    setActiveResult(null);
-    setActiveTab('mission-control');
-  };
-
-  const handleLoginSuccess = (email: string, isDemo = false) => {
-    setUser({
-      name: isDemo ? 'Demo Analyst' : 'Research Analyst',
-      email,
-      organization: isDemo ? 'ISRO SIH Demo Environment' : 'ISRO Earth Observation Division',
-      role: 'Earth Observation Specialist',
-      joinedDate: 'September 2025',
-      isAuthenticated: true,
-    });
-    setActiveTab('mission-control');
-  };
-
-  const handleSignOut = () => {
-    setUser((prev) => ({ ...prev, isAuthenticated: false }));
-    setActiveTab('login');
-  };
-
-  const handleClearHistory = () => {
-    setHistoryLogs([]);
+  const handleSelectHistoryItem = (result: ExecutionResult) => {
+    setActiveResult(result);
+    setActiveTab('scene-analysis');
   };
 
   return (
-    <SpaceBackground>
-      {/* Header */}
+    <div className="relative min-h-screen bg-black text-slate-100 font-sans overflow-x-hidden">
+      <SpaceBackground />
+
       <Header
         activeTab={activeTab}
         setActiveTab={setActiveTab}
+        user={user}
         demoMode={demoMode}
         setDemoMode={setDemoMode}
-        hasLoadedImages={!!activeResult}
-        onResetUpload={handleResetUpload}
-        user={user}
       />
 
-      {/* Stage */}
-      <main className="flex-1 h-screen w-full max-w-[calc(100vw-240px)] flex flex-col items-center pt-12 px-8 pb-24 overflow-y-auto relative">
-        {activeTab === 'login' && (
-          <div className="w-full max-w-6xl mx-auto animate-fade-slide-view">
-            <LoginView onLoginSuccess={handleLoginSuccess} />
-          </div>
+      <main className="relative pt-16 min-h-[calc(100vh-4rem)]">
+        {activeTab === 'mission-control' && (
+          <HomeUploadView
+            onStartAnalysis={handleStartAnalysis}
+            onSelectMission={handleSelectDemoMission}
+            demoMissions={DEMO_MISSIONS}
+          />
         )}
 
-        {activeTab === 'mission-control' && !activeResult && (
-          <div className="w-full max-w-6xl mx-auto animate-fade-slide-view">
-            <HomeUploadView
-              onStartAnalysis={handleStartAnalysis}
-              onSelectDemoMission={handleSelectDemoMission}
-            />
-          </div>
+        {activeTab === 'scene-analysis' && (
+          <MainAnalysisWorkspace
+            activeResult={activeResult}
+            onNewQuery={(q) => {
+              if (activeResult) {
+                handleStartAnalysis(
+                  activeResult.images.primary,
+                  q,
+                  activeResult.images.secondary,
+                  activeResult.geoMetadata,
+                  activeResult.geoMetadataSecondary
+                );
+              }
+            }}
+          />
         )}
 
-        {(activeTab === 'scene-analysis' || activeResult) &&
-          activeTab !== 'login' &&
-          activeTab !== 'gallery' &&
-          activeTab !== 'history' &&
-          activeTab !== 'reports' &&
-          activeTab !== 'profile' &&
-          activeTab !== 'settings' &&
-          activeTab !== 'help' &&
-          activeTab !== 'architecture' &&
-          activeTab !== 'evaluation' && (
-            <div className="w-full max-w-6xl mx-auto animate-fade-slide-view">
-              <MainAnalysisWorkspace
-                initialResult={activeResult || DEMO_MISSIONS[0].precomputedResult}
-                onGenerateReport={handleGenerateReport}
-                onBackToHome={handleResetUpload}
-              />
-            </div>
-          )}
-
-        {activeTab === 'gallery' && (
-          <div className="w-full max-w-6xl mx-auto animate-fade-slide-view">
-            <MissionGalleryView
-              onSelectMission={handleSelectDemoMission}
-              setActiveTab={setActiveTab}
-            />
-          </div>
+        {activeTab === 'mission-gallery' && (
+          <MissionGalleryView
+            missions={DEMO_MISSIONS}
+            onSelectMission={handleSelectDemoMission}
+          />
         )}
 
-        {activeTab === 'history' && (
-          <div className="w-full max-w-6xl mx-auto animate-fade-slide-view">
-            <AnalysisHistoryView
-              historyLogs={historyLogs}
-              onSelectResult={(res) => {
-                setActiveResult(res);
-                setActiveTab('scene-analysis');
-              }}
-              onGenerateReport={handleGenerateReport}
-            />
-          </div>
+        {activeTab === 'history-logs' && (
+          <AnalysisHistoryView
+            logs={historyLogs}
+            onSelectLog={handleSelectHistoryItem}
+          />
         )}
 
-        {activeTab === 'reports' && (
-          <div className="w-full max-w-6xl mx-auto animate-fade-slide-view">
-            <ReportGeneratorView result={activeResult || DEMO_MISSIONS[0].precomputedResult} />
-          </div>
+        {activeTab === 'report-generator' && (
+          <ReportGeneratorView activeResult={activeResult} />
         )}
 
-        {activeTab === 'profile' && (
-          <div className="w-full max-w-6xl mx-auto animate-fade-slide-view">
-            <ProfileView user={user} onSignOut={handleSignOut} />
-          </div>
-        )}
+        {activeTab === 'architecture' && <ArchitectureView />}
 
-        {activeTab === 'settings' && (
-          <div className="w-full max-w-6xl mx-auto animate-fade-slide-view">
-            <SettingsView
-              settings={settings}
-              onUpdateSettings={(newS) => setSettings((prev) => ({ ...prev, ...newS }))}
-              onClearHistory={handleClearHistory}
-            />
-          </div>
-        )}
+        {activeTab === 'evaluation' && <EvaluationView />}
 
-        {activeTab === 'help' && (
-          <div className="w-full max-w-6xl mx-auto animate-fade-slide-view">
-            <HelpView />
-          </div>
-        )}
+        {activeTab === 'profile' && <ProfileView user={user} setUser={setUser} />}
 
-        {activeTab === 'architecture' && (
-          <div className="w-full max-w-6xl mx-auto animate-fade-slide-view">
-            <ArchitectureView />
-          </div>
-        )}
+        {activeTab === 'settings' && <SettingsView settings={settings} setSettings={setSettings} />}
 
-        {activeTab === 'evaluation' && (
-          <div className="w-full max-w-6xl mx-auto animate-fade-slide-view">
-            <EvaluationView />
-          </div>
-        )}
+        {activeTab === 'help' && <HelpView />}
       </main>
-    </SpaceBackground>
+    </div>
   );
 };
 
