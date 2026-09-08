@@ -154,7 +154,7 @@ export function parseAndValidateImageFile(
           // Browser cannot natively render raw 16-bit TIFF img.src
           // ACCEPT THE TIFF FILE, store data, and provide preview rendering
           URL.revokeObjectURL(objectUrl);
-          const sampleSatellitePreview = 'https://images.unsplash.com/photo-1547683905-f686c993aae5?auto=format&fit=crop&w=1000&q=80';
+          const sampleSatellitePreview = '/assets/scenes/scene-01.jpg';
 
           resolve({
             valid: true,

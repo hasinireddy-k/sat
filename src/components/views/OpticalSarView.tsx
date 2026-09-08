@@ -20,10 +20,10 @@ interface OpticalSarViewProps {
 
 export const OpticalSarView: React.FC<OpticalSarViewProps> = ({ onGenerateReport }) => {
   const [opticalSrc, setOpticalSrc] = useState<string>(
-    'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=1200&q=80'
+    '/assets/scenes/scene-01.jpg'
   );
   const [sarSrc, setSarSrc] = useState<string>(
-    'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1200&q=80'
+    '/assets/scenes/scene-03.jpg'
   );
   const [query, setQuery] = useState<string>(
     'What information does SAR reveal that optical imagery misses due to cloud cover?'

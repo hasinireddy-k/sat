@@ -25,7 +25,7 @@ export const SingleImageAnalysisView: React.FC<SingleImageAnalysisViewProps> = (
   onGenerateReport
 }) => {
   const [imageSrc, setImageSrc] = useState<string>(
-    'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80'
+    '/assets/scenes/scene-01.jpg'
   );
   const [query, setQuery] = useState<string>('Where are the commercial office complexes and tech parks?');
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);

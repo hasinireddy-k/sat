@@ -10,7 +10,7 @@ export const DEMO_MISSIONS: DemoMission[] = [
     location: 'Bengaluru Tech Corridor, India',
     coordinates: '12.9249° N, 77.6792° E',
     sensor: 'Cartosat-3 (0.3m GSD)',
-    thumbnail: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80',
+    thumbnail: '/assets/scenes/scene-01.jpg',
     description: 'Single-scene visual question answering and text-guided region grounding detecting built-up commercial complexes, road networks, and land cover features.',
     sampleQueries: ['Where are the commercial office complexes and buildings?'],
     precomputedResult: {
@@ -291,7 +291,7 @@ export const DEMO_MISSIONS: DemoMission[] = [
     location: 'Outer Ring Road, Bengaluru, India',
     coordinates: '12.9249° N, 77.6792° E',
     sensor: 'Cartosat-2E High-Res',
-    thumbnail: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80',
+    thumbnail: '/assets/scenes/scene-01.jpg',
     description: 'Text-guided region grounding isolating commercial office complexes, rooftop solar arrays, and rainwater harvesting basins.',
     sampleQueries: ['Where are the major built-up regions?'],
     precomputedResult: {

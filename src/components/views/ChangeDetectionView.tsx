@@ -22,10 +22,10 @@ export const ChangeDetectionView: React.FC<ChangeDetectionViewProps> = ({
   onGenerateReport
 }) => {
   const [t1Src, setT1Src] = useState<string>(
-    'https://images.unsplash.com/photo-1547683905-f686c993aae5?auto=format&fit=crop&w=1200&q=80'
+    '/assets/scenes/scene-01.jpg'
   );
   const [t2Src, setT2Src] = useState<string>(
-    'https://images.unsplash.com/photo-1518837695005-2083093ee35b?auto=format&fit=crop&w=1200&q=80'
+    '/assets/scenes/scene-02.jpg'
   );
   const [query, setQuery] = useState<string>('What changed between these pre-flood and post-flood images?');
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);

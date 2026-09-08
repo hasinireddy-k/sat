@@ -312,6 +312,9 @@ export const MinimalViewer: React.FC<MinimalViewerProps> = ({
                 alt="Primary Scene"
                 className="max-h-[440px] w-auto object-contain rounded block mx-auto border border-slate-800/80 transition-image"
                 style={{ filter: spectralMode === 'NIR' ? 'contrast(1.2) saturate(1.45) hue-rotate(-28deg)' : 'none' }}
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = '/assets/scenes/scene-01.jpg';
+                }}
               />
               <div className="absolute top-2 left-2 bg-slate-950/90 border border-slate-800 px-2 py-0.5 rounded text-[10px] font-mono text-slate-300 font-bold select-none">
                 {mode === 'change' ? 'T1 BEFORE (2024)' : mode === 'optical-sar' ? (spectralMode === 'NIR' ? 'OPTICAL FALSE-COLOR (NIR)' : 'OPTICAL RGB') : (primaryMeta?.sensor || 'OPTICAL SCENE')}
@@ -362,7 +365,14 @@ export const MinimalViewer: React.FC<MinimalViewerProps> = ({
                 className="relative max-w-full max-h-full overflow-hidden flex items-center justify-center transition-camera gpu-layer"
                 style={{ transform: `scale(${zoom}) translate(${panX}px, ${panY}px)` }}
               >
-                <img src={secondarySrc} alt="Secondary Scene" className="max-h-[440px] w-auto object-contain rounded block mx-auto border border-slate-800/80 transition-image" />
+                <img
+                  src={secondarySrc}
+                  alt="Secondary Scene"
+                  className="max-h-[440px] w-auto object-contain rounded block mx-auto border border-slate-800/80 transition-image"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = '/assets/scenes/scene-02.jpg';
+                  }}
+                />
                 <div className="absolute top-2 left-2 bg-slate-950/90 border border-slate-800 px-2 py-0.5 rounded text-[10px] font-mono text-cyan-300 font-bold select-none">
                   {mode === 'change' ? 'T2 AFTER (2026)' : 'SAR C-BAND (ALL-WEATHER)'}
                 </div>
@@ -380,12 +390,18 @@ export const MinimalViewer: React.FC<MinimalViewerProps> = ({
               alt="Base Scene"
               className="max-h-[440px] w-auto object-contain rounded block mx-auto border border-slate-800"
               style={{ filter: spectralMode === 'NIR' ? 'contrast(1.2) saturate(1.45) hue-rotate(-28deg)' : 'none' }}
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = '/assets/scenes/scene-01.jpg';
+              }}
             />
             {secondarySrc && (
               <img
                 src={secondarySrc}
                 alt="Overlay Scene"
                 className="absolute max-h-[440px] w-auto object-contain rounded mix-blend-screen opacity-60 pointer-events-none transition-image"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = '/assets/scenes/scene-02.jpg';
+                }}
               />
             )}
             <div className="absolute top-2 left-2 bg-slate-950/90 border border-slate-800 px-2.5 py-1 rounded text-[10px] font-mono text-cyan-400 font-bold select-none">
@@ -416,6 +432,9 @@ export const MinimalViewer: React.FC<MinimalViewerProps> = ({
                 alt="T1 Pre"
                 className="w-full h-full object-cover transition-camera"
                 style={{ transform: `scale(${zoom}) translate(${panX}px, ${panY}px)`, filter: spectralMode === 'NIR' ? 'contrast(1.2) saturate(1.45) hue-rotate(-28deg)' : 'none' }}
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = '/assets/scenes/scene-01.jpg';
+                }}
               />
               <div className="absolute top-10 left-3 bg-slate-950/90 border border-slate-800 px-2.5 py-1 rounded font-mono text-xs text-slate-300 shadow">
                 {mode === 'change' ? `T1 BEFORE (${primaryMeta?.acquisitionDate || '2024'})` : (spectralMode === 'NIR' ? 'FALSE-COLOR INFRARED (NIR)' : 'OPTICAL VISIBLE SPECTRUM')}
@@ -434,6 +453,9 @@ export const MinimalViewer: React.FC<MinimalViewerProps> = ({
                 alt="T2 Post"
                 className="w-full h-full object-cover transition-camera"
                 style={{ transform: `scale(${zoom}) translate(${panX}px, ${panY}px)` }}
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = '/assets/scenes/scene-02.jpg';
+                }}
               />
               <div className="absolute top-10 right-3 bg-slate-950/90 border border-slate-800 px-2.5 py-1 rounded font-mono text-xs text-cyan-300 shadow">
                 {mode === 'change' ? `T2 AFTER (${secondaryMeta?.acquisitionDate || '2026'})` : 'SAR RADAR BACKSCATTER'}
