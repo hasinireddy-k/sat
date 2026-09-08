@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { GeoMetadata, DemoMission } from '../../types/satquery';
 import { DEMO_MISSIONS } from '../../data/demoMissions';
 import { parseAndValidateImageFile } from '../../services/geoTiffService';
+import { satqueryApi } from '../../services/satqueryApi';
 import { Upload, Send, ArrowRight, CheckCircle2, Globe, Layers, GitCompare, Eye, Cpu, Compass, Activity, ShieldCheck } from 'lucide-react';
 
 interface HomeUploadViewProps {
@@ -54,26 +55,19 @@ export const HomeUploadView: React.FC<HomeUploadViewProps> = ({
     setIsValidating(true);
 
     try {
-      const validation = await parseAndValidateImageFile(file);
-      if (!validation.valid) {
-        setErrorMessage(validation.errorMessage || 'UNSUPPORTED FORMAT');
+      const uploadRes = await satqueryApi.uploadImage(file, isSecondary);
+      if (uploadRes.status === 'INCOMPATIBLE') {
+        setErrorMessage('UNSUPPORTED FORMAT OR INCOMPATIBLE METADATA');
         setIsValidating(false);
         return;
       }
 
-      const src = validation.previewUrl;
       if (isSecondary) {
-        setSecondarySrc(src);
-        setSecondaryMeta({
-          ...validation.metadata,
-          status: validation.status
-        });
+        setSecondarySrc(uploadRes.url);
+        setSecondaryMeta(uploadRes.metadata);
       } else {
-        setPrimarySrc(src);
-        setPrimaryMeta({
-          ...validation.metadata,
-          status: validation.status
-        });
+        setPrimarySrc(uploadRes.url);
+        setPrimaryMeta(uploadRes.metadata);
       }
       setIsValidating(false);
     } catch (err) {

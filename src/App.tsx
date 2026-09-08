@@ -4,6 +4,7 @@ import { DEMO_MISSIONS } from './data/demoMissions';
 import { Header } from './components/common/Header';
 import { SpaceBackground } from './components/common/SpaceBackground';
 import { agentController } from './services/agentController';
+import { satqueryApi } from './services/satqueryApi';
 
 import { LoginView } from './components/views/LoginView';
 import { HomeUploadView } from './components/views/HomeUploadView';
@@ -52,7 +53,7 @@ export const App: React.FC = () => {
     primaryMeta?: GeoMetadata,
     secondaryMeta?: GeoMetadata
   ) => {
-    const result = await agentController.runOrchestration({
+    const result = await satqueryApi.executeQuery({
       query,
       primaryImage: primarySrc,
       secondaryImage: secondarySrc,
