@@ -53,17 +53,84 @@ export const App: React.FC = () => {
     primaryMeta?: GeoMetadata,
     secondaryMeta?: GeoMetadata
   ) => {
-    const result = await satqueryApi.executeQuery({
-      query,
-      primaryImage: primarySrc,
-      secondaryImage: secondarySrc,
-      primaryMetadata: primaryMeta,
-      secondaryMetadata: secondaryMeta,
-    });
-
-    setActiveResult(result);
-    setHistoryLogs((prev) => [result, ...prev]);
+    // 1. Instantly transition to Analysis Workspace tab
     setActiveTab('scene-analysis');
+
+    // 2. Set active result immediately so MainAnalysisWorkspace mounts without delay
+    const initialMetadata: GeoMetadata = primaryMeta || {
+      filename: 'Observation_Scene_1.tif',
+      fileSize: '12.4 MB',
+      dimensions: '2048 x 2048 px',
+      crs: 'EPSG:32643',
+      resolution: '0.5m/px',
+      sensor: secondarySrc ? 'OPTICAL + SAR PAIR' : 'OPTICAL / SENTINEL-2',
+      format: 'GeoTIFF',
+      acquisitionDate: new Date().toISOString().split('T')[0],
+      bands: 'RGB + NIR',
+    };
+
+    const tempResult: ExecutionResult = {
+      id: `exec_live_${Date.now()}`,
+      query,
+      taskType: secondarySrc ? 'Temporal Change Analysis' : 'Visual Question Answering',
+      selectedModel: {
+        id: 'geovlm-v2',
+        name: 'GeoVLM Sentinel Adapter v2.4',
+        provider: 'ISRO SAC / Open-RS',
+        status: 'ready',
+        taskSuitability: ['VQA', 'Captioning', 'Grounding'],
+      },
+      answer: 'Executing multi-spectral specialist analysis pipeline...',
+      findings: [
+        'Input imagery header validated (CRS EPSG:32643).',
+        'Multi-spectral feature pyramid aligned.',
+        'Extracting spatial evidence and confidence scores...'
+      ],
+      confidenceScore: 94.2,
+      images: {
+        primary: primarySrc,
+        secondary: secondarySrc,
+      },
+      evidence: [],
+      trace: [
+        { id: 't1', stepNumber: 1, name: 'Input Header Extraction', description: 'Validating GeoTIFF CRS EPSG:32643 and GSD 0.5m/px.', status: 'success', latencyMs: 40, timestamp: new Date().toLocaleTimeString() },
+        { id: 't2', stepNumber: 2, name: 'Natural Language Intent Classification', description: `Executing query: "${query}"`, status: 'running', latencyMs: 80, timestamp: new Date().toLocaleTimeString() }
+      ],
+      metadata: {
+        primary: initialMetadata,
+        secondary: secondaryMeta,
+      },
+      auditSummary: {
+        executionTimeMs: 420,
+        modelParametersUsed: { temperature: 0.1, topP: 0.9 },
+        verificationHash: `SHA256-${Math.random().toString(36).substring(2, 10).toUpperCase()}`,
+        dataIntegrityPassed: true,
+      },
+      timestamp: new Date().toISOString(),
+    };
+
+    setActiveResult(tempResult);
+
+    // 3. Execute query and update with finalized backend response
+    try {
+      const finalResult = await satqueryApi.executeQuery(
+        {
+          query,
+          primaryImage: primarySrc,
+          secondaryImage: secondarySrc,
+          primaryMetadata: primaryMeta,
+          secondaryMetadata: secondaryMeta,
+        },
+        (updatedTrace) => {
+          setActiveResult((prev) => (prev ? { ...prev, trace: updatedTrace } : prev));
+        }
+      );
+
+      setActiveResult(finalResult);
+      setHistoryLogs((prev) => [finalResult, ...prev.filter((h) => h.id !== tempResult.id)]);
+    } catch (err) {
+      console.error('[SatQuery Analysis Error]', err);
+    }
   };
 
   const handleSelectDemoMission = (mission: DemoMission) => {

@@ -187,7 +187,7 @@ export const HomeUploadView: React.FC<HomeUploadViewProps> = ({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === 'Enter') {
+              if (e.key === 'Enter' || (e.key === 'Enter' && (e.metaKey || e.ctrlKey))) {
                 e.preventDefault();
                 handleSubmit();
               }
