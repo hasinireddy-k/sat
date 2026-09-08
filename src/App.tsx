@@ -61,52 +61,63 @@ export const App: React.FC = () => {
       filename: 'Observation_Scene_1.tif',
       fileSize: '12.4 MB',
       dimensions: '2048 x 2048 px',
-      crs: 'EPSG:32643',
+      crs: 'EPSG:32643 (UTM Zone 43N)',
       resolution: '0.5m/px',
       sensor: secondarySrc ? 'OPTICAL + SAR PAIR' : 'OPTICAL / SENTINEL-2',
       format: 'GeoTIFF',
       acquisitionDate: new Date().toISOString().split('T')[0],
-      bands: 'RGB + NIR',
+      bands: ['Red', 'Green', 'Blue', 'NIR'],
+      bounds: [77.58, 12.97, 77.62, 13.02],
     };
 
     const tempResult: ExecutionResult = {
       id: `exec_live_${Date.now()}`,
       query,
-      taskType: secondarySrc ? 'Temporal Change Analysis' : 'Visual Question Answering',
+      mode: secondarySrc ? 'change' : 'single',
+      detectedTask: secondarySrc ? 'Temporal Change Analysis' : 'Visual Question Answering',
       selectedModel: {
         id: 'geovlm-v2',
         name: 'GeoVLM Sentinel Adapter v2.4',
         provider: 'ISRO SAC / Open-RS',
-        status: 'ready',
-        taskSuitability: ['VQA', 'Captioning', 'Grounding'],
+        version: 'v2.4',
+        status: 'online',
+        taskSuitability: ['Visual Question Answering'],
+        accuracy: '94.2%',
+        latencyAvg: '420ms',
+        supportedInputTypes: ['GeoTIFF', 'PNG'],
+        maxResolution: '0.5m',
       },
-      answer: 'Executing multi-spectral specialist analysis pipeline...',
-      findings: [
+      configuredParameters: { temperature: 0.1, topP: 0.9 },
+      validationResult: {
+        valid: true,
+        format: 'GeoTIFF',
+        crsFound: true,
+        dimensions: '2048 x 2048 px',
+        notes: 'Validated GeoTIFF header and spatial resolution.',
+      },
+      textAnswer: 'Executing multi-spectral specialist analysis pipeline...',
+      keyFindings: [
         'Input imagery header validated (CRS EPSG:32643).',
         'Multi-spectral feature pyramid aligned.',
         'Extracting spatial evidence and confidence scores...'
       ],
-      confidenceScore: 94.2,
-      images: {
-        primary: primarySrc,
-        secondary: secondarySrc,
-      },
-      evidence: [],
+      confidence: 94.2,
+      confidenceLevel: 'High',
+      spatialInterpretation: 'Initial feature pyramid alignment in progress.',
+      groundingBoxes: [],
+      changeAreas: [],
       trace: [
         { id: 't1', stepNumber: 1, name: 'Input Header Extraction', description: 'Validating GeoTIFF CRS EPSG:32643 and GSD 0.5m/px.', status: 'success', latencyMs: 40, timestamp: new Date().toLocaleTimeString() },
         { id: 't2', stepNumber: 2, name: 'Natural Language Intent Classification', description: `Executing query: "${query}"`, status: 'running', latencyMs: 80, timestamp: new Date().toLocaleTimeString() }
       ],
-      metadata: {
-        primary: initialMetadata,
-        secondary: secondaryMeta,
-      },
-      auditSummary: {
-        executionTimeMs: 420,
-        modelParametersUsed: { temperature: 0.1, topP: 0.9 },
-        verificationHash: `SHA256-${Math.random().toString(36).substring(2, 10).toUpperCase()}`,
-        dataIntegrityPassed: true,
-      },
+      geoMetadata: initialMetadata,
+      geoMetadataSecondary: secondaryMeta,
       timestamp: new Date().toISOString(),
+      executionTimeTotalMs: 420,
+      images: {
+        primary: primarySrc,
+        secondary: secondarySrc,
+      },
     };
 
     setActiveResult(tempResult);
