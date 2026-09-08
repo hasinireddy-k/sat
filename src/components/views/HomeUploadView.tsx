@@ -109,20 +109,75 @@ export const HomeUploadView: React.FC<HomeUploadViewProps> = ({
           </div>
         )}
 
-        {/* Selected File Metadata Card */}
-        {(primaryMeta || secondaryMeta) && (
-          <div className="mb-4 p-3 bg-[#070a12] border border-cyan-500/30 rounded flex flex-wrap items-center justify-between gap-3 text-xs mono text-slate-300">
-            <div className="flex items-center space-x-3">
-              <span className="text-emerald-400 font-bold uppercase">✔ INGESTED SCENE:</span>
-              <span>{primaryMeta?.filename || 'T1 Scene'}</span>
-              {secondaryMeta && <span>+ {secondaryMeta.filename} (T2)</span>}
+        {/* Ingested Input Pictures Visual Preview Space */}
+        {(primarySrc || secondarySrc) && (
+          <div className="mb-6 p-4 bg-[#070a12] border border-cyan-500/40 rounded-xl space-y-3 shadow-lg font-mono text-xs">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+              <span className="text-cyan-400 font-bold uppercase tracking-wider flex items-center space-x-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span>LOADED INPUT IMAGERY PREVIEW</span>
+              </span>
+              <button
+                onClick={() => {
+                  setPrimarySrc(null);
+                  setSecondarySrc(null);
+                  setPrimaryMeta(undefined);
+                  setSecondaryMeta(undefined);
+                }}
+                className="px-2.5 py-1 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-400 hover:text-rose-400 text-[10px] rounded transition"
+              >
+                ✕ REMOVE INPUT IMAGERY
+              </button>
             </div>
-            <div className="flex items-center space-x-2 text-[10px] text-slate-400">
-              <span>FORMAT: <strong className="text-slate-200">{primaryMeta?.format || 'GeoTIFF'}</strong></span>
-              <span>•</span>
-              <span>DIM: <strong className="text-slate-200">{primaryMeta?.dimensions || '2048x2048'}</strong></span>
-              <span>•</span>
-              <span>CRS: <strong className="text-slate-200">{primaryMeta?.crs || 'EPSG:32643'}</strong></span>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1 font-sans">
+              {primarySrc && (
+                <div className="flex space-x-3 bg-slate-950 p-3 rounded-lg border border-slate-800 items-center">
+                  <img
+                    src={primarySrc}
+                    alt="Primary Input Scene"
+                    className="w-24 h-20 rounded object-cover border border-cyan-500/30 shrink-0"
+                  />
+                  <div className="space-y-1 font-mono text-[11px] min-w-0">
+                    <div className="text-cyan-300 font-bold truncate">
+                      {primaryMeta?.filename || 'Primary_Scene.tif'}
+                    </div>
+                    <div className="text-[10px] text-slate-400">
+                      ROLE: <strong className="text-slate-200">PRIMARY / T1 SCENE</strong>
+                    </div>
+                    <div className="text-[10px] text-slate-400">
+                      SENSOR: <strong className="text-slate-200">{primaryMeta?.sensor || 'OPTICAL'}</strong>
+                    </div>
+                    <div className="text-[10px] text-slate-400">
+                      DIM: <strong className="text-slate-200">{primaryMeta?.dimensions || '2048x2048'}</strong> | CRS: <strong className="text-slate-200">{primaryMeta?.crs || 'EPSG:32643'}</strong>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {secondarySrc && (
+                <div className="flex space-x-3 bg-slate-950 p-3 rounded-lg border border-slate-800 items-center">
+                  <img
+                    src={secondarySrc}
+                    alt="Secondary Input Scene"
+                    className="w-24 h-20 rounded object-cover border border-purple-500/30 shrink-0"
+                  />
+                  <div className="space-y-1 font-mono text-[11px] min-w-0">
+                    <div className="text-purple-300 font-bold truncate">
+                      {secondaryMeta?.filename || 'Secondary_Scene.tif'}
+                    </div>
+                    <div className="text-[10px] text-slate-400">
+                      ROLE: <strong className="text-slate-200">SECONDARY / T2 / SAR SCENE</strong>
+                    </div>
+                    <div className="text-[10px] text-slate-400">
+                      SENSOR: <strong className="text-slate-200">{secondaryMeta?.sensor || 'SAR / T2'}</strong>
+                    </div>
+                    <div className="text-[10px] text-slate-400">
+                      DIM: <strong className="text-slate-200">{secondaryMeta?.dimensions || '2048x2048'}</strong> | CRS: <strong className="text-slate-200">{secondaryMeta?.crs || 'EPSG:32643'}</strong>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
