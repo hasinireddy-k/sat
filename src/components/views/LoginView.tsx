@@ -21,7 +21,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess }) => {
       {/* Subtle Orbital Background Ambient Light Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#0084ff]/10 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="max-w-md w-full relative z-10 bg-[#05090f] border border-white/15 p-8 rounded-xl shadow-2xl query-glow animate-[fade-slide-up_0.35s_ease-out_forwards]">
+      <div className="max-w-md w-full relative z-10 bg-[#05090f] border border-slate-800 p-8 rounded-xl shadow-2xl animate-[fade-slide-up_0.35s_ease-out_forwards]">
         {/* Brand Header */}
         <div className="text-center space-y-3 mb-8">
           <div className="w-12 h-12 rounded-sm bg-[#0084ff] flex items-center justify-center text-white mx-auto shadow-lg shadow-[#0084ff]/30">
