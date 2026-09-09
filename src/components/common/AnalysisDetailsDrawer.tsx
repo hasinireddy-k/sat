@@ -240,16 +240,25 @@ export const AnalysisDetailsDrawer: React.FC<AnalysisDetailsDrawerProps> = ({
         </div>
       </div>
 
-      {/* 3. VISUAL EVIDENCE (MATCHING USER SCREENSHOT) */}
-      <div className="rounded-xl border border-slate-800 bg-[#0b0f19] p-4 space-y-2 shadow-lg">
-        <div className="flex items-center space-x-2 text-cyan-400 font-mono text-xs font-bold uppercase tracking-wider">
-          <Layers className="w-4 h-4" />
-          <span>VISUAL EVIDENCE</span>
+      {/* 3. VISUAL EVIDENCE (CONCISE & ACCURATE) */}
+      {result.keyFindings && result.keyFindings.length > 0 && (
+        <div className="rounded-xl border border-slate-800 bg-[#0b0f19] p-4 space-y-2.5 shadow-lg font-mono">
+          <div className="flex items-center space-x-2 text-cyan-400 text-xs font-bold uppercase tracking-wider">
+            <Layers className="w-4 h-4" />
+            <span>SPECTRAL & REGION EVIDENCE</span>
+          </div>
+          <div className="space-y-1.5 text-xs text-slate-300">
+            {result.keyFindings
+              .filter((f) => !f.includes('= N/A') && !f.includes('at N/A'))
+              .map((finding, idx) => (
+                <div key={idx} className="flex items-start space-x-2 bg-slate-900/60 p-2 rounded border border-slate-800/80">
+                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 mt-1.5 shrink-0" />
+                  <span className="text-[11px] text-slate-200">{finding}</span>
+                </div>
+              ))}
+          </div>
         </div>
-        <p className="text-xs text-slate-300 font-sans leading-relaxed">
-          {evidenceSummary}
-        </p>
-      </div>
+      )}
 
       {/* 4. CHANGE DETECTION (BI-TEMPORAL ANALYSIS) (MATCHING USER SCREENSHOT) */}
       {(changeDescription || changePercent !== undefined || result.mode === 'change') && (

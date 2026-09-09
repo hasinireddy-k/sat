@@ -202,6 +202,7 @@ export const MainAnalysisWorkspace: React.FC<MainAnalysisWorkspaceProps> = ({
             changeAreas={currentResult?.changeAreas || []}
             selectedEvidenceId={selectedEvidenceId}
             onSelectEvidence={(id) => setSelectedEvidenceId(id)}
+            onQueryRegion={(qText, coords) => handleFollowUpSubmit(qText)}
           />
         </div>
 

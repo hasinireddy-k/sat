@@ -131,8 +131,10 @@ export const MinimalViewer: React.FC<MinimalViewerProps> = (props) => {
   };
 
   const triggerRegionQuery = (qText: string) => {
-    if (onQueryRegion && clickCoords) {
-      onQueryRegion(qText, [clickCoords.normX, clickCoords.normY]);
+    if (clickCoords) {
+      if (onQueryRegion) {
+        onQueryRegion(qText, [clickCoords.normX, clickCoords.normY]);
+      }
       setClickCoords(null);
     }
   };
