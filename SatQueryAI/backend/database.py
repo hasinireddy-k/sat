@@ -393,6 +393,35 @@ def get_mission_by_id(mission_id: str) -> Optional[Dict[str, Any]]:
     return None
 
 def get_evaluations_list() -> List[Dict[str, Any]]:
+    # Dynamically check evaluation_results.json for fresh SIH PS 26167 benchmarks
+    adapter_dir = os.path.join(os.path.dirname(DB_DIR), 'models', 'adapters', 'bigearthnet_lora')
+    eval_json = os.path.join(adapter_dir, 'evaluation_results.json')
+    if os.path.exists(eval_json):
+        try:
+            with open(eval_json, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            if 'benchmarks' in data:
+                res = []
+                for idx, b in enumerate(data['benchmarks'], 1):
+                    score = f"{b['metrics']['top3_accuracy_pct']}%" if b.get('metrics') and 'top3_accuracy_pct' in b['metrics'] else 'NOT EVALUATED'
+                    metric_name = "Top-3 Retrieval Accuracy" if b.get('metrics') else "Validation Metric"
+                    sample_cnt = data.get('validation_samples_count', 0) if b['status'] == 'EVALUATED' else 0
+                    ts = data.get('evaluation_timestamp', time.time())
+                    res.append({
+                        'eval_id': f'eval_{idx:02d}',
+                        'task_type': b['task'],
+                        'dataset_name': b['dataset'],
+                        'metric_name': metric_name,
+                        'score': score,
+                        'sample_count': sample_cnt,
+                        'status': b['status'],
+                        'notes': f"[{b['role']}] {b['notes']}",
+                        'evaluated_at': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(ts))
+                    })
+                return res
+        except Exception as e:
+            pass
+
     conn = get_connection()
     c = conn.cursor()
     c.execute('SELECT * FROM evaluations ORDER BY eval_id ASC')
@@ -401,6 +430,41 @@ def get_evaluations_list() -> List[Dict[str, Any]]:
     return [dict(r) for r in rows]
 
 def get_training_runs_list() -> List[Dict[str, Any]]:
+    # Dynamically load live training run from training_metrics.json and adapter_config.json
+    adapter_dir = os.path.join(os.path.dirname(DB_DIR), 'models', 'adapters', 'bigearthnet_lora')
+    metrics_path = os.path.join(adapter_dir, 'training_metrics.json')
+    config_path = os.path.join(adapter_dir, 'adapter_config.json')
+
+    if os.path.exists(metrics_path) and os.path.exists(config_path):
+        try:
+            with open(metrics_path, 'r', encoding='utf-8') as mf, open(config_path, 'r', encoding='utf-8') as cf:
+                metrics_data = json.load(mf)
+                config_data = json.load(cf)
+
+            m_time = os.path.getmtime(metrics_path)
+            return [{
+                'run_id': 'train_ben19_lora_sih26167',
+                'base_model': config_data.get('base_model_name_or_path', 'Qwen/Qwen2-VL-2B-Instruct'),
+                'dataset': 'BigEarthNet-19 (Sentinel-1 SAR + Sentinel-2 Optical)',
+                'adapter_type': 'PEFT LoRA (Low-Rank Adaptation)',
+                'r': config_data.get('r', 16),
+                'alpha': config_data.get('lora_alpha', 32),
+                'epochs': metrics_data.get('epochs', 3),
+                'learning_rate': 0.0002,
+                'batch_size': 1,
+                'checkpoint_path': 'models/adapters/bigearthnet_lora/adapter_model.pt',
+                'status': metrics_data.get('status', 'COMPLETED'),
+                'trainable_parameters': metrics_data.get('trainable_parameters', 892947),
+                'total_parameters': metrics_data.get('total_parameters', 3252243),
+                'elapsed_seconds': metrics_data.get('elapsed_seconds', 2.2),
+                'device': metrics_data.get('device', 'cpu'),
+                'history': metrics_data.get('history', []),
+                'metrics_json': json.dumps(metrics_data),
+                'created_at': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(m_time))
+            }]
+        except Exception:
+            pass
+
     conn = get_connection()
     c = conn.cursor()
     c.execute('SELECT * FROM training_runs ORDER BY created_at DESC')

@@ -201,6 +201,21 @@ export class SatQueryApiService {
     return [];
   }
 
+  public async getTrainingRuns(): Promise<any[]> {
+    try {
+      const response = await fetch(`${this.baseUrl}/api/training`);
+      if (response.ok) {
+        const items = await response.json();
+        if (Array.isArray(items)) {
+          return items;
+        }
+      }
+    } catch (e) {
+      console.warn('[SatQuery API] Training runs fetch error:', e);
+    }
+    return [];
+  }
+
   private normalizeBackendResult(raw: any): ExecutionResult {
     const primaryMeta: GeoMetadata = raw.geoMetadata || raw.metadata?.primary || {
       filename: 'Uploaded_Scene.tif',

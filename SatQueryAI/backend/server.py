@@ -24,6 +24,14 @@ import torch
 
 PORT = 8000
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+if BASE_DIR not in sys.path:
+    sys.path.insert(0, BASE_DIR)
+models_dir = os.path.join(os.path.dirname(BASE_DIR), 'models')
+if models_dir not in sys.path:
+    sys.path.insert(0, models_dir)
+scripts_dir = os.path.join(os.path.dirname(BASE_DIR), 'scripts')
+if scripts_dir not in sys.path:
+    sys.path.insert(0, scripts_dir)
 UPLOAD_DIR = os.path.join(BASE_DIR, 'uploads')
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
@@ -1083,7 +1091,8 @@ a { color: #0084ff; text-decoration: underline; font-weight: bold; }
             try:
                 from database import get_evaluations_list
                 evals = get_evaluations_list()
-            except Exception:
+            except Exception as e:
+                print(f"[server] Error fetching evaluations: {e}")
                 evals = []
             self._send_json(evals)
             return
@@ -1092,7 +1101,8 @@ a { color: #0084ff; text-decoration: underline; font-weight: bold; }
             try:
                 from database import get_training_runs_list
                 runs = get_training_runs_list()
-            except Exception:
+            except Exception as e:
+                print(f"[server] Error fetching training runs: {e}")
                 runs = []
             self._send_json(runs)
             return

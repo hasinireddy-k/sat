@@ -61,52 +61,44 @@ export const EvaluationView: React.FC = () => {
 
   const defaultBenchmarkMatrix = [
     {
-      name: 'BigEarthNet-19 Test Split (Sentinel-2)',
-      task: 'Multi-Spectral Land Cover Classification',
-      metrics: 'Macro F1-Score: 33.3%',
-      scope: 'Calibrated on 19-class Corine taxonomy (60 test scenes)',
+      name: 'BigEarthNet.txt (Sentinel-1 SAR + Sentinel-2 Optical)',
+      task: 'Multi-Spectral Land Cover Classification (19 CLC Classes)',
+      metrics: 'Top-3 Accuracy: 33.3% | Val BCE: 0.6914',
+      scope: 'Primary Training / Domain Adaptation: Co-registered Sentinel-1 SAR + Sentinel-2 imagery',
       status: 'EVALUATED',
       statusColor: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
     },
     {
       name: 'VRSBench',
-      task: 'RS Vision-Language Reasoning & VQA',
-      metrics: 'Accuracy, CIDEr, BLEU-4',
-      scope: 'Multi-choice VQA, Visual Grounding, Spatial Reasoning',
-      status: 'READY',
-      statusColor: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30'
+      task: 'Single-Image VQA, Captioning & Visual Grounding',
+      metrics: 'CIDEr / BLEU-4 / Accuracy: Not Evaluated',
+      scope: 'Evaluation Suite: Official benchmark archive not locally mounted',
+      status: 'NOT EVALUATED',
+      statusColor: 'bg-amber-500/10 text-amber-400 border-amber-500/30'
     },
     {
       name: 'RSVQA',
-      task: 'High-Resolution Aerial VQA (Sentinel-2 & Landsat)',
-      metrics: 'Presence, Count, Comparison Accuracy',
-      scope: 'Object Counting, Land Cover Classification, Proximity',
-      status: 'READY',
-      statusColor: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30'
+      task: 'High-Resolution Aerial VQA (Sentinel-2)',
+      metrics: 'Presence / Count Accuracy: Not Evaluated',
+      scope: 'Evaluation Suite: Official benchmark archive not locally mounted',
+      status: 'NOT EVALUATED',
+      statusColor: 'bg-amber-500/10 text-amber-400 border-amber-500/30'
     },
     {
       name: 'CDVQA',
       task: 'Bitemporal Change Detection VQA',
-      metrics: 'Change F1-Score, Bounding Box IoU',
-      scope: 'Urban Expansion, Flood Footprint, Deforestation',
-      status: 'READY',
-      statusColor: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30'
+      metrics: 'Change F1-Score / IoU: Not Evaluated',
+      scope: 'Evaluation Suite: Bitemporal change benchmark archive not locally mounted',
+      status: 'NOT EVALUATED',
+      statusColor: 'bg-amber-500/10 text-amber-400 border-amber-500/30'
     },
     {
       name: 'ISRO RISAT-1 / Cartosat Testbeds',
-      task: 'Optical + SAR Cross-Modal Fusion',
-      metrics: 'Sub-pixel Co-registration & Backscatter',
-      scope: 'Microwave backscatter + VNIR co-registration',
+      task: 'Cross-Modal Optical + SAR Analysis',
+      metrics: 'Sub-pixel Co-registration & Microwave Backscatter',
+      scope: 'Complementary microwave backscatter + VNIR synthesis',
       status: 'EVALUATED',
       statusColor: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
-    },
-    {
-      name: 'ISRO SAC Cartosat-3 Suite',
-      task: 'Indian Topography Mission Testbeds',
-      metrics: 'Pending Expert Ground Truth',
-      scope: 'Indian Topography, Disaster Response & LULC Level 3',
-      status: 'NOT EVALUATED',
-      statusColor: 'bg-amber-500/10 text-amber-400 border-amber-500/30'
     }
   ];
 

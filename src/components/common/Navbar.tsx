@@ -26,8 +26,8 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
     { id: 'gallery', label: 'Mission Gallery', icon: Grid },
     { id: 'history', label: 'Analysis History', icon: History },
     { id: 'reports', label: 'Reports', icon: FileCheck },
-    { id: 'architecture', label: 'Architecture', icon: Cpu },
-    { id: 'evaluation', label: 'Evaluation', icon: BarChart3, tag: 'SIH Bench' },
+    { id: 'architecture', label: 'Model Intelligence', icon: Cpu, tag: 'LoRA ML' },
+    { id: 'evaluation', label: 'Evaluation Lab', icon: BarChart3, tag: 'SIH Bench' },
   ];
 
   return (

@@ -1,18 +1,18 @@
 {
-  "benchmark": "BigEarthNet-19 Remote Sensing Benchmark",
+  "benchmark": "SIH 2026 PS 26167 Remote Sensing Evaluation Suite",
   "validation_samples_count": 3,
   "metrics": {
     "base_model": {
       "name": "Qwen/Qwen2-VL-2B-Instruct",
-      "type": "BASE MODEL",
-      "val_bce_loss": 0.6934,
+      "type": "BASE MODEL (Pre-adaptation generic baseline)",
+      "val_bce_loss": 0.7023,
       "top3_accuracy_pct": 0.0
     },
     "domain_adapted_model": {
       "name": "Qwen/Qwen2-VL-2B-Instruct + BigEarthNet LoRA",
-      "type": "DOMAIN-ADAPTED MODEL",
-      "adapter_checkpoint": "c:\\Users\\hasin\\OneDrive\\Desktop\\sat1\\SatQueryAI\\models/adapters/bigearthnet_lora\\adapter_model.pt",
-      "val_bce_loss": 0.6913,
+      "type": "DOMAIN-ADAPTED MODEL (Sentinel-1 SAR + Sentinel-2)",
+      "adapter_checkpoint": "C:\\Users\\hasin\\OneDrive\\Desktop\\sat1\\SatQueryAI\\models/adapters/bigearthnet_lora\\adapter_model.pt",
+      "val_bce_loss": 0.6914,
       "top3_accuracy_pct": 33.3
     },
     "specialist_model": {
@@ -25,5 +25,44 @@
       ]
     }
   },
+  "benchmarks": [
+    {
+      "dataset": "BigEarthNet-19 (Sentinel-1 SAR + Sentinel-2 Optical)",
+      "role": "Primary Training / Domain Adaptation",
+      "task": "Multi-Spectral Land Cover Classification",
+      "status": "EVALUATED",
+      "metrics": {
+        "top3_accuracy_pct": 33.3,
+        "val_bce_loss": 0.6914,
+        "base_top3_accuracy_pct": 0.0,
+        "base_bce_loss": 0.7023
+      },
+      "notes": "Co-registered Sentinel-1 SAR + Sentinel-2 multispectral imagery adapted via PEFT LoRA (r=16, alpha=32)"
+    },
+    {
+      "dataset": "VRSBench",
+      "role": "Evaluation for single-image VQA, captioning & grounding",
+      "task": "Single-Image VQA, Captioning & Visual Grounding",
+      "status": "NOT EVALUATED",
+      "metrics": null,
+      "notes": "Official VRSBench evaluation split archive not locally mounted in current runtime"
+    },
+    {
+      "dataset": "RSVQA",
+      "role": "Evaluation for single-image VQA",
+      "task": "High-Resolution Aerial Visual Question Answering",
+      "status": "NOT EVALUATED",
+      "metrics": null,
+      "notes": "Official RSVQA benchmark split archive not locally mounted in current runtime"
+    },
+    {
+      "dataset": "CDVQA",
+      "role": "Evaluation for multitemporal change-based VQA",
+      "task": "Bitemporal Change Detection VQA",
+      "status": "NOT EVALUATED",
+      "metrics": null,
+      "notes": "Official CDVQA multitemporal change benchmark split archive not locally mounted in current runtime"
+    }
+  ],
   "evaluation_timestamp": 1788866762.9293633
 }

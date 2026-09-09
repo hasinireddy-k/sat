@@ -148,18 +148,18 @@ def evaluate():
 
     # Save to JSON
     eval_results = {
-        "benchmark": "BigEarthNet-19 Remote Sensing Benchmark",
+        "benchmark": "SIH 2026 PS 26167 Remote Sensing Evaluation Suite",
         "validation_samples_count": len(val_ds),
         "metrics": {
             "base_model": {
                 "name": cfg['model']['base_model'],
-                "type": "BASE MODEL",
+                "type": "BASE MODEL (Pre-adaptation generic baseline)",
                 "val_bce_loss": round(avg_base_loss, 4),
                 "top3_accuracy_pct": base_top3
             },
             "domain_adapted_model": {
                 "name": f"{cfg['model']['base_model']} + BigEarthNet LoRA",
-                "type": "DOMAIN-ADAPTED MODEL",
+                "type": "DOMAIN-ADAPTED MODEL (Sentinel-1 SAR + Sentinel-2)",
                 "adapter_checkpoint": weights_path,
                 "val_bce_loss": round(avg_adapted_loss, 4),
                 "top3_accuracy_pct": adapted_top3
@@ -170,6 +170,45 @@ def evaluate():
                 "capabilities": ["Deterministic NDVI/NDWI/NDBI", "SAR Speckle Calibration", "Sub-pixel Grounding"]
             }
         },
+        "benchmarks": [
+            {
+                "dataset": "BigEarthNet-19 (Sentinel-1 SAR + Sentinel-2 Optical)",
+                "role": "Primary Training / Domain Adaptation",
+                "task": "Multi-Spectral Land Cover Classification",
+                "status": "EVALUATED",
+                "metrics": {
+                    "top3_accuracy_pct": adapted_top3,
+                    "val_bce_loss": round(avg_adapted_loss, 4),
+                    "base_top3_accuracy_pct": base_top3,
+                    "base_bce_loss": round(avg_base_loss, 4)
+                },
+                "notes": "Co-registered Sentinel-1 SAR + Sentinel-2 multispectral imagery adapted via PEFT LoRA (r=16, alpha=32)"
+            },
+            {
+                "dataset": "VRSBench",
+                "role": "Evaluation for single-image VQA, captioning & grounding",
+                "task": "Single-Image VQA, Captioning & Visual Grounding",
+                "status": "NOT EVALUATED",
+                "metrics": None,
+                "notes": "Official VRSBench evaluation split archive not locally mounted in current runtime"
+            },
+            {
+                "dataset": "RSVQA",
+                "role": "Evaluation for single-image VQA",
+                "task": "High-Resolution Aerial Visual Question Answering",
+                "status": "NOT EVALUATED",
+                "metrics": None,
+                "notes": "Official RSVQA benchmark split archive not locally mounted in current runtime"
+            },
+            {
+                "dataset": "CDVQA",
+                "role": "Evaluation for multitemporal change-based VQA",
+                "task": "Bitemporal Change Detection VQA",
+                "status": "NOT EVALUATED",
+                "metrics": None,
+                "notes": "Official CDVQA multitemporal change benchmark split archive not locally mounted in current runtime"
+            }
+        ],
         "evaluation_timestamp": os.path.getmtime(weights_path)
     }
 
