@@ -765,23 +765,73 @@ class SatQueryAPIHandler(BaseHTTPRequestHandler):
         parsed = urlparse(self.path)
         path = parsed.path
 
+        # Production React SPA & Static Asset Serving
+        dist_candidates = [
+            os.path.abspath(os.path.join(BASE_DIR, '..', '..', 'dist')),
+            os.path.abspath(os.path.join(os.getcwd(), 'dist')),
+            os.path.abspath(os.path.join(os.getcwd(), '..', 'dist'))
+        ]
+        dist_dir = next((c for c in dist_candidates if os.path.isdir(c)), None)
+
+        if dist_dir and not path.startswith('/api/') and not path.startswith('/docs') and not path.startswith('/openapi.json') and not path.startswith('/health') and not path.startswith('/uploads/'):
+            clean_path = path.lstrip('/')
+            target_file = os.path.join(dist_dir, clean_path)
+
+            if clean_path and os.path.isfile(target_file):
+                ext = os.path.splitext(target_file)[1].lower()
+                mime_map = {
+                    '.html': 'text/html; charset=utf-8',
+                    '.js': 'text/javascript; charset=utf-8',
+                    '.css': 'text/css; charset=utf-8',
+                    '.json': 'application/json; charset=utf-8',
+                    '.png': 'image/png',
+                    '.jpg': 'image/jpeg',
+                    '.jpeg': 'image/jpeg',
+                    '.svg': 'image/svg+xml',
+                    '.ico': 'image/x-icon',
+                    '.webp': 'image/webp',
+                    '.woff': 'font/woff',
+                    '.woff2': 'font/woff2',
+                    '.ttf': 'font/ttf',
+                }
+                content_type = mime_map.get(ext, 'application/octet-stream')
+                self.send_response(200)
+                self.send_header('Content-Type', content_type)
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.end_headers()
+                with open(target_file, 'rb') as f:
+                    self.wfile.write(f.read())
+                return
+
+            index_file = os.path.join(dist_dir, 'index.html')
+            if os.path.isfile(index_file):
+                self.send_response(200)
+                self.send_header('Content-Type', 'text/html; charset=utf-8')
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.end_headers()
+                with open(index_file, 'rb') as f:
+                    self.wfile.write(f.read())
+                return
+
         if path == '/' or path == '':
             html = """<!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
-<meta http-equiv="refresh" content="0; url=http://localhost:3000/">
 <title>SatQuery AI Backend</title>
 <style>
-body { background: #050811; color: #00e5ff; font-family: monospace; text-align: center; padding-top: 100px; }
+body { background: #050811; color: #00e5ff; font-family: monospace; text-align: center; padding-top: 80px; }
 a { color: #0084ff; text-decoration: underline; font-weight: bold; }
+.card { display: inline-block; background: rgba(0,30,60,0.6); border: 1px solid #0084ff44; padding: 28px 40px; border-radius: 12px; }
 </style>
 </head>
 <body>
-<h2>SatQuery AI Python Backend Online</h2>
-<p>Opening SatQuery AI User Interface on <a href="http://localhost:3000/">http://localhost:3000/</a>...</p>
-<p style="margin-top:20px;"><a href="/docs">View Interactive Swagger API Documentation (/docs)</a></p>
-<script>window.location.href = "http://localhost:3000/";</script>
+<div class="card">
+<h2>SATQUERY AI — REMOTE SENSING AI BACKEND ONLINE</h2>
+<p style="color:#94a3b8; font-size: 13px;">SIH 2026 Problem Statement 26167 | PyTorch BigEarthNet-19 LoRA</p>
+<p style="margin-top:24px;"><a href="/docs">Open Interactive Swagger API Documentation (/docs)</a></p>
+<p><a href="/api/health">Check System Health Endpoint (/api/health)</a></p>
+</div>
 </body>
 </html>"""
             html_bytes = html.encode('utf-8')
@@ -1182,8 +1232,57 @@ a { color: #0084ff; text-decoration: underline; font-weight: bold; }
                 'device': 'CPU',
                 'version': '2.6.0'
             })
-        else:
-            self._send_json({'error': 'Endpoint not found', 'path': path}, 404)
+            return
+
+        # Production SPA Serving: Serve built React frontend from dist/ if available
+        dist_candidates = [
+            os.path.abspath(os.path.join(BASE_DIR, '..', '..', 'dist')),
+            os.path.abspath(os.path.join(os.getcwd(), 'dist')),
+            os.path.abspath(os.path.join(os.getcwd(), '..', 'dist'))
+        ]
+        dist_dir = next((c for c in dist_candidates if os.path.isdir(c)), None)
+
+        if dist_dir and not path.startswith('/api/'):
+            clean_path = path.lstrip('/')
+            target_file = os.path.join(dist_dir, clean_path)
+
+            if clean_path and os.path.isfile(target_file):
+                ext = os.path.splitext(target_file)[1].lower()
+                mime_map = {
+                    '.html': 'text/html; charset=utf-8',
+                    '.js': 'text/javascript; charset=utf-8',
+                    '.css': 'text/css; charset=utf-8',
+                    '.json': 'application/json; charset=utf-8',
+                    '.png': 'image/png',
+                    '.jpg': 'image/jpeg',
+                    '.jpeg': 'image/jpeg',
+                    '.svg': 'image/svg+xml',
+                    '.ico': 'image/x-icon',
+                    '.webp': 'image/webp',
+                    '.woff': 'font/woff',
+                    '.woff2': 'font/woff2',
+                    '.ttf': 'font/ttf',
+                }
+                content_type = mime_map.get(ext, 'application/octet-stream')
+                self.send_response(200)
+                self.send_header('Content-Type', content_type)
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.end_headers()
+                with open(target_file, 'rb') as f:
+                    self.wfile.write(f.read())
+                return
+
+            index_file = os.path.join(dist_dir, 'index.html')
+            if os.path.isfile(index_file):
+                self.send_response(200)
+                self.send_header('Content-Type', 'text/html; charset=utf-8')
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.end_headers()
+                with open(index_file, 'rb') as f:
+                    self.wfile.write(f.read())
+                return
+
+        self._send_json({'error': 'Endpoint not found', 'path': path}, 404)
 
     def _handle_analyze(self, post_data, forced_task=None, forced_mode=None):
         try:
@@ -1443,13 +1542,17 @@ a { color: #0084ff; text-decoration: underline; font-weight: bold; }
         else:
             self._send_json({'error': 'Method Not Allowed', 'path': path}, 405)
 
-if __name__ == '__main__':
+def run_server(port=PORT, host='0.0.0.0'):
     preload_canonical_scenes()
-    server = ThreadingHTTPServer(('0.0.0.0', PORT), SatQueryAPIHandler)
+    server = ThreadingHTTPServer((host, port), SatQueryAPIHandler)
     server.daemon_threads = True
-    print(f"[SatQuery Backend] SatQuery Python AI Backend running on http://localhost:{PORT}")
+    print(f"[SatQuery Backend] SatQuery Python AI Backend running on http://{host}:{port}")
     try:
         server.serve_forever()
     except KeyboardInterrupt:
         print("\nShutting down backend server.")
         server.server_close()
+
+if __name__ == '__main__':
+    port_env = int(os.environ.get('PORT', PORT))
+    run_server(port=port_env)
