@@ -349,7 +349,7 @@ export const DEMO_MISSIONS: DemoMission[] = [
       executionTimeTotalMs: 348,
       isPrecomputed: true,
       isDemoAnalysis: true,
-      images: { primary: '/assets/scenes/cartosat_sample.png' }
+      images: { primary: '/assets/scenes/scene-01.jpg' }
     }
   },
   {
@@ -361,7 +361,7 @@ export const DEMO_MISSIONS: DemoMission[] = [
     location: 'Ludhiana District, Punjab, India',
     coordinates: '30.9010° N, 75.8573° E',
     sensor: 'Resourcesat-2A LISS-IV',
-    thumbnail: '/assets/scenes/cartosat_sample.png',
+    thumbnail: '/assets/scenes/scene-04.jpg',
     description: 'Multispectral scene description analyzing paddy crop growth stages, NDVI health index, and harvested stubble risk areas.',
     sampleQueries: ['Describe the dominant land-cover patterns.'],
     precomputedResult: {
@@ -413,7 +413,7 @@ export const DEMO_MISSIONS: DemoMission[] = [
       executionTimeTotalMs: 296,
       isPrecomputed: true,
       isDemoAnalysis: true,
-      images: { primary: '/assets/scenes/cartosat_sample.png' }
+      images: { primary: '/assets/scenes/scene-04.jpg' }
     }
   },
   {
@@ -422,10 +422,10 @@ export const DEMO_MISSIONS: DemoMission[] = [
     subtitle: 'Transport Artery & Bridge Structure Localization',
     domain: 'Urban & Infrastructure',
     mode: 'single',
-    location: 'Brahmaputra Highway Corridor, Assam, India',
-    coordinates: '26.5775° N, 93.1711° E',
-    sensor: 'Cartosat-3 PAN-Sharpened',
-    thumbnail: '/assets/scenes/cartosat_sample.png',
+    location: 'Transport & Highway Bridge Corridor, India',
+    coordinates: '19.0365° N, 72.8172° E',
+    sensor: 'Cartosat-3 PAN-Sharpened (0.28m GSD)',
+    thumbnail: '/assets/scenes/scene-05.jpg',
     description: 'Text-guided region grounding detecting national highway bridge spans, rail embankments, and culverts.',
     sampleQueries: ['Identify major linear structures.'],
     precomputedResult: {
@@ -479,7 +479,7 @@ export const DEMO_MISSIONS: DemoMission[] = [
       executionTimeTotalMs: 310,
       isPrecomputed: true,
       isDemoAnalysis: true,
-      images: { primary: '/assets/scenes/cartosat_sample.png' }
+      images: { primary: '/assets/scenes/scene-05.jpg' }
     }
   },
   {
