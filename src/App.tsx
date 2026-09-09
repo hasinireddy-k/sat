@@ -39,7 +39,7 @@ const getInitialUser = (): UserProfile => {
     organization: 'NRSC Hyderabad (National Remote Sensing Centre)',
     role: 'Lead Geospatial Analyst',
     joinedDate: 'September 2025',
-    isAuthenticated: false, // Default is logged out
+    isAuthenticated: true, // Default is authenticated for instant access
   };
 };
 

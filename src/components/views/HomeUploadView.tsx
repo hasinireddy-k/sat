@@ -78,7 +78,7 @@ export const HomeUploadView: React.FC<HomeUploadViewProps> = ({
     const q = queryOverride || query || 'Describe this satellite scene and identify dominant land cover.';
     
     // Exact uploaded raster or reference Cartosat-3 remote sensing scene
-    let effectivePrimary = primarySrc || '/assets/scenes/cartosat_sample.png';
+    let effectivePrimary = primarySrc || './assets/scenes/cartosat_sample.png';
     let effectivePrimaryMeta: GeoMetadata = primaryMeta || {
       filename: 'sample_cartosat_utm43n.tif',
       fileSize: '2.0 MB',
@@ -98,7 +98,7 @@ export const HomeUploadView: React.FC<HomeUploadViewProps> = ({
     let effectiveSecondaryMeta = secondaryMeta;
 
     if (!secondarySrc && (q.toLowerCase().includes('change') || q.toLowerCase().includes('temporal'))) {
-      effectivePrimary = '/assets/scenes/bitemporal_t1.png';
+      effectivePrimary = './assets/scenes/bitemporal_t1.png';
       effectivePrimaryMeta = {
         filename: 'bitemporal_t1_cartosat.tif',
         fileSize: '1.0 MB',
@@ -112,7 +112,7 @@ export const HomeUploadView: React.FC<HomeUploadViewProps> = ({
         fileId: 'bitemporal_t1',
         file_id: 'bitemporal_t1'
       };
-      effectiveSecondary = '/assets/scenes/bitemporal_t2.png';
+      effectiveSecondary = './assets/scenes/bitemporal_t2.png';
       effectiveSecondaryMeta = {
         filename: 'bitemporal_t2_cartosat.tif',
         fileSize: '1.0 MB',
@@ -127,7 +127,7 @@ export const HomeUploadView: React.FC<HomeUploadViewProps> = ({
         file_id: 'bitemporal_t2'
       };
     } else if (!secondarySrc && (q.toLowerCase().includes('sar') || q.toLowerCase().includes('radar') || q.toLowerCase().includes('cloud') || q.toLowerCase().includes('penetrat'))) {
-      effectivePrimary = '/assets/scenes/optical_vnir.png';
+      effectivePrimary = './assets/scenes/optical_vnir.png';
       effectivePrimaryMeta = {
         filename: 'coregistered_optical_vnir.tif',
         fileSize: '1.0 MB',
@@ -141,7 +141,7 @@ export const HomeUploadView: React.FC<HomeUploadViewProps> = ({
         fileId: 'coregistered_optical',
         file_id: 'coregistered_optical'
       };
-      effectiveSecondary = '/assets/scenes/sar_cband.png';
+      effectiveSecondary = './assets/scenes/sar_cband.png';
       effectiveSecondaryMeta = {
         filename: 'coregistered_sar_cband.tif',
         fileSize: '1.0 MB',
@@ -521,7 +521,7 @@ export const HomeUploadView: React.FC<HomeUploadViewProps> = ({
           >
             <div className="relative h-24 w-full rounded-lg overflow-hidden border border-slate-800">
               <img
-                src="/assets/scenes/cartosat_sample.png"
+                src="./assets/scenes/cartosat_sample.png"
                 alt="Cartosat VQA"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
@@ -550,7 +550,7 @@ export const HomeUploadView: React.FC<HomeUploadViewProps> = ({
           >
             <div className="relative h-24 w-full rounded-lg overflow-hidden border border-slate-800">
               <img
-                src="/assets/scenes/cartosat_sample.png"
+                src="./assets/scenes/cartosat_sample.png"
                 alt="Grounding"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
@@ -579,12 +579,12 @@ export const HomeUploadView: React.FC<HomeUploadViewProps> = ({
           >
             <div className="relative h-24 w-full rounded-lg overflow-hidden border border-slate-800 grid grid-cols-2">
               <img
-                src="/assets/scenes/bitemporal_t1.png"
+                src="./assets/scenes/bitemporal_t1.png"
                 alt="T1 Baseline"
                 className="w-full h-full object-cover border-r border-slate-900"
               />
               <img
-                src="/assets/scenes/bitemporal_t2.png"
+                src="./assets/scenes/bitemporal_t2.png"
                 alt="T2 Observation"
                 className="w-full h-full object-cover"
               />
@@ -613,12 +613,12 @@ export const HomeUploadView: React.FC<HomeUploadViewProps> = ({
           >
             <div className="relative h-24 w-full rounded-lg overflow-hidden border border-slate-800 grid grid-cols-2">
               <img
-                src="/assets/scenes/optical_vnir.png"
+                src="./assets/scenes/optical_vnir.png"
                 alt="Optical VNIR"
                 className="w-full h-full object-cover border-r border-slate-900"
               />
               <img
-                src="/assets/scenes/sar_cband.png"
+                src="./assets/scenes/sar_cband.png"
                 alt="SAR C-Band"
                 className="w-full h-full object-cover"
               />

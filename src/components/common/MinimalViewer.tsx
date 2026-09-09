@@ -335,7 +335,7 @@ export const MinimalViewer: React.FC<MinimalViewerProps> = (props) => {
                 className="max-h-[440px] w-auto object-contain rounded block mx-auto border border-slate-800/80 transition-image"
                 style={{ filter: spectralMode === 'NIR' ? 'contrast(1.2) saturate(1.45) hue-rotate(-28deg)' : 'none' }}
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src = '/assets/scenes/scene-01.jpg';
+                  (e.target as HTMLImageElement).src = './assets/scenes/scene-01.jpg';
                 }}
               />
               <div className="absolute top-2 left-2 bg-slate-950/90 border border-slate-800 px-2 py-0.5 rounded text-[10px] font-mono text-slate-300 font-bold select-none">
@@ -392,7 +392,7 @@ export const MinimalViewer: React.FC<MinimalViewerProps> = (props) => {
                   alt="Secondary Scene"
                   className="max-h-[440px] w-auto object-contain rounded block mx-auto border border-slate-800/80 transition-image"
                   onError={(e) => {
-                    (e.target as HTMLImageElement).src = '/assets/scenes/scene-02.jpg';
+                    (e.target as HTMLImageElement).src = './assets/scenes/scene-02.jpg';
                   }}
                 />
                 <div className="absolute top-2 left-2 bg-slate-950/90 border border-slate-800 px-2 py-0.5 rounded text-[10px] font-mono text-cyan-300 font-bold select-none">
@@ -413,7 +413,7 @@ export const MinimalViewer: React.FC<MinimalViewerProps> = (props) => {
               className="max-h-[440px] w-auto object-contain rounded block mx-auto border border-slate-800"
               style={{ filter: spectralMode === 'NIR' ? 'contrast(1.2) saturate(1.45) hue-rotate(-28deg)' : 'none' }}
               onError={(e) => {
-                (e.target as HTMLImageElement).src = '/assets/scenes/scene-01.jpg';
+                (e.target as HTMLImageElement).src = './assets/scenes/scene-01.jpg';
               }}
             />
             {secondarySrc && (
@@ -422,7 +422,7 @@ export const MinimalViewer: React.FC<MinimalViewerProps> = (props) => {
                 alt="Overlay Scene"
                 className="absolute max-h-[440px] w-auto object-contain rounded mix-blend-screen opacity-60 pointer-events-none transition-image"
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src = '/assets/scenes/scene-02.jpg';
+                  (e.target as HTMLImageElement).src = './assets/scenes/scene-02.jpg';
                 }}
               />
             )}
@@ -455,7 +455,7 @@ export const MinimalViewer: React.FC<MinimalViewerProps> = (props) => {
                 className="w-full h-full object-cover transition-camera"
                 style={{ transform: `scale(${zoom}) translate(${panX}px, ${panY}px)`, filter: spectralMode === 'NIR' ? 'contrast(1.2) saturate(1.45) hue-rotate(-28deg)' : 'none' }}
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src = '/assets/scenes/scene-01.jpg';
+                  (e.target as HTMLImageElement).src = './assets/scenes/scene-01.jpg';
                 }}
               />
               <div className="absolute top-10 left-3 bg-slate-950/90 border border-slate-800 px-2.5 py-1 rounded font-mono text-xs text-slate-300 shadow">
@@ -476,7 +476,7 @@ export const MinimalViewer: React.FC<MinimalViewerProps> = (props) => {
                 className="w-full h-full object-cover transition-camera"
                 style={{ transform: `scale(${zoom}) translate(${panX}px, ${panY}px)` }}
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src = '/assets/scenes/scene-02.jpg';
+                  (e.target as HTMLImageElement).src = './assets/scenes/scene-02.jpg';
                 }}
               />
               <div className="absolute top-10 right-3 bg-slate-950/90 border border-slate-800 px-2.5 py-1 rounded font-mono text-xs text-cyan-300 shadow">

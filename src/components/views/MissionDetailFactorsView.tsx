@@ -202,7 +202,7 @@ export const MissionDetailFactorsView: React.FC<MissionDetailFactorsViewProps> =
   const taskLabel =
     TASK_SHORT_LABELS[result.detectedTask] || TASK_SHORT_LABELS[result.mode] || result.detectedTask.toUpperCase();
 
-  const primaryUrl = result.images?.primary || '/assets/scenes/cartosat_sample.png';
+  const primaryUrl = result.images?.primary || './assets/scenes/cartosat_sample.png';
   const secondaryUrl = result.images?.secondary;
 
   // JSON Export Handler
