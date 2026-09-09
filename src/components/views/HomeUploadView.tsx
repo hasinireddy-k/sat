@@ -500,7 +500,7 @@ export const HomeUploadView: React.FC<HomeUploadViewProps> = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <h2 className="mono text-xs text-cyan-400 uppercase tracking-[0.2em] font-bold">
-              SIH 2026 PS 26167 — VERIFIED TESTBED MISSIONS (1-CLICK LAUNCH)
+              VERIFIED EARTH OBSERVATION TESTBED MISSIONS (1-CLICK LAUNCH)
             </h2>
             <span className="px-2 py-0.5 text-[9px] font-mono bg-cyan-950/60 border border-cyan-800 text-cyan-300 rounded">
               REAL DATA • DETERMINISTIC PYTORCH
@@ -517,9 +517,9 @@ export const HomeUploadView: React.FC<HomeUploadViewProps> = ({
           {/* TESTBED 1: VQA */}
           <div
             onClick={() => handleSubmit('Describe this satellite scene and identify dominant land cover.')}
-            className="group p-4 bg-[#070a14] border border-slate-800 hover:border-cyan-500 rounded-xl space-y-3 cursor-pointer transition-all duration-300 hover:shadow-[0_0_20px_rgba(6,182,212,0.2)] hover:-translate-y-1"
+            className="group p-3.5 bg-[#070a14] border border-slate-800 hover:border-cyan-500 rounded-xl space-y-2.5 cursor-pointer transition-all duration-300 hover:shadow-[0_0_20px_rgba(6,182,212,0.2)] hover:-translate-y-1"
           >
-            <div className="relative h-28 w-full rounded-lg overflow-hidden border border-slate-800">
+            <div className="relative h-24 w-full rounded-lg overflow-hidden border border-slate-800">
               <img
                 src="/assets/scenes/cartosat_sample.png"
                 alt="Cartosat VQA"
@@ -546,9 +546,9 @@ export const HomeUploadView: React.FC<HomeUploadViewProps> = ({
           {/* TESTBED 2: GROUNDING */}
           <div
             onClick={() => handleSubmit('Find buildings and man-made structures in this scene.')}
-            className="group p-4 bg-[#070a14] border border-slate-800 hover:border-purple-500 rounded-xl space-y-3 cursor-pointer transition-all duration-300 hover:shadow-[0_0_20px_rgba(168,85,247,0.2)] hover:-translate-y-1"
+            className="group p-3.5 bg-[#070a14] border border-slate-800 hover:border-purple-500 rounded-xl space-y-2.5 cursor-pointer transition-all duration-300 hover:shadow-[0_0_20px_rgba(168,85,247,0.2)] hover:-translate-y-1"
           >
-            <div className="relative h-28 w-full rounded-lg overflow-hidden border border-slate-800">
+            <div className="relative h-24 w-full rounded-lg overflow-hidden border border-slate-800">
               <img
                 src="/assets/scenes/cartosat_sample.png"
                 alt="Grounding"
@@ -575,9 +575,9 @@ export const HomeUploadView: React.FC<HomeUploadViewProps> = ({
           {/* TESTBED 3: BI-TEMPORAL CHANGE */}
           <div
             onClick={() => handleSubmit('Detect urban expansion and land use change between 2024 and 2026.')}
-            className="group p-4 bg-[#070a14] border border-slate-800 hover:border-emerald-500 rounded-xl space-y-3 cursor-pointer transition-all duration-300 hover:shadow-[0_0_20px_rgba(16,185,129,0.2)] hover:-translate-y-1"
+            className="group p-3.5 bg-[#070a14] border border-slate-800 hover:border-emerald-500 rounded-xl space-y-2.5 cursor-pointer transition-all duration-300 hover:shadow-[0_0_20px_rgba(16,185,129,0.2)] hover:-translate-y-1"
           >
-            <div className="relative h-28 w-full rounded-lg overflow-hidden border border-slate-800 grid grid-cols-2">
+            <div className="relative h-24 w-full rounded-lg overflow-hidden border border-slate-800 grid grid-cols-2">
               <img
                 src="/assets/scenes/bitemporal_t1.png"
                 alt="T1 Baseline"
@@ -609,9 +609,9 @@ export const HomeUploadView: React.FC<HomeUploadViewProps> = ({
           {/* TESTBED 4: OPTICAL + SAR FUSION */}
           <div
             onClick={() => handleSubmit('Perform cross-modal Optical and SAR fusion to penetrate cloud haze.')}
-            className="group p-4 bg-[#070a14] border border-slate-800 hover:border-amber-500 rounded-xl space-y-3 cursor-pointer transition-all duration-300 hover:shadow-[0_0_20px_rgba(245,158,11,0.2)] hover:-translate-y-1"
+            className="group p-3.5 bg-[#070a14] border border-slate-800 hover:border-amber-500 rounded-xl space-y-2.5 cursor-pointer transition-all duration-300 hover:shadow-[0_0_20px_rgba(245,158,11,0.2)] hover:-translate-y-1"
           >
-            <div className="relative h-28 w-full rounded-lg overflow-hidden border border-slate-800 grid grid-cols-2">
+            <div className="relative h-24 w-full rounded-lg overflow-hidden border border-slate-800 grid grid-cols-2">
               <img
                 src="/assets/scenes/optical_vnir.png"
                 alt="Optical VNIR"
