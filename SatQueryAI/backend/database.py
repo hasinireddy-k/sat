@@ -357,6 +357,17 @@ def get_all_history_records() -> List[Dict[str, Any]]:
             pass
     return results
 
+def clear_all_history_records():
+    conn = get_connection()
+    c = conn.cursor()
+    c.execute("DELETE FROM analyses")
+    c.execute("DELETE FROM model_runs")
+    c.execute("DELETE FROM reports")
+    c.execute("DELETE FROM evidence")
+    c.execute("DELETE FROM missions WHERE mission_id NOT LIKE 'mission-0%'")
+    conn.commit()
+    conn.close()
+
 def get_all_missions() -> List[Dict[str, Any]]:
     conn = get_connection()
     c = conn.cursor()

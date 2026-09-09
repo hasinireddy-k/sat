@@ -171,6 +171,16 @@ export class SatQueryApiService {
     return [];
   }
 
+  public async clearHistory(): Promise<boolean> {
+    try {
+      const response = await fetch(`${this.baseUrl}/api/history/clear`, { method: 'POST' });
+      return response.ok;
+    } catch (e) {
+      console.warn('[SatQuery API] History clear error:', e);
+      return false;
+    }
+  }
+
   public async getModels(): Promise<any[]> {
     try {
       const response = await fetch(`${this.baseUrl}/api/models`);

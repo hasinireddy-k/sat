@@ -183,6 +183,20 @@ export const App: React.FC = () => {
       />
 
       <main className="flex-1 h-screen overflow-y-auto relative z-10 px-6 py-8 md:px-12 md:py-10">
+        {activeTab === 'login' && (
+          <LoginView
+            onLoginSuccess={(email, isDemo) => {
+              setUser((prev) => ({
+                ...prev,
+                email,
+                isAuthenticated: true,
+                role: isDemo ? 'SIH 2026 Guest Evaluator' : 'Lead Geospatial Analyst'
+              }));
+              setActiveTab('mission-control');
+            }}
+          />
+        )}
+
         {activeTab === 'mission-control' && (
           <HomeUploadView
             onStartAnalysis={handleStartAnalysis}

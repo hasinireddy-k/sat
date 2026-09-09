@@ -1159,6 +1159,17 @@ a { color: #0084ff; text-decoration: underline; font-weight: bold; }
             self._send_json(history_list)
             return
 
+        if path == '/api/history/clear':
+            ANALYSIS_RESULTS_STORE.clear()
+            LATEST_ANALYSIS_PER_FILE.clear()
+            try:
+                from database import clear_all_history_records
+                clear_all_history_records()
+            except Exception as e:
+                print(f"[server] Error clearing history: {e}")
+            self._send_json({'status': 'ok', 'message': 'All analysis history successfully cleared.'})
+            return
+
         if path == '/health' or path == '/api/health':
             self._send_json({
                 'status': 'ok',
@@ -1401,9 +1412,32 @@ a { color: #0084ff; text-decoration: underline; font-weight: bold; }
                 'confidenceLevel': res.get('confidenceLevel'),
                 'trace': res.get('trace')
             }
-            self._send_json(report_payload)
+        elif path == '/api/history/clear':
+            ANALYSIS_RESULTS_STORE.clear()
+            LATEST_ANALYSIS_PER_FILE.clear()
+            try:
+                from database import clear_all_history_records
+                clear_all_history_records()
+            except Exception as e:
+                print(f"[server] Error clearing history: {e}")
+            self._send_json({'status': 'ok', 'message': 'All analysis history successfully cleared.'})
         else:
             self._send_json({'error': 'Endpoint not found', 'path': path}, 404)
+
+    def do_DELETE(self):
+        parsed = urlparse(self.path)
+        path = parsed.path
+        if path == '/api/history' or path == '/api/history/clear':
+            ANALYSIS_RESULTS_STORE.clear()
+            LATEST_ANALYSIS_PER_FILE.clear()
+            try:
+                from database import clear_all_history_records
+                clear_all_history_records()
+            except Exception as e:
+                print(f"[server] Error clearing history: {e}")
+            self._send_json({'status': 'ok', 'message': 'All analysis history successfully cleared.'})
+        else:
+            self._send_json({'error': 'Method Not Allowed', 'path': path}, 405)
 
 if __name__ == '__main__':
     preload_canonical_scenes()

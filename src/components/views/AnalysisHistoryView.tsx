@@ -50,16 +50,32 @@ export const AnalysisHistoryView: React.FC<AnalysisHistoryViewProps> = (props) =
           </p>
         </div>
 
-        {/* Search Input */}
-        <div className="relative w-64">
-          <Search className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
-          <input
-            type="text"
-            placeholder="Search history by query or task..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-[#0b0f19] border border-slate-800 focus:border-cyan-500/60 rounded pl-9 pr-3 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none font-mono"
-          />
+        {/* Actions & Search */}
+        <div className="flex items-center space-x-3">
+          <button
+            onClick={async () => {
+              if (window.confirm('Are you sure you want to delete all unnecessary analysis history records?')) {
+                await satqueryApi.clearHistory();
+                window.location.reload();
+              }
+            }}
+            className="px-3 py-1.5 bg-rose-950/40 hover:bg-rose-900/60 border border-rose-800/80 hover:border-rose-500 text-rose-300 text-xs rounded font-mono flex items-center space-x-1.5 transition cursor-pointer"
+            title="Delete all analysis records"
+          >
+            <span>CLEAR HISTORY</span>
+          </button>
+
+          {/* Search Input */}
+          <div className="relative w-64">
+            <Search className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
+            <input
+              type="text"
+              placeholder="Search history by query or task..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full bg-[#0b0f19] border border-slate-800 focus:border-cyan-500/60 rounded pl-9 pr-3 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none font-mono"
+            />
+          </div>
         </div>
       </div>
 
