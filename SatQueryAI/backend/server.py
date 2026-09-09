@@ -1236,8 +1236,10 @@ a { color: #0084ff; text-decoration: underline; font-weight: bold; }
             elif FILE_METADATA_STORE:
                 file_id = list(FILE_METADATA_STORE.keys())[0]
 
-        if not secondary_file_id or secondary_file_id not in FILE_METADATA_STORE:
-            if 'bitemporal_t2' in str(secondary_img) or 't2' in q_lower or 'changed between' in q_lower or 'what changed' in q_lower or configuration.get('forcedMode') == 'change':
+        if 'secondary_file_id' in body and body['secondary_file_id'] is None:
+            secondary_file_id = None
+        elif not secondary_file_id or secondary_file_id not in FILE_METADATA_STORE:
+            if 'bitemporal_t2' in str(secondary_img) or ('t2' in q_lower and secondary_img):
                 secondary_file_id = 'bitemporal_t2'
             elif 'sar' in str(secondary_img) or 'optical and sar' in q_lower or 'compare optical and sar' in q_lower or configuration.get('forcedMode') == 'optical-sar':
                 secondary_file_id = 'coregistered_sar'

@@ -485,6 +485,8 @@ class GroundingSpecialist:
 
         return {
             "task": "grounding",
+            "target_category": intent["category"],
+            "spatial_constraint": intent["spatial_constraint"],
             "model": self.model_name,
             "query": query,
             "detections": detections,
