@@ -3,6 +3,7 @@ import { ViewTab, ExecutionResult, DemoMission, GeoMetadata, UserProfile, AppSet
 import { DEMO_MISSIONS } from './data/demoMissions';
 import { Header } from './components/common/Header';
 import { SpaceBackground } from './components/common/SpaceBackground';
+import { OrbitalRocketWidget } from './components/common/OrbitalRocketWidget';
 import { agentController } from './services/agentController';
 import { satqueryApi } from './services/satqueryApi';
 
@@ -246,6 +247,7 @@ export const App: React.FC = () => {
         onLogout={handleLogout}
       />
 
+      <OrbitalRocketWidget />
       <main className="flex-1 h-screen overflow-y-auto relative z-10 px-6 py-8 md:px-12 md:py-10">
         {activeTab === 'mission-control' && (
           <HomeUploadView
