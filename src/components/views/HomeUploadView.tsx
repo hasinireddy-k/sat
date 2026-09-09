@@ -421,75 +421,78 @@ export const HomeUploadView: React.FC<HomeUploadViewProps> = ({
           className="hidden"
           onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], true, activeModality)}
         />
+
+        {/* Mission Query Console (Integrated Together with Image Ingestion) */}
+        <div className="mt-8 pt-6 border-t border-white/10 space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="mono text-xs text-slate-400 uppercase tracking-[0.2em] font-medium flex items-center space-x-2">
+              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+              <span>Mission Query Console</span>
+            </h2>
+            <span className="text-[10px] font-mono text-slate-500">QUERY APPLIES TO SELECTED / LOADED IMAGERY</span>
+          </div>
+
+          <div className="relative query-glow p-[1px] rounded-sm flex items-center bg-white/10 group-focus-within:bg-[#0084ff]/20">
+            <div className="pl-6">
+              <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)] group-focus-within:bg-[#0084ff] group-focus-within:shadow-[0_0_8px_rgba(0,132,255,0.8)] transition-all"></div>
+            </div>
+
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || (e.key === 'Enter' && (e.metaKey || e.ctrlKey))) {
+                  e.preventDefault();
+                  handleSubmit();
+                }
+              }}
+              placeholder="ENTER YOUR MISSION QUERY..."
+              className="w-full bg-[#05090f] border-none px-4 py-6 text-white placeholder-slate-600 outline-none transition-all duration-300 font-medium text-lg rounded-sm"
+            />
+
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-3">
+              <span className="mono text-[10px] text-slate-500 flex items-center gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 8h.01"/><path d="M12 12h.01"/><path d="M14 16h.01"/><rect width="20" height="16" x="2" y="4" rx="2"/></svg>
+                CMD + ENTER
+              </span>
+              <button
+                id="cta-execute"
+                onClick={() => handleSubmit()}
+                className="bg-[#0084ff] hover:bg-blue-400 hover:scale-110 hover:shadow-[0_0_15px_rgba(0,132,255,0.5)] text-white p-3 rounded-sm transition-all cursor-pointer"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </button>
+            </div>
+          </div>
+
+          {/* Suggestion Chips */}
+          <div className="flex flex-wrap gap-2.5 stagger-in font-sans">
+            {[
+              { id: 'suggest-1', label: 'What areas show recent deforestation?', query: 'What areas show recent deforestation?' },
+              { id: 'suggest-2', label: 'Detect urban expansion in 2023-2024', query: 'Detect urban expansion in 2023-2024' },
+              { id: 'suggest-3', label: 'SAR coherence analysis for stability', query: 'SAR coherence analysis for stability' },
+              { id: 'suggest-4', label: 'Compare vegetation indices T1 vs T2', query: 'Compare vegetation indices T1 vs T2' },
+            ].map((chip) => (
+              <button
+                key={chip.id}
+                id={chip.id}
+                onClick={() => {
+                  setQuery(chip.query);
+                  handleSubmit(chip.query);
+                }}
+                className="px-4 py-2 bg-transparent border border-white/20 hover:border-[#0084ff] hover:bg-[#0084ff]/10 hover:scale-105 transition-all text-xs text-white font-semibold tracking-wide rounded-full"
+              >
+                {chip.label}
+              </button>
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* Signature Pipeline Connectivity Tracker */}
-      <section className="animate-[fade-slide-up_0.6s_ease-out_0.3s_forwards]">
-        <PipelineConnectivityTracker activeStage={primarySrc ? 2 : 1} />
-      </section>
-
-      {/* Mission Query Console */}
-      <section className="animate-[fade-slide-up_0.6s_ease-out_0.4s_forwards]">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="mono text-xs text-slate-500 uppercase tracking-[0.2em] font-medium">Mission Query Console</h2>
-          <div className="h-[1px] flex-1 bg-slate-800 ml-6"></div>
-        </div>
-
-        <div className="relative query-glow p-[1px] rounded-sm flex items-center bg-white/10 group-focus-within:bg-[#0084ff]/20">
-          <div className="pl-6">
-            <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)] group-focus-within:bg-[#0084ff] group-focus-within:shadow-[0_0_8px_rgba(0,132,255,0.8)] transition-all"></div>
-          </div>
-
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || (e.key === 'Enter' && (e.metaKey || e.ctrlKey))) {
-                e.preventDefault();
-                handleSubmit();
-              }
-            }}
-            placeholder="ENTER YOUR MISSION QUERY..."
-            className="w-full bg-[#05090f] border-none px-4 py-7 text-white placeholder-slate-600 outline-none transition-all duration-300 font-medium text-lg rounded-sm"
-          />
-
-          <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-3">
-            <span className="mono text-[10px] text-slate-500 flex items-center gap-1">
-              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 8h.01"/><path d="M12 12h.01"/><path d="M14 16h.01"/><rect width="20" height="16" x="2" y="4" rx="2"/></svg>
-              CMD + ENTER
-            </span>
-            <button
-              id="cta-execute"
-              onClick={() => handleSubmit()}
-              className="bg-[#0084ff] hover:bg-blue-400 hover:scale-110 hover:shadow-[0_0_15px_rgba(0,132,255,0.5)] text-white p-3 rounded-sm transition-all"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-            </button>
-          </div>
-        </div>
-
-        {/* Suggestion Chips */}
-        <div className="mt-6 flex flex-wrap gap-3 stagger-in font-sans">
-          {[
-            { id: 'suggest-1', label: 'What areas show recent deforestation?', query: 'What areas show recent deforestation?' },
-            { id: 'suggest-2', label: 'Detect urban expansion in 2023-2024', query: 'Detect urban expansion in 2023-2024' },
-            { id: 'suggest-3', label: 'SAR coherence analysis for stability', query: 'SAR coherence analysis for stability' },
-            { id: 'suggest-4', label: 'Compare vegetation indices T1 vs T2', query: 'Compare vegetation indices T1 vs T2' },
-          ].map((chip) => (
-            <button
-              key={chip.id}
-              id={chip.id}
-              onClick={() => {
-                setQuery(chip.query);
-                handleSubmit(chip.query);
-              }}
-              className="px-4 py-2 bg-transparent border border-white/20 hover:border-[#0084ff] hover:bg-[#0084ff]/10 hover:scale-105 transition-all text-xs text-white font-semibold tracking-wide rounded-full py-2.5"
-            >
-              {chip.label}
-            </button>
-          ))}
-        </div>
+      <section className="mb-14 animate-[fade-slide-up_0.6s_ease-out_0.3s_forwards]">
+        <PipelineConnectivityTracker activeStage={primarySrc ? 2 : (query ? 2 : 1)} />
       </section>
 
       {/* SIH 2026 PS 26167 Benchmark Testbed Missions (1-Click Verification) */}
