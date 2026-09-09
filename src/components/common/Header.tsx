@@ -1,5 +1,6 @@
 import React from 'react';
 import { ViewTab, UserProfile } from '../../types/satquery';
+import { LogOut } from 'lucide-react';
 
 interface HeaderProps {
   activeTab: ViewTab;
@@ -9,6 +10,7 @@ interface HeaderProps {
   hasLoadedImages: boolean;
   onResetUpload: () => void;
   user: UserProfile;
+  onLogout: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -16,6 +18,7 @@ export const Header: React.FC<HeaderProps> = ({
   setActiveTab,
   onResetUpload,
   user,
+  onLogout,
 }) => {
   return (
     <aside className="w-[240px] flex-shrink-0 bg-black border-r border-white/10 flex flex-col h-screen sticky top-0 z-50">
@@ -166,23 +169,9 @@ export const Header: React.FC<HeaderProps> = ({
           <span>Help Support</span>
         </a>
 
-        <a
-          href="#"
-          id="nav-login"
-          onClick={(e) => {
-            e.preventDefault();
-            setActiveTab('login');
-          }}
-          className={`${
-            activeTab === 'login' ? 'nav-item-active text-cyan-300' : 'text-slate-400 hover:text-white'
-          } flex items-center gap-3 px-3 py-2 text-sm rounded-sm transition-all duration-150`}
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" x2="3" y1="12" y2="12"/></svg>
-          <span>Analyst Login</span>
-        </a>
       </nav>
 
-      <div className="p-4 border-t border-white/10 space-y-2">
+      <div className="p-4 border-t border-white/10 space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="relative flex h-2.5 w-2.5">
@@ -192,15 +181,26 @@ export const Header: React.FC<HeaderProps> = ({
             <span className="mono text-[10px] text-slate-400 uppercase tracking-widest">AI Engine Online</span>
           </div>
           <button
-            onClick={() => setActiveTab('login')}
-            className="text-[10px] font-mono text-cyan-400 hover:underline"
-            title="Switch Analyst / Sign Out"
+            onClick={onLogout}
+            className="flex items-center gap-1 text-[10px] font-mono text-rose-400 hover:text-rose-300 hover:underline cursor-pointer"
+            title="Log Out of Mission Control"
           >
-            Switch
+            <LogOut className="w-3 h-3" />
+            <span>Log Out</span>
           </button>
         </div>
-        <div className="text-[10px] font-mono text-slate-500 truncate">
-          {user?.email || 'analyst@isro.gov.in'}
+        <div className="flex items-center justify-between text-[10px] font-mono bg-[#070a12] p-2.5 rounded-lg border border-slate-800">
+          <div className="truncate text-slate-300 pr-2">
+            <div className="text-[9px] text-cyan-400 font-bold uppercase truncate">{user.role || 'Analyst'}</div>
+            <div className="text-[9px] text-slate-400 truncate">{user.email}</div>
+          </div>
+          <button
+            onClick={onLogout}
+            className="px-2 py-1 bg-rose-950/60 hover:bg-rose-900 border border-rose-800/60 text-rose-300 rounded text-[9px] font-mono shrink-0 transition cursor-pointer"
+            title="Sign Out of Session"
+          >
+            Sign Out
+          </button>
         </div>
       </div>
     </aside>

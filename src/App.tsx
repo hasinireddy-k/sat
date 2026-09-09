@@ -6,7 +6,7 @@ import { SpaceBackground } from './components/common/SpaceBackground';
 import { agentController } from './services/agentController';
 import { satqueryApi } from './services/satqueryApi';
 
-import { LoginView } from './components/views/LoginView';
+import { LoginView, AuthSuccessData } from './components/views/LoginView';
 import { HomeUploadView } from './components/views/HomeUploadView';
 import { MainAnalysisWorkspace } from './components/views/MainAnalysisWorkspace';
 import { MissionGalleryView } from './components/views/MissionGalleryView';
@@ -18,19 +18,36 @@ import { HelpView } from './components/views/HelpView';
 import { ArchitectureView } from './components/views/ArchitectureView';
 import { EvaluationView } from './components/views/EvaluationView';
 
+const STORAGE_KEY = 'satquery_authenticated_user';
+
+const getInitialUser = (): UserProfile => {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (parsed && typeof parsed.isAuthenticated === 'boolean') {
+        return parsed;
+      }
+    }
+  } catch (e) {
+    console.warn('[SatQuery] LocalStorage read failed:', e);
+  }
+  return {
+    name: 'Dr. Vikram Sharma',
+    email: 'lead-analyst@satquery.isro.gov.in',
+    organization: 'NRSC Hyderabad (National Remote Sensing Centre)',
+    role: 'Lead Geospatial Analyst',
+    joinedDate: 'September 2025',
+    isAuthenticated: false, // Default is logged out
+  };
+};
+
 export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<ViewTab>('mission-control');
   const [demoMode, setDemoMode] = useState<boolean>(true);
   const [activeResult, setActiveResult] = useState<ExecutionResult | null>(null);
 
-  const [user, setUser] = useState<UserProfile>({
-    name: 'Research User',
-    email: 'analyst@satquery.isro.gov.in',
-    organization: 'SatQuery Research Workspace',
-    role: 'Earth Observation Analyst',
-    joinedDate: 'September 2025',
-    isAuthenticated: true,
-  });
+  const [user, setUser] = useState<UserProfile>(getInitialUser);
 
   const [settings, setSettings] = useState<AppSettings>({
     theme: 'dark',
@@ -50,6 +67,38 @@ export const App: React.FC = () => {
       setHistoryLogs(realHistory || []);
     });
   }, []);
+
+  const handleLoginSuccess = (auth: AuthSuccessData) => {
+    const updatedUser: UserProfile = {
+      name: auth.name || 'Analyst',
+      email: auth.email,
+      organization: auth.facility || 'ISRO National Remote Sensing Centre',
+      role: auth.role || (auth.isDemo ? 'SIH 2026 Guest Evaluator' : 'Lead Geospatial Analyst'),
+      joinedDate: 'September 2025',
+      isAuthenticated: true,
+    };
+    setUser(updatedUser);
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedUser));
+    } catch (e) {
+      console.warn('[SatQuery] LocalStorage write failed:', e);
+    }
+    setActiveTab('mission-control');
+  };
+
+  const handleLogout = () => {
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch (e) {
+      console.warn('[SatQuery] LocalStorage remove failed:', e);
+    }
+    setUser((prev) => ({
+      ...prev,
+      isAuthenticated: false,
+    }));
+    setActiveResult(null);
+    setActiveTab('mission-control');
+  };
 
   const handleStartAnalysis = async (
     primarySrc: string,
@@ -164,6 +213,24 @@ export const App: React.FC = () => {
     setActiveTab('scene-analysis');
   };
 
+  // --- HARD AUTHENTICATION GATE ---
+  // When logged out, the user is completely OUT: ONLY the login portal and deep-space galaxy are visible.
+  if (!user.isAuthenticated) {
+    return (
+      <div className="relative h-screen w-screen bg-[#02050e] text-slate-100 font-sans overflow-hidden select-none">
+        {/* Full 3D Interactive Galaxy Background */}
+        <SpaceBackground />
+
+        {/* Floating Centered Glassmorphic Login Portal */}
+        <div className="relative z-10 h-screen w-screen overflow-y-auto flex items-center justify-center p-4">
+          <LoginView onLoginSuccess={handleLoginSuccess} />
+        </div>
+      </div>
+    );
+  }
+
+  // --- AUTHENTICATED MISSION CONTROL WORKSPACE ---
+  // When logged in, the user enters the full platform with Sidebar, Header, and Workspace.
   return (
     <div className="flex h-screen w-screen bg-black text-slate-100 font-sans overflow-hidden">
       <SpaceBackground />
@@ -176,24 +243,10 @@ export const App: React.FC = () => {
         setDemoMode={setDemoMode}
         hasLoadedImages={Boolean(activeResult)}
         onResetUpload={() => setActiveResult(null)}
+        onLogout={handleLogout}
       />
 
       <main className="flex-1 h-screen overflow-y-auto relative z-10 px-6 py-8 md:px-12 md:py-10">
-        {activeTab === 'login' && (
-          <LoginView
-            onLoginSuccess={(email, isDemo) => {
-              setUser((prev) => ({
-                ...prev,
-                email,
-                isAuthenticated: true,
-                role: isDemo ? 'SIH 2026 Guest Evaluator' : 'Lead Geospatial Analyst'
-              }));
-              setActiveTab('mission-control');
-            }}
-            onCancel={() => setActiveTab('mission-control')}
-          />
-        )}
-
         {activeTab === 'mission-control' && (
           <HomeUploadView
             onStartAnalysis={handleStartAnalysis}
@@ -248,7 +301,7 @@ export const App: React.FC = () => {
 
         {activeTab === 'evaluation' && <EvaluationView />}
 
-        {activeTab === 'profile' && <ProfileView user={user} setUser={setUser} />}
+        {activeTab === 'profile' && <ProfileView user={user} setUser={setUser} onSignOut={handleLogout} />}
 
         {activeTab === 'settings' && <SettingsView settings={settings} setSettings={setSettings} />}
 
