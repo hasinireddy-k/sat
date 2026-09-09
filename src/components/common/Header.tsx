@@ -15,6 +15,7 @@ export const Header: React.FC<HeaderProps> = ({
   activeTab,
   setActiveTab,
   onResetUpload,
+  user,
 }) => {
   return (
     <aside className="w-[240px] flex-shrink-0 bg-black border-r border-white/10 flex flex-col h-screen sticky top-0 z-50">
