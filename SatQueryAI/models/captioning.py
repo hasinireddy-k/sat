@@ -187,50 +187,30 @@ class RemoteSensingCaptioner:
         if "SAR" in modality:
             stats = analysis["raw_stats"]
             db_val = stats.get('backscatter_db', 0.0)
-            speckle = stats.get('speckle_index', 0.0)
-
             scene_desc = (
-                f"Microwave radar scene acquired via Synthetic Aperture Radar (SAR C-Band, single polarization). "
-                f"The image covers an active footprint of {dim_str} (CRS: {crs_str}). "
-                f"Mean radar backscatter coefficient is measured at {db_val} dB with a speckle divergence index of {speckle}. "
-                f"The high-dielectric surface return and coherent scattering patterns correspond predominantly to "
-                f"'{dominant_concept}' (confidence: {detected_concepts[0]['confidence']}), flanked by localized patches of "
-                f"'{secondary_concept}'."
+                f"SAR C-Band radar scene ({dim_str}, {crs_str}). Mean backscatter: {db_val} dB. "
+                f"Surface return: {dominant_concept} ({detected_concepts[0]['confidence']}) with localized {secondary_concept}."
             )
-            key_observations.append(f"Sensor Modality: {modality} operating at 5.405 GHz C-band microwave.")
-            key_observations.append(f"Radiometric Return: Mean amplitude DN = {stats.get('mean_dn')}, equivalent backscatter intensity = {db_val} dB.")
-            key_observations.append(f"Dielectric Properties: Distinct separation between smooth specular reflectors and high-roughness dihedral scatterers.")
-            key_observations.append(f"Domain Land-Cover Classification: Primary '{dominant_concept}' ({detected_concepts[0]['confidence']}), Secondary '{secondary_concept}' ({detected_concepts[1]['confidence']}).")
+            key_observations.append(f"Sensor: {modality} at C-band. Mean backscatter = {db_val} dB.")
+            key_observations.append(f"Land Cover: Primary {dominant_concept} ({detected_concepts[0]['confidence']}), Secondary {secondary_concept}.")
 
         elif "Multi-Spectral" in modality:
             indices = analysis["spectral_indices"]
             ndvi_mean = indices.get('NDVI_mean', 0.0)
-            ndwi_mean = indices.get('NDWI_mean', 0.0)
-            veg_pct = indices.get('vegetation_coverage_pct', 0.0)
-
             scene_desc = (
-                f"Multi-spectral optical scene comprising {analysis['bands']} radiometric spectral bands (visible and near-infrared VNIR). "
-                f"Raster geometry spans {dim_str} at native resolution of {gsd_str} ({crs_str}). "
-                f"Spectral indexing yields a mean Normalized Difference Vegetation Index (NDVI) of {ndvi_mean} and NDWI of {ndwi_mean}, "
-                f"indicating approximately {veg_pct}% active photosynthetic canopy coverage. "
-                f"The domain-adapted BigEarthNet-19 model identifies '{dominant_concept}' (confidence: {detected_concepts[0]['confidence']}) "
-                f"and '{secondary_concept}' (confidence: {detected_concepts[1]['confidence']}) as the prevailing surface classes."
+                f"Multi-spectral VNIR scene ({dim_str}, {analysis['bands']} bands, {crs_str}). "
+                f"Dominant cover: {dominant_concept} ({detected_concepts[0]['confidence']}) and {secondary_concept} ({detected_concepts[1]['confidence']}) (Mean NDVI: {ndvi_mean})."
             )
-            key_observations.append(f"Sensor Modality: {modality} with {analysis['bands']} discrete spectral channels.")
-            key_observations.append(f"Vegetation Vigor: Mean NDVI = {ndvi_mean} (NIR vs Red reflectance balance).")
-            key_observations.append(f"Hydrological Index: Mean NDWI = {ndwi_mean} confirming surface moisture characteristics.")
-            key_observations.append(f"BigEarthNet-19 Taxonomy: Dominant cover is '{dominant_concept}', transitioning to '{secondary_concept}' and '{tertiary_concept}'.")
+            key_observations.append(f"Sensor: {modality} ({analysis['bands']} bands). Mean NDVI = {ndvi_mean}.")
+            key_observations.append(f"Land Cover: Primary {dominant_concept} ({detected_concepts[0]['confidence']}), Secondary {secondary_concept}.")
 
         else:
             scene_desc = (
-                f"Natural color optical satellite scene with spatial dimensions {dim_str}. "
-                f"Visible albedo analysis reveals high-contrast surface textures across the visible spectrum. "
-                f"The BigEarthNet-19 vision-language adapter resolves the visual features into '{dominant_concept}' "
-                f"(confidence: {detected_concepts[0]['confidence']}) and '{secondary_concept}' (confidence: {detected_concepts[1]['confidence']})."
+                f"Optical scene ({dim_str}, {crs_str}). "
+                f"Dominant cover: {dominant_concept} ({detected_concepts[0]['confidence']}) and {secondary_concept} ({detected_concepts[1]['confidence']})."
             )
-            key_observations.append(f"Sensor Modality: {modality} (3-channel visible composite).")
-            key_observations.append(f"Spatial Extent: {dim_str} raster matrix.")
-            key_observations.append(f"Detected Land-Cover: '{dominant_concept}' ({detected_concepts[0]['confidence']}) and '{secondary_concept}' ({detected_concepts[1]['confidence']}).")
+            key_observations.append(f"Sensor: Optical RGB composite ({dim_str}).")
+            key_observations.append(f"Land Cover: Primary {dominant_concept} ({detected_concepts[0]['confidence']}), Secondary {secondary_concept}.")
 
         return {
             "image_filename": fname,

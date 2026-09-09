@@ -119,15 +119,31 @@ export const MinimalViewer: React.FC<MinimalViewerProps> = (props) => {
     setPanY(0);
   };
 
+  const imgRef = useRef<HTMLImageElement>(null);
+
   const handleStageClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!stageRef.current) return;
-    const rect = stageRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const normX = Math.round((x / rect.width) * 100);
-    const normY = Math.round((y / rect.height) * 100);
+    const stageRect = stageRef.current.getBoundingClientRect();
+    const stageX = e.clientX - stageRect.left;
+    const stageY = e.clientY - stageRect.top;
 
-    setClickCoords({ x, y, normX, normY });
+    let normX = Math.round((stageX / stageRect.width) * 100);
+    let normY = Math.round((stageY / stageRect.height) * 100);
+
+    if (imgRef.current) {
+      const imgRect = imgRef.current.getBoundingClientRect();
+      if (
+        e.clientX >= imgRect.left &&
+        e.clientX <= imgRect.right &&
+        e.clientY >= imgRect.top &&
+        e.clientY <= imgRect.bottom
+      ) {
+        normX = Math.max(0, Math.min(100, Math.round(((e.clientX - imgRect.left) / imgRect.width) * 100)));
+        normY = Math.max(0, Math.min(100, Math.round(((e.clientY - imgRect.top) / imgRect.height) * 100)));
+      }
+    }
+
+    setClickCoords({ x: stageX, y: stageY, normX, normY });
   };
 
   const triggerRegionQuery = (qText: string) => {
@@ -313,6 +329,7 @@ export const MinimalViewer: React.FC<MinimalViewerProps> = (props) => {
               style={{ transform: `scale(${zoom}) translate(${panX}px, ${panY}px)` }}
             >
               <img
+                ref={imgRef}
                 src={primarySrc}
                 alt="Primary Scene"
                 className="max-h-[440px] w-auto object-contain rounded block mx-auto border border-slate-800/80 transition-image"
@@ -497,42 +514,57 @@ export const MinimalViewer: React.FC<MinimalViewerProps> = (props) => {
 
         {/* CLICK-TO-ASK CONTEXT POPUP */}
         {clickCoords && (
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="absolute z-50 bg-[#0b0f19] border border-slate-700 rounded-xl p-3 shadow-2xl text-xs font-mono max-w-xs space-y-2 animate-fade-slide-view"
-            style={{ left: `${Math.min(clickCoords.x, 260)}px`, top: `${Math.min(clickCoords.y, 280)}px` }}
-          >
-            <div className="flex items-center justify-between text-cyan-400 font-bold text-[11px] border-b border-slate-800 pb-1">
-              <span className="flex items-center space-x-1">
-                <Crosshair className="w-3.5 h-3.5 text-cyan-400" />
-                <span>ASK ABOUT THIS REGION</span>
-              </span>
-              <button onClick={() => setClickCoords(null)} className="text-slate-500 hover:text-white">✕</button>
+          <>
+            {/* Clicked Target Crosshair Pin */}
+            <div
+              className="absolute pointer-events-none z-40 w-4 h-4 -ml-2 -mt-2 border-2 border-cyan-400 rounded-full animate-ping"
+              style={{ left: `${clickCoords.x}px`, top: `${clickCoords.y}px` }}
+            />
+            <div
+              className="absolute pointer-events-none z-40 w-2 h-2 -ml-1 -mt-1 bg-cyan-400 rounded-full"
+              style={{ left: `${clickCoords.x}px`, top: `${clickCoords.y}px` }}
+            />
+
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="absolute z-50 bg-[#0b0f19] border border-cyan-500/70 rounded-xl p-3 shadow-2xl text-xs font-mono max-w-xs space-y-2 animate-fade-slide-view"
+              style={{
+                left: `${Math.min(Math.max(clickCoords.x - 70, 10), (stageRef.current?.clientWidth || 400) - 210)}px`,
+                top: `${Math.min(Math.max(clickCoords.y + 12, 10), (stageRef.current?.clientHeight || 400) - 170)}px`
+              }}
+            >
+              <div className="flex items-center justify-between text-cyan-400 font-bold text-[11px] border-b border-slate-800 pb-1">
+                <span className="flex items-center space-x-1">
+                  <Crosshair className="w-3.5 h-3.5 text-cyan-400" />
+                  <span>ASK ABOUT THIS REGION</span>
+                </span>
+                <button onClick={() => setClickCoords(null)} className="text-slate-500 hover:text-white">✕</button>
+              </div>
+              <div className="text-[10px] text-slate-400">
+                Coordinates: [{clickCoords.normX}%, {clickCoords.normY}%]
+              </div>
+              <div className="space-y-1">
+                <button
+                  onClick={() => triggerRegionQuery(`Describe the region at coordinates [${clickCoords.normX}%, ${clickCoords.normY}%]`)}
+                  className="w-full text-left p-1.5 bg-[#070a12] hover:bg-slate-900 rounded border border-slate-800 hover:border-cyan-500/60 text-slate-200 text-[11px] transition-micro"
+                >
+                  Describe this area
+                </button>
+                <button
+                  onClick={() => triggerRegionQuery(`Find buildings and structures at [${clickCoords.normX}%, ${clickCoords.normY}%]`)}
+                  className="w-full text-left p-1.5 bg-[#070a12] hover:bg-slate-900 rounded border border-slate-800 hover:border-cyan-500/60 text-slate-200 text-[11px] transition-micro"
+                >
+                  Find objects
+                </button>
+                <button
+                  onClick={() => triggerRegionQuery(`Identify land cover type at [${clickCoords.normX}%, ${clickCoords.normY}%]`)}
+                  className="w-full text-left p-1.5 bg-[#070a12] hover:bg-slate-900 rounded border border-slate-800 hover:border-cyan-500/60 text-slate-200 text-[11px] transition-micro"
+                >
+                  Identify land cover
+                </button>
+              </div>
             </div>
-            <div className="text-[10px] text-slate-400">
-              Coordinates: [{clickCoords.normX}%, {clickCoords.normY}%]
-            </div>
-            <div className="space-y-1">
-              <button
-                onClick={() => triggerRegionQuery(`Describe the region at coordinates [${clickCoords.normX}%, ${clickCoords.normY}%]`)}
-                className="w-full text-left p-1.5 bg-[#070a12] hover:bg-slate-900 rounded border border-slate-800 text-slate-200 text-[11px] transition-micro"
-              >
-                Describe this area
-              </button>
-              <button
-                onClick={() => triggerRegionQuery(`Find buildings and structures at [${clickCoords.normX}%, ${clickCoords.normY}%]`)}
-                className="w-full text-left p-1.5 bg-[#070a12] hover:bg-slate-900 rounded border border-slate-800 text-slate-200 text-[11px] transition-micro"
-              >
-                Find objects
-              </button>
-              <button
-                onClick={() => triggerRegionQuery(`Identify land cover type at [${clickCoords.normX}%, ${clickCoords.normY}%]`)}
-                className="w-full text-left p-1.5 bg-[#070a12] hover:bg-slate-900 rounded border border-slate-800 text-slate-200 text-[11px] transition-micro"
-              >
-                Identify land cover
-              </button>
-            </div>
-          </div>
+          </>
         )}
 
         {/* Selected Evidence Tooltip */}

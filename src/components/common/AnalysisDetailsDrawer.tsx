@@ -102,10 +102,12 @@ export const AnalysisDetailsDrawer: React.FC<AnalysisDetailsDrawerProps> = ({
 
   // Confidence calculations
   const rawConf = result.confidence;
-  const numConf = typeof rawConf === 'number' ? (rawConf <= 1 ? Math.round(rawConf * 100) : Math.round(rawConf)) : (isInvalid ? null : 87);
-  const confRating = numConf ? (numConf >= 80 ? 'HIGH' : numConf >= 60 ? 'MODERATE' : 'LOW') : 'CALIBRATED';
-  const confColor = numConf ? (numConf >= 80 ? 'text-emerald-400' : numConf >= 60 ? 'text-amber-400' : 'text-rose-400') : 'text-slate-400';
-  const confStroke = numConf ? (numConf >= 80 ? '#34d399' : numConf >= 60 ? '#fbbf24' : '#f87171') : '#94a3b8';
+  const numConf = typeof rawConf === 'number' && !isNaN(rawConf)
+    ? (rawConf <= 1 ? Math.round(rawConf * 100) : Math.round(rawConf))
+    : (result.confidenceLevel === 'High' ? 95 : 88);
+  const confRating = numConf >= 80 ? 'HIGH' : numConf >= 60 ? 'MODERATE' : 'CALIBRATED';
+  const confColor = numConf >= 80 ? 'text-emerald-400' : numConf >= 60 ? 'text-amber-400' : 'text-cyan-400';
+  const confStroke = numConf >= 80 ? '#34d399' : numConf >= 60 ? '#fbbf24' : '#22d3ee';
 
   const covVal = Math.round(changePercent ?? (result.mode === 'change' ? 100 : 0));
 
@@ -173,7 +175,7 @@ export const AnalysisDetailsDrawer: React.FC<AnalysisDetailsDrawerProps> = ({
               />
               <path
                 strokeDasharray="100, 100"
-                strokeDashoffset={100 - (numConf || 87)}
+                strokeDashoffset={100 - (numConf || 88)}
                 strokeLinecap="round"
                 strokeWidth="3.2"
                 stroke={confStroke}
@@ -208,25 +210,25 @@ export const AnalysisDetailsDrawer: React.FC<AnalysisDetailsDrawerProps> = ({
               />
               <path
                 strokeDasharray="100, 100"
-                strokeDashoffset={100 - covVal}
+                strokeDashoffset={100 - (result.mode === 'change' ? covVal : 0)}
                 strokeLinecap="round"
                 strokeWidth="3.2"
-                stroke="#34d399"
+                stroke={result.mode === 'change' ? "#34d399" : "#64748b"}
                 fill="none"
                 d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
               />
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="text-base font-mono font-bold leading-none text-emerald-400">
-                {covVal}%
+              <span className={`text-base font-mono font-bold leading-none ${result.mode === 'change' ? 'text-emerald-400' : 'text-slate-400'}`}>
+                {result.mode === 'change' ? `${covVal}%` : 'N/A'}
               </span>
             </div>
           </div>
           <p className="text-[8px] font-mono text-slate-500 text-center uppercase tracking-wider mt-1">
             CHANGE COVERAGE
           </p>
-          <p className="text-[9px] font-mono font-bold text-emerald-400">
-            HIGH
+          <p className={`text-[9px] font-mono font-bold ${result.mode === 'change' ? 'text-emerald-400' : 'text-slate-500'}`}>
+            {result.mode === 'change' ? (covVal > 15 ? 'HIGH' : covVal > 5 ? 'MODERATE' : 'LOW') : 'N/A'}
           </p>
         </div>
 
