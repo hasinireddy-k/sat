@@ -506,6 +506,7 @@ class GroundingSpecialist:
             "keyFindings": key_findings,
             "confidenceLevel": "Calibrated",
             "groundingBoxes": grounding_boxes,
+            "grounding_boxes": grounding_boxes,
             "changeAreas": [],
             "opticalSarInsight": None,
             "trace": trace,

@@ -406,7 +406,7 @@ class AgenticOrchestrator:
                 'currentFileId': file_id,
                 'query': q_clean,
                 'mode': forced_mode or 'single',
-                'detectedTask': 'Spatial Grounding',
+                'detectedTask': 'Text-Guided Region Grounding',
                 'task': 'grounding',
                 'model': ground_res['model'],
                 'detections': ground_res['detections'],
