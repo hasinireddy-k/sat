@@ -1,76 +1,100 @@
-# SatQuery AI — Remote Sensing & Satellite Observation Platform
+# 🛰️ SatQuery AI: Multimodal Vision-Language Assistant for Remote Sensing
 
-SatQuery AI is an advanced Earth Observation platform designed for multi-spectral satellite imagery ingestion, automated GeoTIFF metadata extraction, text-guided region grounding, bitemporal change detection, and cross-modal Optical-SAR fusion.
+[![SIH 2026](https://img.shields.io/badge/SIH%202026-Problem%20Statement%2026167-blue.svg)](https://www.sih.gov.in/)
+[![FastAPI](https://img.shields.io/badge/Backend-FastAPI%20%7C%20PyTorch-009688.svg)](https://fastapi.tiangolo.com/)
+[![React](https://img.shields.io/badge/Frontend-React%2018%20%7C%20TypeScript%20%7C%20Vite-61DAFB.svg)](https://vitejs.dev/)
+[![LoRA](https://img.shields.io/badge/Domain%20Adaptation-BigEarthNet--19%20LoRA-FF6F00.svg)](https://arxiv.org/abs/2106.09685)
 
----
-
-## Key Features
-
-- **Multi-Format Ingestion**: Supports GeoTIFF (`.tif`, `.tiff`), PNG, and JPEG imagery.
-- **Genuine GeoTIFF Parsing**: Uses `tifffile` and `PIL` to extract true band counts, dtype, resolution, CRS projection tags (`EPSG`), and spatial bounds without hardcoded fallbacks.
-- **Raster Preview Generation**: Normalizes multispectral and 16-bit GeoTIFF channels into 8-bit RGB previews for HTML5 rendering.
-- **PyTorch Remote Sensing Specialist Pipeline**: Real tensor processing for:
-  1. **Visual Question Answering (VQA)**
-  2. **Single Image Captioning**
-  3. **Text-Guided Region Grounding** (producing contour bounding boxes `[ymin, xmin, ymax, xmax]`)
-  4. **Bitemporal Change Analysis** (`torch.abs(img2 - img1)` difference maps and altered surface area)
-  5. **Optical + SAR Cross-Modal Fusion** (microwave backscatter intensity normalization)
-- **Zero Fake Data Policy**: Displays evaluated raster results, true metadata, and clean execution traces.
+> **Official Solution for Smart India Hackathon (SIH) 2026 — Problem Statement 26167**  
+> *Autonomous Multi-Agent Vision-Language System for Complex Remote Sensing Imagery, Bitemporal Change Detection, and Multi-Sensor Fusion.*
 
 ---
 
-## System Architecture
+## 📖 Presentation Quick Guide
+👉 **For a step-by-step evaluator script and folder-by-folder presentation guide, see [CODEBASE_EXPLAINER.md](CODEBASE_EXPLAINER.md).**
 
-```text
-USER UPLOAD (GeoTIFF / PNG)
-       ↓
-POST /api/upload (Python Backend :8000)
-       ↓
-HEADER & TAG INSPECTION (tifffile + PIL)
-       ↓
-RASTER PREVIEW RENDERING (NumPy + PIL -> PNG)
-       ↓
-FRONTEND VIEWER LOAD (React + Vite :3000)
-       ↓
-POST /api/analyze (PyTorch Inference Engine)
-       ↓
-REAL EVIDENCE & GROUNDING OVERLAYS
+---
+
+## 🌟 Key Capabilities & PS 26167 Compliance
+
+| Requirement | SatQuery AI Implementation |
+|---|---|
+| **1. Input Compatibility Guardian** | Strict 10-point raster validation (format, CRS, GSD, bands, bit depth, temporal separation, optical-SAR coregistration) before model invocation. |
+| **2. Multi-Agent Specialization** | Autonomous intent orchestrator routing to 5 dedicated models: Captioner, Grounding Engine, Bitemporal Change Specialist, and Optical-SAR Fusion Specialist. |
+| **3. Domain Adaptation** | Qwen2-VL-2B adapted via BigEarthNet-19 Multi-Spectral LoRA weights (`models/adapters/bigearthnet_lora/adapter_model.pt`). |
+| **4. Precise Spatial Grounding** | Pixel coordinate clicks and natural language localization translated into bounding boxes with confidence scores. |
+| **5. Multitemporal Change** | Pixel-wise difference detection and interactive swipe-compare slider for floods, urban growth, and deforestation. |
+| **6. Mission Control UI** | ISRO PS 26167 themed dashboard with live background constellation animations, factor breakdowns, and formal briefing export. |
+
+---
+
+## 🏗️ Architecture
+
+```
+User Query + Satellite GeoTIFF / Multi-Spectral Raster
+                     │
+                     ▼
+       ┌───────────────────────────┐
+       │ Input Compatibility Guard │ ──► Rejection if corrupted or incompatible
+       └─────────────┬─────────────┘
+                     │ Approved
+                     ▼
+       ┌───────────────────────────┐
+       │   Master Orchestrator     │ ──► Classifies Task Intent
+       └─────────────┬─────────────┘
+                     ├─────────────────┬──────────────────┬─────────────────┐
+                     ▼                 ▼                  ▼                 ▼
+             [Scene Captioner]  [Grounding Agent]  [Change Specialist]  [SAR Specialist]
+                     │                 │                  │                 │
+                     └─────────────────┴─────────┬────────┴─────────────────┘
+                                                 ▼
+                                     [BigEarthNet LoRA VLM]
+                                                 │
+                                                 ▼
+                             Calibrated Answer + BBoxes + Audit Trace
 ```
 
 ---
 
-## Quick Start
+## ⚡ Quick Start
 
-### 1. Requirements
+### 1. Prerequisites
+- Python 3.10+
 - Node.js 18+
-- Python 3.10+ with `torch`, `tifffile`, `Pillow`, `numpy`, `opencv-python`
 
-### 2. Backend Setup
+### 2. Run Backend
 ```bash
-python server.py
-# Backend API running on http://localhost:8000
+# From repository root:
+python -u SatQueryAI/backend/server.py
 ```
+*Backend runs on `http://localhost:8000`*
 
-### 3. Frontend Setup
+### 3. Run Frontend
 ```bash
+# In a new terminal:
 npm install
 npm run dev
-# Frontend UI running on http://localhost:3000
 ```
+*Frontend runs on `http://localhost:3000`*
 
-### 4. Build for Production
+### 4. Run ML Test Suite
 ```bash
-npm run build
+python SatQueryAI/scripts/03_run_agent_pipeline.py
 ```
 
 ---
 
-## API Endpoints
+## 📁 Repository Structure
 
-| Method | Endpoint | Description |
-| :--- | :--- | :--- |
-| `GET` | `/api/health` | Health status of PyTorch inference engine |
-| `POST` | `/api/upload` | Ingests raster binary, generates PNG preview & extracts metadata |
-| `POST` | `/api/validate` | Validates geospatial headers & CRS |
-| `POST` | `/api/analyze` | Executes PyTorch remote sensing specialist inference |
-| `GET` | `/uploads/<file>` | Serves generated PNG raster previews and raw files |
+- `SatQueryAI/backend/`: FastAPI server, database ORM, and file uploads.
+- `SatQueryAI/models/`: The 5 specialized AI agents + BigEarthNet LoRA weights.
+- `SatQueryAI/datasets/`: Dataset reference specifications (BigEarthNet, VRSBench, RSVQA, CDVQA).
+- `SatQueryAI/scripts/`: Numbered CLI pipeline for training, evaluation, and inference.
+- `SatQueryAI/tests/`: Automated unit tests for all 5 agents and input validator.
+- `src/`: React + TypeScript frontend with Mission Control UI and interactive canvas viewers.
+- `CODEBASE_EXPLAINER.md`: Comprehensive cheat sheet for hackathon presentations.
+
+---
+
+## 📜 License
+Developed for Smart India Hackathon (SIH) 2026. All rights reserved.\n

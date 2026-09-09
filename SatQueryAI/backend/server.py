@@ -1285,6 +1285,8 @@ a { color: #0084ff; text-decoration: underline; font-weight: bold; }
             result = run_real_pytorch_inference(file_id, query, analysis_id, configuration, secondary_file_id)
             self._send_json(result)
         except Exception as e:
+            import traceback
+            traceback.print_exc()
             self._send_json({'error': str(e), 'status': 'FAILURE'}, 500)
 
     def do_POST(self):
