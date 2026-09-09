@@ -47,11 +47,7 @@ export const App: React.FC = () => {
   useEffect(() => {
     // Fetch real historical analysis records from persistent backend database/store
     satqueryApi.getHistory().then((realHistory) => {
-      if (realHistory && realHistory.length > 0) {
-        setHistoryLogs(realHistory);
-      } else {
-        setHistoryLogs(DEMO_MISSIONS.map((m) => m.precomputedResult));
-      }
+      setHistoryLogs(realHistory || []);
     });
   }, []);
 
@@ -194,6 +190,7 @@ export const App: React.FC = () => {
               }));
               setActiveTab('mission-control');
             }}
+            onCancel={() => setActiveTab('mission-control')}
           />
         )}
 

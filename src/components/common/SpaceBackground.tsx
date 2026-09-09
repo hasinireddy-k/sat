@@ -138,13 +138,32 @@ export const SpaceBackground: React.FC<{ children?: React.ReactNode }> = ({ chil
 
   return (
     <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden bg-[#030712]">
+      {/* Animated Telemetry & Orbit Background Grid */}
+      <div className="orbital-bg" />
+
+      {/* Layered Starfields with Parallax Drift */}
+      <div className="starfield star-layer-1" />
+      <div className="starfield star-layer-2" />
+      <div className="starfield star-layer-3" />
+
+      {/* Deep Space Atmospheric Nebulae Pulses */}
+      <div className="deep-space-nebula-1" />
+      <div className="deep-space-nebula-2" />
+
+      {/* Floating Orbital Planet Light Spheres */}
+      <div className="planet-glow-sphere" />
+      <div className="moon-orbit-sphere" />
+
+      {/* Rotating Concentric Orbital Arcs */}
+      <div className="orbital-arcs" />
+
       {/* Soft radial Earth observation glow pulses */}
       <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-blue-900/15 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[-15%] left-[10%] w-[700px] h-[700px] bg-cyan-950/20 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute top-[35%] left-[25%] w-[400px] h-[400px] bg-indigo-950/10 rounded-full blur-[100px] pointer-events-none" />
 
-      {/* Interactive Constellation & Orbit Canvas */}
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block opacity-80" />
+      {/* Interactive Constellation, Star Twinkle & Orbit Canvas */}
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block opacity-85" />
 
       {children && (
         <div className="relative z-10 w-full h-full pointer-events-auto">

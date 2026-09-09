@@ -15,6 +15,7 @@ import {
 
 interface LoginViewProps {
   onLoginSuccess: (email: string, isDemo?: boolean) => void;
+  onCancel?: () => void;
 }
 
 const ANALYST_PROFILES = [
@@ -41,7 +42,7 @@ const ANALYST_PROFILES = [
   }
 ];
 
-export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess }) => {
+export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess, onCancel }) => {
   const [email, setEmail] = useState<string>('lead-analyst@satquery.isro.gov.in');
   const [password, setPassword] = useState<string>('ISRO-SATQUERY-2026');
   const [facility, setFacility] = useState<string>('NRSC Hyderabad (National Remote Sensing Centre)');
@@ -239,6 +240,18 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess }) => {
               <span>•</span>
               <span>ISRO PS 26167</span>
             </div>
+
+            {onCancel && (
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={onCancel}
+                  className="text-[11px] text-slate-400 hover:text-cyan-400 transition underline underline-offset-4 cursor-pointer"
+                >
+                  ← Return to Mission Control Workspace
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
